@@ -248,6 +248,21 @@ If the PWM duty is wrong:
 
 \subsection{IMU}
 \label{imu}
+\label{checking-IMU}
+
+\begin{enumerate}
+\item Check the I2C bus (see \hyperref[debugging-i2c]{debugging I2C}).
+\item Check the auxiliary I2C bus signals are not connected on the IMU
+  (otherwise the magnetometer will not respond).
+\item Check \sig{nCS} on the IMU is pulled high.
+\item Check \sig{FSYNC} on the IMU is pulled low.  
+\item Try pressing on a side of the IMU with a fingernail to see if it
+  starts working; you might have a dry joint.  Otherwise look under
+  the microscope at the pins of the IMU and touch them up with a
+  soldering iron if necessary.
+\end{enumerate}
+
+
 
 \subsection{Debugging I2C}
 \label{debugging-i2c}
@@ -255,16 +270,19 @@ If the PWM duty is wrong:
 \begin{enumerate}
 \item
   I2C/TWI requires external pull-up resistors for the clock (TCK) and
-  data (TDA) signals.
+  data (TDA) signals.  Use a scope to look at the signals
+  \pin{TWCK/SCL} and \pin{TWD/SDA}.  If the rise times are rounded,
+  the resistors are too large.
 \item
-  TWI channel 1 (TWI1) uses \pin{PB4} and \pin{PB5}. However, these are configured
-  on boot as JTAG pins. You can disable this, see
+  TWI channel 1 (TWI1) uses \pin{PB4} and \pin{PB5}. However, these
+  are configured on boot as JTAG pins. You can disable this, see
   \hyperref[disabling-jtag-pins]{disabling JTAG pins}.
 \end{enumerate}
 
 \mtodo{Add scope picture of I2C signals}
 
 \mtodo{Add scope picture of I2C signals with no acknowledge}
+
 
 \subsection{NRF24L01+ radio}
 \label{nrf24l01-radio}
