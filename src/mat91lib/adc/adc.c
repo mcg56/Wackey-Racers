@@ -362,6 +362,9 @@ adc_init (const adc_cfg_t *cfg)
     if (adc_devices_num >= ADC_DEVICES_NUM)
         return 0;
 
+    if (cfg->channels == 0 and cfg->channel >= ADC_CHANNEL_NUM)
+        return 0;
+    
     if (adc_devices_num == 0)
     {
         /* The clock only needs to be enabled when sampling.  The clock is
