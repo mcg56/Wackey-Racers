@@ -361,10 +361,11 @@ bit-shifted or unreliable.
 
 \mtodo{Add scope picture of SPI signals}
 
+
 \section{Other problems}
 \label{faq}
 
-\begin{itemize}
+\begin{enumerate}
 \item
   \emph{\program{OpenOCD} does not run}. The most common problem is that the
   USB permissions are not correct.
@@ -379,7 +380,7 @@ bit-shifted or unreliable.
   \emph{A program hangs.} This can be observed by an LED no longer
   flashing. There are a number of reasons:
 
-  \begin{itemize}
+  \begin{enumerate}
   \item
     The program is stuck in an infinite loop. Note, an embedded system
     should only have an infinite loop for the main loop; all other loops
@@ -394,12 +395,46 @@ bit-shifted or unreliable.
     '\_hardfault\_handler', then your program is likely to have accessed
     invalid memory. Use the 'bt' command to print a stack trace to see
     how your program went astray.
-  \end{itemize}
+  \item You are printing output using USB but a terminal program is
+    not running.
+  \end{enumerate}
 \item
   \emph{The output of the 3V3 regulator works fine when powered from USB
   but gives 6 V when powered from a 7.2 V battery}. Check that the 7.2 V
   is not connected directly to a SAM4S pin (say for battery monitoring)
   since this will cause an ESD protection diode inside the SAM4S to
   conduct.
-\end{itemize}
+\item
+  \emph{The ADC works fine for one channel but hangs for multiple
+    channels.}  Check the configuration structure.  If using a single
+  channel, its channel number is specified in the \code{.channel}
+  field.  For example:
+
+  \begin{minted}{C}
+static const adc_cfg_t adc_cfg =
+{
+    .bits = 12,
+    .channel = ADC_CHANNEL_0,
+    .trigger = ADC_TRIGGER_SW,
+    .clock_speed_kHz = ADC_CLOCK_FREQ / 1000
+};    
+  \end{minted}
+
+  However, multiple channels are encoded as a bitmask as specified in
+  the \code{.channels} field, for example:
+  
+  \begin{minted}{C}
+static const adc_cfg_t adc_cfg =
+{
+    .bits = 12,
+    .channels = BIT(ADC_CHANNEL_4) | BIT(ADC_CHANNEL_2),
+    .trigger = ADC_TRIGGER_SW,
+    .clock_speed_kHz = ADC_CLOCK_FREQ / 1000
+};    
+  \end{minted}  
+
+
+  
+  
+\end{enumerate}
 
