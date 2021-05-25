@@ -360,7 +360,7 @@ adc_sync (adc_t adc)
 
     channels = adc->channels;
     for (max_channel = 0; channels; max_channel++)
-        channels >= 1;
+        channels >>= 1;
     do
     {
         adc_read (adc, &dummy, sizeof (dummy));
