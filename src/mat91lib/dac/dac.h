@@ -3,6 +3,9 @@
     @date   3 Feb 2005
 
     @brief Routines to use AT91 onboard DAC in polling mode.
+
+    Note, the DAC switches between Vref / 6 to 5 * Vref / 6.
+
 */
 
 #ifndef DAC_H
@@ -63,7 +66,9 @@ typedef struct dac_cfg_struct
     /* This specifies the channel if the channels field is zero.  */
     dac_channel_t channel;
 
-    /* This specifies the channels to convert as a bitmask.  */
+    /* This specifies the channels to convert as a bitmask.  Note,
+       if this is non-zero, then tagging is required in the 4 MSBs of the
+       data to specify the channel.  */
     dac_channels_t channels;
 
     /* Conversion bits.  */
