@@ -18,6 +18,7 @@ extern "C" {
 #define MCU_FLASH_READ_CYCLES 3
 #endif
 
+__attribute__((optimize(2)))
 static __always_inline__ void
 mcu_delay_loop (unsigned int loops)
 {
