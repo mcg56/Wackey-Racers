@@ -1,0 +1,58 @@
+\chapter{PCB layout}
+
+
+\section{Introduction}
+\label{PCB_introduction}
+
+An hour spent checking your schematic will avoid many hours of testing
+and rework grief!
+
+
+
+
+\section{PCB recommendations}
+\label{pcb-recommendations}
+
+\subsection{Placement}
+\label{placement}
+
+\begin{enumerate}
+\item
+  Keep small signal analogue components (radio) well away from digital
+  electronics and power electronics.
+\item
+  Place local decoupling capacitors to minimise the loop area.
+\item
+  Keep the crystal close to the MCU.
+\item
+  Place switches so they can be pushed.
+\item
+  Place LEDs so they can be seen.
+\item
+  Place USB connector so it can be connected to.
+\item
+  Place connectors on edge with wires going away from the board.
+\end{enumerate}
+
+
+\subsection{Check list}\label{check-list}
+
+\begin{enumerate}
+\item
+  No planes under or close to the radio antenna; otherwise the radio
+  range is limited.
+\item
+  The SPI signals for the radio are connected to the correct MCU pins.
+\item
+  The PWM signals for the motor are connected to the correct MCU pins.
+  Note, the PWMLx and PWMHx pins are complementary and cannot be driven
+  independently.
+\item
+  All the MCU VDD pins need to be powered.
+\item
+  All the MCU GND pins need to be powered.
+\item
+  Avoid connecting to \pin{PB4} and \pin{PB5} (say for TWI1).  If you
+  do you will need to disable JTAG in software.
+\end{enumerate}
+

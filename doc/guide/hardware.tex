@@ -1,10 +1,6 @@
 \chapter{Hardware}
 
 
-\section{Introduction}\label{introduction}
-
-An hour spent checking your schematic will avoid many hours of testing
-grief!
 
 \subsection{Recommendations}\label{recommendations}
 
@@ -159,45 +155,4 @@ tens of milliseconds depending on the capacitive load and current draw.
 
 Note, some regulators have pins that you must not connect. Some have
 multiple pins for the same purpose; these must all be connected.
-
-\section{PCB recommendations}\label{pcb-recommendations}
-
-\subsection{Placement}\label{placement}
-
-\begin{enumerate}
-\item
-  Keep small signal analogue components (radio) well away from digital
-  electronics and power electronics.
-\item
-  Place local decoupling capacitors to minimise the loop area.
-\item
-  Keep the crystal close to the MCU.
-\item
-  Place switches so they can be pushed.
-\item
-  Place LEDs so they can be seen.
-\item
-  Place USB connector so it can be connected to.
-\item
-  Place connectors on edge with wires going away from the board.
-\end{enumerate}
-
-\subsection{Check list}\label{check-list}
-
-\begin{enumerate}
-\item
-  No planes under the radio antenna.
-\item
-  The SPI signals for the radio are connected to the correct MCU pins.
-\item
-  The PWM signals for the motor are connected to the correct MCU pins.
-  Note, the PWMLx and PWMHx pins are complementary and cannot be driven
-  independently.
-\item
-  All the MCU VDD pins need to be powered.
-\item
-  All the MCU GND pins need to be powered.
-\item
-  Avoid connecting to \pin{PB4} and \pin{PB5} (say for TWI1).  If you do you will need to disable JTAG.
-\end{enumerate}
 
