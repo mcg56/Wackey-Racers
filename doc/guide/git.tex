@@ -13,6 +13,12 @@ of the dreaded merge conflict.
 
 \item Save changes  
 
+\item Check differences
+  
+\begin{minted}{bash}  
+    $ git diff .
+\end{minted}
+  
 \item Commit changes 
 
 \begin{minted}{bash}  
@@ -20,7 +26,8 @@ of the dreaded merge conflict.
 \end{minted}
 
 Note, you should commit about every 15 min, preferably when you have
-made a single functional change.
+made a single functional change.  Ideally each commit should be
+self-contained.
   
 \item Push changes to server
 
@@ -28,13 +35,25 @@ made a single functional change.
     $ git push
 \end{minted}
 
-The more often you push, the lower the chanve that you will get a mege
-conflict.
+The more often you push, the lower the chance that you will get a
+merge conflict.
   
 \end{enumerate}
 
 
-\subsection{Git pulling from upstream}
+\section{Diff, status, blame, log}
+
+The diff command is useful to determine what changes you made.
+
+The status command says which files have been modified and what you
+should do, say when you get a merge conflict.
+
+The blame command is useful to determin who authored each line of code.
+
+The log command shows all the previous commit messages.
+
+
+\section{Pulling from upstream}
 \label{git-pulling-from-upstream}
 
 To be able to get updates if the template project is modified you will
@@ -71,7 +90,7 @@ $ git remote rm upstream
 Note, \textbf{origin} refers to your group project and \textbf{upstream}
 refers to the template project that origin was forked from.
 
-\subsection{Git merging}
+\section{Merging}
 \label{git-merging}
 
 The bane of all version control programs is dealing with a merge
