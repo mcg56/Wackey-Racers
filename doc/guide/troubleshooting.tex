@@ -4,7 +4,7 @@
 Troubleshooting can be frustrating when you are tired. You need plenty
 of gumption and an open mind. Difficult problems are usually a
 combination of two or more problems. So \textbf{do not attempt if you
-are tired or in a hurry} .
+are tired or in a hurry}.
 
 \section{Oscilloscope}
 \label{oscilloscope}
@@ -13,7 +13,7 @@ The best tool for debugging an embedded system is an oscilloscope.
 
 \begin{enumerate}
 \item
-  Use x10 probes.
+  Use x10 probes to reduce loading on the circuit.
 \item
   Use the correct probes for the scope so that they can be automatically
   detected.
@@ -31,8 +31,8 @@ This mode is for measuring transient or non-repetitive signals. It will
 only refresh the display if a trigger event is detected.
 
 It is useful to increase the \emph{trigger holdoff} to prevent
-triggering on multiple edges of a waveform. By default, it is set to a
-ridiculously small value.
+triggering on multiple edges of a waveform.  By default, it is set to
+a ridiculously small value.
 
 \subsection{Auto mode}
 \label{auto-mode}
@@ -48,7 +48,8 @@ If a program has not been loaded:
 
 \begin{enumerate}
 \item
-  Check orientation of the SAM4S.
+  Check orientation of the SAM4S (the large circle does \textbf{not}
+  mark pin 1).
 \item
   Check soldering of the SAM4S pins under a microscope. Giving
   each pin a push with a sharp spike can reveal a poorly soldered joint.
@@ -56,21 +57,36 @@ If a program has not been loaded:
   Check 3.3 V and 1.2 V power rails.
 \item
   Check the serial wire debug (SWD) signals, see
-  \protect\hyperref[debugging]{Debugging serial wire debug (SWD)}.
+  \protect\hyperref[debugging]{debugging serial wire debug (SWD)}.
 \end{enumerate}
 
 If a program has been loaded:
 
 \begin{enumerate}
-\item
-  Check the crystal oscillator, see
-  \protect\hyperref[checking-the-crystal-oscillator]{Checking the
-  crystal oscillator}.
-\item
-  Erase the flash memory by connecting the ERASE pin to 3.3 V, re-enable
-  booting from flash, and reprogram the SAM4S with an LED flash
-  program.
+\item  \protect\hyperref[checking-the-crystal-oscillator]{Check the
+    crystal oscillator}.
+  
+\item \hyperref[erasing-flash-memory]{Erase flash memory}.
+  
+\item Re-enable \hyperref[booting-from-flash-memory]{booting from flash
+  memory}.
+
+\item  Reprogram the SAM4S with an LED flash program.
 \end{enumerate}
+
+
+\subsubsection{Erasing flash memory}
+\label{erasing-flash-memory}
+
+\begin{enumerate}
+\item Connect the ERASE pin to 3.3 V.
+
+\item Re-start OpenOCD.  
+
+\item Re-enable \hyperref[booting-from-flash-memory]{booting from
+  flash memory}.
+\end{enumerate}
+
 
 \subsubsection{Debugging serial wire debug (SWD)}
 \label{debugging-serial-wire-debug-swd}
@@ -91,16 +107,17 @@ These occur every 100\,ms.
 \end{figure}
 
 OpenOCD polls less often when it does not get a response. The period
-increases to 6300\,ms.
+increases to 6.3\,s.
 
 \subsection{Checking the crystal oscillator}
 \label{checking-the-crystal-oscillator}
 
-When the SAM4S is first powered up it uses an internal oscillator.
-However, when a program is loaded it switches to the main oscillator
-that uses the external crystal. If there is a problem with the crystal
-oscillator the SAM4S will not run since it has no clock. Moreover,
-\program{OpenOCD} will then fail to communicate with the SAM4S.
+When the SAM4S is first powered up it uses an internal RC oscillator.
+However, when a program is loaded, the code before main is called
+switches the SAM4S to use the main oscillator that uses the external
+crystal.  If there is a problem with the crystal oscillator the SAM4S
+will not run since it has no clock.  Moreover, \program{OpenOCD} will
+then fail to communicate with the SAM4S.
 
 \begin{figure}
 \centering
@@ -146,8 +163,10 @@ The SAM4S uses a phase-locked-loop (PLL) to multiply the frequency of
 the clock source to provide the CPU clock. Sometimes the PLL will run
 without a clock source and thus will generate an unexpected frequency.
 
-The clock frequency can be checked by connecting a scope to a peripheral
-pin that generates a clock, e.g., PWM, SCK, TXD.
+The clock frequency can be checked by connecting a scope to a
+peripheral pin that generates a clock, e.g., PWM, SCK, TXD, and
+programming the peripheral.
+
 
 \section{USB serial}
 \label{debugging-usb}
@@ -160,11 +179,12 @@ does not work.
     Check that the termination resistors are 27\,ohms.
     
   \item Check the SAM4S is running at the correct frequency of
-    96\,MHz. Check the SAM4S XIN pin with an oscilloscope for a
-    12\,MHz sinusoid. Note, the oscillator is not enabled unless a
-    program has been loaded and running. If a 12\,MHz signal is not
-    found, check the MCU solder connections under a microscope. Also
-    check that the VDDPLL pin has 3.3\,V.
+    96\,MHz\footnote{The SAM4S has two PLLs so it is possible to clock
+      the CPU at other frequencies.}.  Check the SAM4S XIN pin with an
+    oscilloscope for a 12\,MHz sinusoid.  Note, the oscillator is not
+    enabled unless a program has been loaded and running. If a 12\,MHz
+    signal is not found, check the MCU solder connections under a
+    microscope. Also check that the VDDPLL pin has 3.3\,V.
   \end{itemize}
 
   If the USB serial connection drops characters:
@@ -200,7 +220,8 @@ If the PWM frequency is wrong:
 
 \begin{enumerate}
 \item
-  Check the clock frequency, see \hyperref[checking-the-clock]{Checking the clock}.
+  Check the clock frequency, see
+  \hyperref[checking-the-clock]{checking the clock}.
 \item
   Check your program.
 \end{enumerate}
@@ -271,8 +292,9 @@ If the PWM duty is wrong:
 \item
   I2C/TWI requires external pull-up resistors for the clock (TCK) and
   data (TDA) signals.  Use a scope to look at the signals
-  \pin{TWCK/SCL} and \pin{TWD/SDA}.  If the rise times are rounded,
-  the resistors are too large.
+  \pin{TWCK/SCL} and \pin{TWD/SDA}.  If the rise times are too slow so
+  that the high voltage level is not 3.3\,V, the resistors are too
+  large.
 \item
   TWI channel 1 (TWI1) uses \pin{PB4} and \pin{PB5}. However, these
   are configured on boot as JTAG pins. You can disable this, see
@@ -290,6 +312,8 @@ If the PWM duty is wrong:
 For the radio to work you need:
 
 \begin{enumerate}
+\item No ground planes near the antenna\footnote{You might have to
+  mount the radio vertically.}.
 \item
   A working SPI interface.
 \item
@@ -389,12 +413,12 @@ bit-shifted or unreliable.
     The program has crashed trying to access invalid memory. Usually
     this is due to buffer overflow or dereferencing uninitialised
     pointers (say by not calling \code{radio_init}). Try running
-    'make debug'. This will start the
+    \code{make debug}.  This will start the
     \protect\hyperref[debugging]{debugger} and attach to your MCU. If
     the debugger says that your program has stopped in
-    '\_hardfault\_handler', then your program is likely to have accessed
-    invalid memory. Use the 'bt' command to print a stack trace to see
-    how your program went astray.
+    \code{\_hardfault\_handler}, then your program is likely to have
+    accessed invalid memory. Use the \code{bt} command to print a
+    stack trace to see how your program went astray.
   \item You are printing output using USB but a terminal program is
     not running.
   \end{enumerate}

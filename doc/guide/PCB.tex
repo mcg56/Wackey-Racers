@@ -4,16 +4,13 @@
 \section{Introduction}
 \label{PCB_introduction}
 
-An hour spent checking your schematic will avoid many hours of testing
-and rework grief!
+Before you lay out your PCB, an hour spent checking your schematic
+will avoid many hours of testing and rework grief!
 
 
-
-
-\section{PCB recommendations}
 \label{pcb-recommendations}
 
-\subsection{Placement}
+\section{Placement}
 \label{placement}
 
 \begin{enumerate}
@@ -22,6 +19,8 @@ and rework grief!
   electronics and power electronics.
 \item
   Place local decoupling capacitors to minimise the loop area.
+\item
+  Place bulk capacitors close to where power comes from.
 \item
   Keep the crystal close to the MCU.
 \item
@@ -35,7 +34,43 @@ and rework grief!
 \end{enumerate}
 
 
-\subsection{Check list}\label{check-list}
+\section{Power supplies}
+
+\begin{enumerate}
+  
+\item
+  Use planes for power distribution.
+
+\item
+  If cannot use power plane for power connection, make trace as
+  wide\footnote{To reduce inductance and resistance.}  as possible.
+
+\end{enumerate}
+
+
+\section{Signal traces}
+
+\begin{enumerate}
+
+  
+\item
+  Use microstrips for any signal above 50\,kHz.
+
+\item
+  Keep signal traces apart to reduce crosstalk (3-W rule).
+
+\item
+  Avoid signal traces jumping layers (especially for signals above
+  50\,kHz).  If you do, use vias close to ends of traces.
+
+\item
+  Use tented\footnote{These have a layer of insulating solder resist.}
+  vias if under components with metal pads.
+  
+\end{enumerate}
+
+
+\section{Check list}\label{check-list}
 
 \begin{enumerate}
 \item
