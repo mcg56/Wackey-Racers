@@ -34,6 +34,8 @@ The required software is installed on computers in the ESL and
 CAE. It should run under both Linux and Windows. If there is a
 problem ask the technical staff.
 
+\subsubsection{Toolchain for Linux}
+
 If you are working from a personal Linux computer make sure to update
 your machine to the latest software versions. This is particularly
 important for the ARM toolchain (arm-none-eabi-gcc/g++) which should be
@@ -43,6 +45,32 @@ for an Ubuntu or Mint distribution:
 \begin{minted}{bash}
 $ sudo apt update && sudo apt upgrade}
 \end{minted}
+
+Install the compiler:
+
+\begin{minted}{bash}
+$ sudo apt install gcc-arm-none-eabi
+\end{minted}
+
+Install the C and C++ libraries:
+%
+\begin{minted}{bash}    
+$ sudo apt install libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+\end{minted}
+
+Install the debugger GDB:
+%
+\begin{minted}{bash}    
+$ sudo apt install gdb-multiarch
+\end{minted}
+
+Install OpenOCD:
+%
+\begin{minted}{bash}
+$ sudo apt install openocd
+\end{minted}
+
+\subsubsection{Toolchain for MacOS}
 
 For MacOS machines that have \href{https://brew.sh}{homebrew} installed,
 you can use the following command:
