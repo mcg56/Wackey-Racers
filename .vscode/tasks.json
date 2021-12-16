@@ -9,7 +9,6 @@
                 "cwd": "${fileDirname}",
                 "env": {
                     "BOARD": "${command:cpptools.activeConfigName}",
-                    "PATH": "C:/ence461/tool-chain/msys64/usr/bin;C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin;C:/ence461/tool-chain/OpenOCD-0.10.0/bin;${env:PATH}"
                 }
             },
             "group": "build",
@@ -28,7 +27,6 @@
                 "cwd": "${fileDirname}",
                 "env": {
                     "BOARD": "${command:cpptools.activeConfigName}",
-                    "PATH": "C:/ence461/tool-chain/msys64/usr/bin;C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin;C:/ence461/tool-chain/OpenOCD-0.10.0/bin;${env:PATH}"
                 }
             },
             "group": "build",
@@ -45,7 +43,6 @@
                 "cwd": "${fileDirname}",
                 "env": {
                     "BOARD": "${command:cpptools.activeConfigName}",
-                    "PATH": "C:/ence461/tool-chain/msys64/usr/bin;C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin;C:/ence461/tool-chain/OpenOCD-0.10.0/bin;${env:PATH}"
                 }
             },
             "group": "build",
@@ -56,12 +53,10 @@
         {
             "label": "Launch OpenOCD",
             "type": "shell",
-            "command": "${workspaceFolder}/.vscode/open_openocd.bat",
+            "command": "openocd",
+            "args": ["-f", "sam4s_stlink.cfg"],
             "options": {
                 "cwd": "${workspaceFolder}/src/mat91lib/sam4s/scripts",
-                "env": {
-                    "PATH": "C:/ence461/tool-chain/msys64/usr/bin;C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin;C:/ence461/tool-chain/OpenOCD-0.10.0/bin;${env:PATH}"
-                }
             },
             "group": "build",
             "problemMatcher": []
@@ -77,7 +72,6 @@
                 "cwd": "${fileDirname}",
                 "env": {
                     "BOARD": "${command:cpptools.activeConfigName}",
-                    "PATH": "C:/ence461/tool-chain/msys64/usr/bin;C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin;C:/ence461/tool-chain/OpenOCD-0.10.0/bin;${env:PATH}"
                 }
             },
             "group": "build",
