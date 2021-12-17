@@ -54,7 +54,7 @@ If a program has not been loaded:
   Check soldering of the SAM4S pins under a microscope. Giving
   each pin a push with a sharp spike can reveal a poorly soldered joint.
 \item
-  Check 3.3 V and 1.2 V power rails.
+  Check 3.3\,V and 1.2\,V power rails.
 \item
   Check the serial wire debug (SWD) signals, see
   \protect\hyperref[debugging]{debugging serial wire debug (SWD)}.
@@ -79,7 +79,7 @@ If a program has been loaded:
 \label{erasing-flash-memory}
 
 \begin{enumerate}
-\item Connect the ERASE pin to 3.3 V.
+\item Connect the ERASE pin to 3.3\,V.
 
 \item Re-start OpenOCD.  
 
@@ -137,7 +137,7 @@ then fail to communicate with the SAM4S.
   \begin{enumerate}
   \item
     Measure the voltage on the VDDPLL pin of the MCU with a scope. This
-    should be 1.2 V to power the oscillator.
+    should be 3.3\,V to power the oscillator.
   \item
     Check the bypass capacitors across the crystal. These should be
     approx. 20 pF.
@@ -231,7 +231,7 @@ If the PWM duty is wrong:
 \begin{enumerate}
 \item
   Check your program. The duty is specified as an integer in parts per
-  thousand. (e.g. 1000 = 100\% duty cycle; 50 = 5\% duty cycle)
+  thousand. (e.g., 1000 = 100\% duty cycle; 50 = 5\% duty cycle)
 \end{enumerate}
 
 \begin{figure}
@@ -380,8 +380,8 @@ device when the chip select is low.
 
 The SPI standard is rather loose and there are four modes to confuse
 the unwary; these are due to two clock polarity modes and two clock
-phase modes.  When using the wrong mode, the read data can be
-bit-shifted or unreliable.
+phase modes.  When using the wrong mode, the read data can be out by a
+bit or unreliable.
 
 \mtodo{Add scope picture of SPI signals}
 
@@ -391,15 +391,17 @@ bit-shifted or unreliable.
 
 \begin{enumerate}
 \item
-  \emph{\program{OpenOCD} does not run}. The most common problem is that the
-  USB permissions are not correct.
+  \emph{\program{OpenOCD} does not run}. The most common problem is
+  that the USB permissions are not correct.
+  
 \item
   \emph{A program does not correctly build after a file has been
-  changed}. Every now and then the file timestamps are incorrect (this
-  is a common problem with network drives due to a skew in the clocks)
-  and make will not correctly rebuild a file. Running \textbf{make
-  clean} will remove the existing dependency and object files so you can
-  start afresh.
+    changed}. Every now and then the file timestamps are incorrect
+  (this is a common problem with network drives due to a skew in the
+  clocks) and make will not correctly rebuild a file. Running
+  \textbf{make clean} will remove the existing dependency and object
+  files so you can start afresh.
+  
 \item
   \emph{A program hangs.} This can be observed by an LED no longer
   flashing. There are a number of reasons:
@@ -419,15 +421,17 @@ bit-shifted or unreliable.
     \code{_hardfault_handler}, then your program is likely to have
     accessed invalid memory. Use the \code{bt} command to print a
     stack trace to see how your program went astray.
+    
   \item You are printing output using USB but a terminal program is
     not running.
   \end{enumerate}
+  
 \item
-  \emph{The output of the 3V3 regulator works fine when powered from USB
-  but gives 6 V when powered from a 7.2 V battery}. Check that the 7.2 V
-  is not connected directly to a SAM4S pin (say for battery monitoring)
-  since this will cause an ESD protection diode inside the SAM4S to
-  conduct.
+  \emph{The output of the 3V3 regulator works fine when powered from
+    USB but gives 6\,V when powered from a 7.2\,V battery}. Check that
+  the 7.2\,V is not connected directly to a SAM4S pin (say for battery
+  monitoring) since this will cause an ESD protection diode inside the
+  SAM4S to conduct.
   
 \end{enumerate}
 

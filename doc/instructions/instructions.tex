@@ -332,9 +332,10 @@ need to connect to your microcontroller. The CE and IRQ pins can both go to
 general PIO pins while the SPI pins (MOSI, MISO, SCLK, CSN) need to be connected
 to the SAM4S SPI peripheral.
 
-As this radio is ultimately an analogue circuit and any noise on the power
-supply can affect the signal quality, we recommend using a separate 3V3
-regulator and using a low pass filter to provide the best power.
+As this radio is ultimately an analogue circuit and any noise on the
+power supply can affect the signal quality, we recommend using a
+separate 3V3 regulator and using a low pass filter to provide the best
+power.  Instead of a resistor, a ferrite bead is better.
 
 \begin{figure}[h]
   \centering
@@ -521,13 +522,11 @@ repository, you can get the updated stuff using:
 \subsection{Schematics}
 
 \begin{enumerate}
-\item Have a look at the
-  \href{http://ecewiki.elec.canterbury.ac.nz/mediawiki/index.php/ENCE461_Altium_tutorial}{Altium
-    tutorial on ecewiki}.
+\item Read the Altium tutorial on Learn.
 
-\item Have a read of the
-  \href{http://ecewiki.elec.canterbury.ac.nz/mediawiki/index.php/Schematic_guidelines}{schematic
-    guidelines on ecewiki}.
+%  \href{http://ecewiki.elec.canterbury.ac.nz/mediawiki/index.php/ENCE461_Altium_tutorial}{Altium tutorial on ecewiki}.
+
+\item Read the Wacky Racers Guide.
 
 \item Add you and your partner's name and your group number to the
   title block on your schematic.
@@ -628,33 +627,14 @@ final mark.
 \subsection{Software}
 
 \begin{enumerate}
-\item We highly recommend using a personal laptop with Linux installed if
-  possible. A virtual machine running Linux on Windows is acceptable for this.
-  You will need to check instructions on ecewiki for how to install the required
-  toolchain. We advise against using the Windows Subsystem for Linux, rather it
-  is much simpler to fix issues when you just use an actual Linux.
+\item Read the Wacky Racers Guide.
 
-\item Development on Windows is now possible thanks to Philipp Hoff, however,
-  neither MPH, nor Ben can help with debugging the Windows toolchain.
-
-\item If you are not using version control for this you are foolish.
+\item If you are not using version control, you are foolish.
 
 \item Inspect MPH's sample code.
 
-\end{enumerate}
-
-
-\subsection{Programming}
-
-\begin{enumerate}
 \item If you are trying to program the SAM4S for the first time and
-  are feeling tired or impatient, then do something else.
-
-\item For the first program, do not use batteries or a USB connection.
-  The ST-Link adapter will provide 3.3\,V to the MCU.
-
-\item Detailed instructions can be found at
-  \url{http://ecewiki.elec.canterbury.ac.nz/mediawiki/index.php/Wacky_racers_software}.
+  are feeling tired or impatient, then do something else.  
 \end{enumerate}
 
 
@@ -718,10 +698,10 @@ have missed and let you fix it without asking for help.
   \href{mailto://ben.mitchell@pg.canterbury.ac.nz}{ben.mitchell@pg.canterbury.ac.nz} if you wish to keep your ideas secret.
 
 \item TAs will be available in the scheduled lab times.  Priority will
-  be given to groups assigned to the current lab session. \textbf{We will
-  only provide assistance to students who have a printed A3 schematic
-  sheet in front of them and have already tried looking up the problem
-  on \url{https://ecewiki.elec.canterbury.ac.nz}}.
+  be given to groups assigned to the current lab session. \textbf{We
+    will only provide assistance to students who have a printed A3
+    schematic sheet in front of them and have already tried looking up
+    the problem in the Wacky Racers Guide.}
 
 \item Questions pertaining to Altium and surface mount rework will be
   answered by Scott Lloyd (SMT Lab technician) and Diego Ramirez
