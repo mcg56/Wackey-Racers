@@ -35,11 +35,8 @@ int main (void)
     pio_config_set(LED1_PIO, PIO_OUTPUT_LOW);
     pio_config_set(LED2_PIO, PIO_OUTPUT_LOW);
 
-    // Create non-blocking tty device for USB CDC connection.
-    usb_serial_init(NULL, "/dev/usb_tty");
-
-    freopen("/dev/usb_tty", "a", stdout);
-    freopen("/dev/usb_tty", "r", stdin);
+    // Redirect stdio to USB serial    
+    usb_serial_stdio_init ();        
 
     spi = spi_init(&nrf_spi);
     nrf = nrf24_create(spi, RADIO_CE_PIO, RADIO_IRQ_PIO);

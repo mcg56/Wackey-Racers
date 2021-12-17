@@ -11,20 +11,12 @@
 
 #define PACER_RATE 2
 
-#define ADC_CLOCK_FREQ 24000000
-
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
-    .channel = ADC_CHANNEL_0,
+    .channels = BIT (ADC_CHANNEL_0),    
     .trigger = ADC_TRIGGER_SW,
-    .clock_speed_kHz = ADC_CLOCK_FREQ / 1000
-};
-
-static usb_serial_cfg_t usb_serial_cfg =
-{
-    .read_timeout_us = 1,
-    .write_timeout_us = 1,
+    .clock_speed_kHz = 1000
 };
 
 
@@ -34,11 +26,8 @@ int main (void)
     adc_t adc;
     int count = 0;
 
-    // Create non-blocking tty device for USB CDC connection.
-    usb_serial_init (&usb_serial_cfg, "/dev/usb_tty");
-
-    freopen ("/dev/usb_tty", "a", stdout);
-    freopen ("/dev/usb_tty", "r", stdin);
+    // Redirect stdio to USB serial    
+    usb_serial_stdio_init ();
     
     adc = adc_init (&adc_cfg);
 

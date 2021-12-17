@@ -9,12 +9,6 @@
 #define PACER_RATE 1000
 #define LED_FLASH_RATE 2
 
-static usb_serial_cfg_t usb_serial_cfg =
-{
-    .read_timeout_us = 1,
-    .write_timeout_us = 1,
-};
-
 static FILE *stream;
 
 

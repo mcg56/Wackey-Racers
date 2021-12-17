@@ -1,4 +1,4 @@
-/* File:   adc_usb_cdc_test1.c
+/* File:   adc_usb_cdc_test2.c
    Author: M. P. Hayes, UCECE
    Date:   3 May 2021
    Descr:  This reads from ADC channels 2 and 4.
@@ -11,20 +11,12 @@
 
 #define PACER_RATE 2
 
-#define ADC_CLOCK_FREQ 24000000
-
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
     .channels = BIT (ADC_CHANNEL_2) | BIT (ADC_CHANNEL_4),
     .trigger = ADC_TRIGGER_SW,
-    .clock_speed_kHz = ADC_CLOCK_FREQ / 1000
-};
-
-static usb_serial_cfg_t usb_serial_cfg =
-{
-    .read_timeout_us = 1,
-    .write_timeout_us = 1,
+    .clock_speed_kHz = 1000
 };
 
 
@@ -34,11 +26,8 @@ int main (void)
     adc_t adc;
     int count = 0;
 
-    // Create non-blocking tty device for USB CDC connection.
-    usb_serial_init (&usb_serial_cfg, "/dev/usb_tty");
-
-    freopen ("/dev/usb_tty", "a", stdout);
-    freopen ("/dev/usb_tty", "r", stdin);
+    // Redirect stdio to USB serial
+    usb_serial_stdio_init ();
 
     adc = adc_init (&adc_cfg);
 

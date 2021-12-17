@@ -73,8 +73,8 @@ int main (void)
 
     for (i = 0; i < 100; i++)
     {
-        usb_serial_puts (usb_serial, "Hello world\n");
         delay_ms (100);
+        usb_serial_puts (usb_serial, "Hello world\n");
     }
 
     prompt_command ();

@@ -18,10 +18,6 @@
 #define RX_BTN PA18_PIO
 #define BATTERY_VOLTAGE_ADC ADC_CHANNEL_4
 
-static usb_serial_cfg_t usb_serial_cfg = {
-    .read_timeout_us = 1,
-    .write_timeout_us = 1,
-};
 static adc_t battery_sensor;
 
 static void panic(void)
@@ -80,10 +76,7 @@ int main (void)
     pacer_init(100);
 
     // Create non-blocking tty device for USB CDC connection.
-    usb_serial_init (&usb_serial_cfg, "/dev/usb_tty");
-
-    freopen ("/dev/usb_tty", "a", stdout);
-    freopen ("/dev/usb_tty", "r", stdin);
+    usb_serial_stdio_init();
 
     // Start up the radio subsystem
 #ifdef RADIO_PWR_EN

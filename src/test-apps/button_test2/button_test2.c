@@ -1,7 +1,7 @@
 /* File:   button_test2.c
    Author: M. P. Hayes, UCECE
    Date:   3 May 2021
-   Descr:  Simple button test demo
+   Descr:  Simple button test demo using debouncing
 */
 #include "mcu.h"
 #include "led.h"

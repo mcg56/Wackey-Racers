@@ -10,12 +10,6 @@
 #include "usb_serial.h"
 #include "mpu9250.h"
 
-static usb_serial_cfg_t usb_serial_cfg =
-{
-    .read_timeout_us = 1,
-    .write_timeout_us = 1,
-};
-
 static twi_cfg_t mpu_twi_cfg =
 {
     .channel = TWI_CHANNEL_0,
@@ -27,14 +21,12 @@ static twi_cfg_t mpu_twi_cfg =
 int
 main (void)
 {
-    // Create non-blocking tty device for USB CDC connection.
-    usb_serial_init (&usb_serial_cfg, "/dev/usb_tty");
-
-    freopen ("/dev/usb_tty", "a", stdout);
-    freopen ("/dev/usb_tty", "r", stdin);
+    // Redirect stdio to USB serial    
+    usb_serial_stdio_init ();    
 
     // Initialise the TWI (I2C) bus for the MPU
     twi_t twi_mpu = twi_init (&mpu_twi_cfg);
+    
     // Initialise the MPU9250 IMU
     mpu_t* mpu = mpu9250_create (twi_mpu, MPU_ADDRESS);
 
