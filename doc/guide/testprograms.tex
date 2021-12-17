@@ -164,3 +164,29 @@ If you cannot communicate between your hat and racer boards, try
 communicating with the radio test modules Scott Lloyd has in the SMT
 lab.
 
+
+\section{ADC test}
+\label{ADC}
+
+\wfile{test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c} shows
+how to read from two multiplexed ADC channels.  For more details
+see \wfile{mat91lib/adc/adc.h}.
+
+\inputminted{C}{../../src/test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c}
+
+The ADC can be also set up to stream data continuously; this is a lot
+more complicated.
+
+
+\section{Pushbutton test}
+\label{pushbutton}
+
+\wfile{test-apps/button_test2/button_test2.c} shows the use of a
+simple button driver to read a pushbutton.  This driver does button
+debouncing and state-transition detection.  For more details see
+\wfile{mmculib/button/button.h}.
+
+\inputminted{C}{../../src/test-apps/button_test2/button_test2.c}
+
+
+

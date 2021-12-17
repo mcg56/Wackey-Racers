@@ -242,31 +242,6 @@ does is call \code{DELAY_US (1000)} the required number of times.
 An example program is \wfile{test-apps/delay_test1/delay_test1.c}.
 
 
-\subsection{Reading from ADC}
-\label{ADC}
-
-\wfile{test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c} shows
-how to read from two multiplexed ADC channels.  For more details
-see \wfile{mat91lib/adc/adc.h}.
-
-\inputminted{C}{../../src/test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c}
-
-The ADC can be also set up to stream data continuously; this is a lot
-more complicated.
-
-
-\subsection{Reading from pushbutton}
-\label{pushbutton}
-
-\wfile{test-apps/button_test2/button_test2.c} shows the use of a
-simple button driver to read a pushbutton.  This driver does button
-debouncing and state-transition detection.  For more details see
-\wfile{mmculib/button/button.h}.
-
-\inputminted{C}{../../src/test-apps/button_test2/button_test2.c}
-
-
-
 \subsection{Disabling JTAG pins}
 \label{disabling-jtag-pins}
 
@@ -281,6 +256,7 @@ void main (void)
     mcu_jtag_disable ();
 }
 \end{minted}
+
 
 \subsection{Watchdog timer}
 \label{watchdog-timer}

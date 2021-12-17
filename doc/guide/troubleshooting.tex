@@ -4,7 +4,45 @@
 Troubleshooting can be frustrating when you are tired. You need plenty
 of gumption and an open mind. Difficult problems are usually a
 combination of two or more problems. So \textbf{do not attempt if you
-are tired or in a hurry}.
+  are tired or in a hurry}.
+
+\section{The scientific method}
+
+Successful troubleshooting requires application of the scientific
+method.  First you form a hypothesis about the cause of the problem
+and then you test your hypothesis by making observations.  If the
+observations do not confirm your hypothesis, you need to revise your
+hypothesis and make more observations.
+
+For example, let's say the IMU does not work.  A hypothesis is that
+the chip has no power, so you test this by measuring the power supply
+voltage at the chip with an \textbf{oscilloscope}.  But why not use a
+multimeter?  Well, a multimeter only gives the average value and will
+not show you that a voltage regulator is oscillating or if there is a
+lot of noise.  If the power supply looks fine, you need another
+hypothesis, say that the MCU is not outputting I2C signals.  You then
+make observations of the I2C signals, with an oscilloscope, to see if
+they are changing.  If the waveforms seem fine, you might hypothesise
+that the IMU is not configured for the correct I2C address.  So you
+then check that the acknowledge bit is driven low by the IMU.  If
+there is no acknowledgement, you then check the address that the IMU
+is configured for and the address sent over the I2C bus.  If these
+match, you might hypothesise that there is a poor electrical
+connection.  So you look at the soldering under a microscope, and so
+forth.
+
+When forming hypotheses, you need to start with the more likely ones.
+Hypothesising that a chip is blown is unlikely unless you observed the
+release of magic smoke, noticed that the chip got very hot, noticed an
+electrostatic spark, or applied a high voltage, say by putting your
+PCB on something conductive.
+
+As you get more desperate, you need more outlandish hypotheses about
+what may have gone wrong.  Here, experience helps.  However, the key
+is forming a hypothesis based on previous observations\footnote{``Once
+  you eliminate the impossible, whatever remains, no matter how
+  improbable, must be the truth.'' --- Sherlock Homes.}.
+
 
 \section{Oscilloscope}
 \label{oscilloscope}
@@ -12,23 +50,43 @@ are tired or in a hurry}.
 The best tool for debugging an embedded system is an oscilloscope.
 
 \begin{enumerate}
-\item
-  Use $\times$10 probes to reduce loading on the circuit.
-\item
-  Use the correct probes for the scope so that they can be automatically
+\item  Use $\times$10 probes to reduce loading on the circuit.
+
+\item Use the correct probes for the scope so that they can be automatically
   detected.
-\item
-  Compensate the probes by clipping to the probe test signal on the
-  scope and adjusting the variable capacitor in the probe to ensure a
-  square wave without undershoot or overshoot. This is one of the few
-  times you are allowed to use the autoscale button!
+  
+\item Compensate the probes by clipping to the probe test signal on
+  the scope and adjusting the variable capacitor in the probe to
+  ensure a square wave without undershoot or overshoot. This is one of
+  the few times you are allowed to use the autoscale button!
+
+\item Check that the probe gains are correct; they should by $\times
+  10$ for $\times 10$ probes.
+  
+\item Hypothesise what you should expect to observe and set up the
+  oscilloscope accordingly.  Pushing the auto-set button only works
+  for AC or DC signals and is hopeless for transient signals, such as
+  I2C bus waveforms.  For transient signals, use normal mode triggering.
+
 \end{enumerate}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.3\columnwidth]{figs/probe-undercompensated}
+  \includegraphics[width=0.3\columnwidth]{figs/probe-overcompensated}
+  \includegraphics[width=0.3\columnwidth]{figs/probe-compensated}
+  \caption{Oscilloscope probe compensation: under, over, and proper.
+    From
+    \url{http://www.analog.com/library/analogdialogue/archives/41-03/time_domain.html}.}
+\end{figure}
+
 
 \subsection{Normal mode}
 \label{normal-mode}
 
-This mode is for measuring transient or non-repetitive signals. It will
-only refresh the display if a trigger event is detected.
+This mode is for measuring transient or non-repetitive signals, such a
+serial bus waveforms. It will only refresh the display if a trigger
+event is detected.  You need to adjust the trigger level.
 
 It is useful to increase the \emph{trigger holdoff} to prevent
 triggering on multiple edges of a waveform.  By default, it is set to
@@ -37,8 +95,8 @@ a ridiculously small value.
 \subsection{Auto mode}
 \label{auto-mode}
 
-This mode is for measuring AC or DC signals. It is like normal mode but
-if it does not detect a trigger it will automatically refresh the
+This mode is for measuring AC or DC signals. It is like normal mode
+but if it does not detect a trigger it will automatically refresh the
 display.
 
 \section{SAM4S not detected by OpenOCD}
@@ -92,19 +150,25 @@ If a program has been loaded:
 \label{debugging-serial-wire-debug-swd}
 
 \program{OpenOCD} periodically polls to see if the SAM4S is alive.
-These occur every 100\,ms.
-
-\begin{figure}
-\centering
-\includegraphics[height=2.60417in]{figs/OpenOCDPollingGood.png}
-\caption{OpenOCD periodic poll when it gets a response from the SAM4S.}
-\end{figure}
+These occur every 100\,ms, see \reffig{openocd-poll}.  If the SAM4S
+responds, the waveform seen in \reffig{openocd-response} should be
+observed on the SWD pin.
 
 \begin{figure}
 \centering
 \includegraphics[height=2.60417in]{figs/OpenOCDTimingGood.png}
 \caption{OpenOCD polls every 100\,ms while connected.}
+\label{fig:openocd-poll}
 \end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2.60417in]{figs/OpenOCDPollingGood.png}
+\caption{SWD signal when there is a response from the SAM4S.}
+\label{fig:openocd-response}
+\end{figure}
+
+
 
 OpenOCD polls less often when it does not get a response. The period
 increases to 6.3\,s.
@@ -122,27 +186,27 @@ then fail to communicate with the SAM4S.
 \begin{figure}
 \centering
 \includegraphics[height=2.60417in]{figs/ClockSignal.png}
-\caption{12\,MHz clock sine wave.}
+\caption{12\,MHz clock sine wave measured on the XOUT pin.}
+\label{fig:xout}
 \end{figure}
 
 \mtodo{Add scope picture of CPU clock signals when not working}
 
 \begin{enumerate}
-\item
-  Connect a scope pin to the XOUT pin. A 12\,MHz sinewave should be
-  visible.
-\item
-  If there is no sinewave:
+\item Connect a scope pin to the XOUT pin. A 12\,MHz sinewave should
+  be visible, see \reffig{xout}.
+  
+\item If there is no sinewave:
 
   \begin{enumerate}
-  \item
-    Measure the voltage on the VDDPLL pin of the MCU with a scope. This
-    should be 3.3\,V to power the oscillator.
-  \item
-    Check the bypass capacitors across the crystal. These should be
-    approx. 20 pF.
+  \item Measure the voltage on the VDDPLL pin of the MCU with a
+    scope. This should be 3.3\,V to power the oscillator.
+    
+  \item Check the bypass capacitors across the crystal.  These should
+    be approx. 20 pF.
   \end{enumerate}
 \end{enumerate}
+
 
 \subsection{Checking the clock}
 \label{checking-the-clock}
@@ -243,7 +307,7 @@ If PWM does not work:
 
 \begin{enumerate}
 \item
-  Check the SAM4S pin since not every pin can be a PWM signal
+  Check the SAM4S pin since not every pin can be a PWM signal.
 \item
   Check the definition in the configuration file \file{target.h}
 \end{enumerate}
@@ -407,7 +471,8 @@ bit or unreliable.
 \begin{enumerate}
 \item
   \emph{\program{OpenOCD} does not run}. The most common problem is
-  that the USB permissions are not correct.
+  that the USB permissions are not correct\footnote{On Linux this is
+    controlled by udev.}.
   
 \item
   \emph{A program does not correctly build after a file has been
@@ -447,6 +512,19 @@ bit or unreliable.
   the 7.2\,V is not connected directly to a SAM4S pin (say for battery
   monitoring) since this will cause an ESD protection diode inside the
   SAM4S to conduct.
-  
+
+\item \emph{Sometimes the program works but other times it does not}
+  The likely causes are:
+  %
+  \begin{enumerate}
+  \item You have an uninitialised variable---check your code.
+
+  \item You have a poor solder connection for a MCU pin---check with
+    microscope.
+
+  \item You have a race condition---this is unlikely unless you are
+    using interrupts.
+  \end{enumerate}
+
 \end{enumerate}
 
