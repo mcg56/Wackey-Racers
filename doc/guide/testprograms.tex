@@ -1,0 +1,166 @@
+\chapter{Test programs}
+\label{test-programs}
+
+There are a number of test programs in the directory
+\wfile{test-apps}.  Where possible these are written to be
+independent of the target board using configuration files (see
+\protect\hyperref[configuration]{configuration}).
+
+
+\section{USB interfacing}
+\label{usb-interfacing}
+
+To help debug your programs, it is wise to use \wikiref{USB CDC}{USB
+  CDC}.  This is a serial protocol for USB.  With some magic, the
+stdin, stdout, and stderr streams can sent over USB.  For example,
+here's an example program
+\wfile{test-apps/usb_serial_test1/usb_serial_test1.c}.
+
+\inputminted{C}{../../src/test-apps/usb_serial_test1/usb_serial_test1.c}
+
+To get this program to work you need to compile it and program the
+SAM4S using:
+%
+\begin{minted}{bash}
+$ cd wacky-racers/src/test-apps/usb_serial_test1
+$ make program
+\end{minted}
+
+You then need to connect your computer to the USB connector on your PCB.
+If you are running Linux, run:
+%
+\begin{minted}{bash}
+$ dmesg
+\end{minted}
+
+This should say something like:
+%
+\begin{verbatim}
+Apr 30 11:03:50 thing4 kernel: [52704.481352] usb 2-3.3: New USB device found, idVendor=03eb, idProduct=6202
+Apr 30 11:03:50 thing4 kernel: [52704.481357] usb 2-3.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+Apr 30 11:03:50 thing4 kernel: [52704.482060] cdc_acm 2-3.3:1.0: ttyACM0: USB ACM device
+\end{verbatim}
+
+Congrats if you see \texttt{ttyACM0:\ USB\ ACM\ device}!  If not, see
+\wikiref{USB_debugging}{USB debugging}.
+
+You can now run a \wikiref{Serial_terminal_applications}{serial
+  terminal program}. For example, on Linux:
+%
+\begin{minted}{bash}
+$ gtkterm -p /dev/ttyACM0
+\end{minted}
+
+All going well, this will repeatedly print 'Hello world'.
+
+If run Linux and get an error 'device is busy', it is likely that the
+ModemManager program has automatically connected to your device on the
+sly. This program should be disabled on the ECE computers. For more
+about this and using other operating systems, see \wikiref{USB
+CDC}{USB CDC}.
+
+\section{PWM test}
+\label{pwm-test}
+
+The program \wfile{test-apps/pwm_test2/pwm_test2.c} provides an
+example of driving PWM signals.
+
+\inputminted{C}{../../src/test-apps/pwm_test2/pwm_test2.c}
+
+Notes:
+%
+\begin{enumerate}
+\item
+  This is for a different H-bridge module that requires two PWM signals
+  and forward/reverse signals. You will need to generate four PWM
+  signals or be clever with two PWM signals.
+\item
+  The \code{pwm_cfg_t} structure configures the frequency, duty
+  cycle and alignment of the output PWM.
+\item The frequency is likely to be too high for your motor.
+\item \code{pwm_channels_start} is used to start the PWM channels simultaneously.  
+\end{enumerate}
+
+The most likely problem is that you have not used a PIO pin that can
+be driven as a PWM output. The SAM4S can generate four independent
+hardware PWM signals. See \wfile{mat91lib/pwm/pwm.c} for a list of
+supported PIO pins. Note, \pin{PA16}, \pin{PA30}, and \pin{PB13} are
+different options for PWM2.
+
+To drive the motors you will need to use a bench power supply. Start
+with the current limit set at 100\,mA maximum in case there are any
+board shorts.  When all is well, you can increase the current limit;
+you will need at least 1\,A.
+
+\section{IMU test}
+\label{imu-test}
+
+The MPU9250 IMU connects to the SAM4S using the I2C bus (aka TWI bus).
+The program \wfile{test-apps/imu_test1/imu_test1.c} provides an
+example of using the MPU9250 IMU.  All going well, this prints three
+16-bit acceleration values per line to USB CDC. Tip your board over,
+and the the third (z-axis) value should go negative since this
+measures the effect of gravity on a little mass inside the IMU pulling
+on a spring.
+
+If you get `ERROR: can't find MPU9250!', the main reasons are:
+
+\begin{enumerate}
+\item
+  You have specified the incorrect address.  Use 0x68 for
+  \code{MPU_ADDRESS} in \file{target.h} if the AD0 pin is connected to
+  ground otherwise use 0x69.
+\item
+  You are using TWI1. The \pin{PB4} and \pin{PB5} pins used by TWI1
+  default to JTAG pins. See
+  \protect\hyperref[disabling-jtag-pins]{disabling JTAG pins}.
+\end{enumerate}
+%
+See also \protect\hyperref[checking-IMU]{IMU checking}.
+
+Other problems:
+%
+\begin{enumerate}
+\item If you reset the SAM4S in the middle of a transaction with the
+IMU, the IMU gets confused and holds the \pin{TWD/SDA} line low. This
+requires recycling of the power or sending out some dummy clocks on
+the \pin{TWCK/SCL} signal.
+\end{enumerate}
+
+
+\section{Radio test}
+\label{radio-test}
+
+The program \wfile{test-apps/radio_tx_test1/radio_tx_test1.c} provides
+an example of using the radio as a transmitter.
+
+The companion program
+\wfile{test-apps/radio_rx_test1/radio_rx_test1.c} provides an example
+of using the radio as a receiver.
+
+Notes:
+%
+\begin{enumerate}
+\item
+  Both programs must use the same RF channel and the same address. Some
+  RF channels are better than others since some overlap with WiFi
+  and Bluetooth. The address is used to distinguish devices
+  operating on the same channel. Note, the transmitter expects an
+  acknowledge from a receiver on the same address and channel.
+\item
+  The radio `write` method blocks waiting for an auto-acknowledgement
+  from the receiver device. This acknowledgement is performed in
+  hardware. If no acknowledgement is received, it retries for up to 15
+  times. The auto-acknowledgement and number of retries can be
+  configured in software.
+
+\item If the program hangs in the \code{panic} loop, there is no
+  response from the radio module, check SPI connections and see
+  \hyperref[debugging_Spi]{SPI debugging}.
+  
+\end{enumerate}
+
+If you cannot communicate between your hat and racer boards, try
+communicating with the radio test modules Scott Lloyd has in the SMT
+lab.
+

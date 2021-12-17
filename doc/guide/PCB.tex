@@ -180,7 +180,7 @@ chip manufacturer usually provides a recommended layout.
   
 \item Check for component clearances from enclosure including heights.
   
-\item Look at each net individually to ensure that it doesn’t take an
+\item Look at each net individually to ensure that it doesn't take an
   overly long path around the board. Many layout tools have a
   highlight net feature that makes this a fast process.
   
@@ -193,3 +193,12 @@ chip manufacturer usually provides a recommended layout.
   a solder mask between pads.
  \end{enumerate}
 
+
+
+\section{Design rule checks}
+
+\begin{description}
+\item [Pad to plane] This is warning that you have added too much
+  inductance by running a long trace from a plane via a via.  You
+  should place the via closer to the pad.
+\end{description}
