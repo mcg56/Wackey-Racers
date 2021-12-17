@@ -393,15 +393,15 @@ For the radio to work you need:
 \begin{enumerate}
 \item No ground planes near the antenna\footnote{You might have to
   mount the radio vertically.}.
-\item
-  A working SPI interface.
-\item
-  The correct channel and address.
-\item
-  A well filtered power supply for the radio.
-\item
-  A channel with little interference (note, some channels are shared
-  with WiFi and Bluetooth and may be less reliable).
+  
+\item A working SPI interface.
+  
+\item The correct channel and address.
+
+\item A well filtered power supply for the radio, see \reffig{radio-filtering}.
+
+\item A channel with little interference (note, some channels are
+  shared with WiFi and Bluetooth and may be less reliable).
 \end{enumerate}
 
 If nothing works, check:
@@ -428,8 +428,8 @@ If the radio transmits but not receives, check:
   The power supply. The radio requires a well filtered power supply
   otherwise the range will be limited on reception. Preferably, the
   device should have its own 3V3 regulator with a low-pass RC filter
-  comprised of a series resistor and large capacitor (say 22\,$\mu$F) or a
-  low-pass LC filter made with a ferrite bead and capacitor.
+  comprised of a series resistor and large capacitor (say 22\,$\mu$F)
+  or a low-pass LC filter made with a ferrite bead and capacitor.
 \end{enumerate}
 
 \textbf{Note}, by default the radio waits for an auto-acknowledgement
