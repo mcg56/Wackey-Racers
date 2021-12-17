@@ -1,5 +1,6 @@
 \documentclass[a4paper,11pt]{book}
 \usepackage{lmodern}
+\usepackage{circuitikz}
 \usepackage{amssymb,amsmath}
 
 % use upquote if available, for straight quotes in verbatim environments
@@ -79,6 +80,10 @@
 \newcommand{\wikiref}[2]{\href{http://ecewiki.elec.canterbury.ac.nz/mediawiki/index.php/#1}{\mintinline{bash}{#2}}}
 \newcommand{\pin}[1]{\texttt{#1}}
 \newcommand{\sig}[1]{\texttt{#1}}
+
+
+\newcommand{\reffig}[1]{\mbox{Figure~\ref{fig:#1}}}
+\newcommand{\reftab}[1]{\mbox{Table~\ref{tab:#1}}}
 
 \title{Mutley's Guide To The Wacky Racers, V.013E-3}
 \author{Michael Hayes}

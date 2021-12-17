@@ -4,6 +4,9 @@ all: guide.pdf
 	pdflatex -shell-escape $<
 	pdflatex -shell-escape $<
 
+figs/%.schtex: figs/*.sch
+	schtex $< $@
+
 clean:
 	-rm -rf *.out *.aux *.log
 

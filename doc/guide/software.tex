@@ -1,6 +1,8 @@
 \label{software}
 \chapter{Software}
 
+
+
 \section{Preparation}
 \label{preparation}
 
@@ -28,67 +30,22 @@ require:
   Plenty of gumption.
 \end{itemize}
 
-\subsection{Toolchain}
-\label{toolchain}
 
-The required software is installed on computers in the ESL and
-CAE. It should run under both Linux and Windows. If there is a
-problem ask the technical staff.
+\subsection{Git}
 
-\subsubsection{Toolchain for Linux}
+Your group leader should fork the Wacky Racers project template.  This
+creates your own group copy of the project on the eng-git server that
+you can modify, add members, etc.
 
-If you are working from a personal Linux computer make sure to update
-your machine to the latest software versions. This is particularly
-important for the ARM toolchain (arm-none-eabi-gcc/g++) which should be
-at version 4.9.3 or newer. You can do this with the following command
-for an Ubuntu or Mint distribution:
+Each group member then clones the group project.
 
-\begin{minted}{bash}
-$ sudo apt update && sudo apt upgrade}
-\end{minted}
-
-Then, install the compiler:
-
-\begin{minted}{bash}
-$ sudo apt install gcc-arm-none-eabi
-\end{minted}
-
-Install the C and C++ libraries:
-%
-\begin{minted}{bash}    
-$ sudo apt install libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
-\end{minted}
-
-Install the debugger GDB:
-%
-\begin{minted}{bash}    
-$ sudo apt install gdb-multiarch
-\end{minted}
-
-Install OpenOCD:
-%
-\begin{minted}{bash}
-$ sudo apt install openocd
-\end{minted}
-
-\subsubsection{Toolchain for MacOS}
-
-For MacOS machines that have \href{https://brew.sh}{homebrew} installed,
-you can use the following command:
-
-\begin{minted}{bash}
-$ brew install openocd git}
-$ brew cask install gcc-arm-embedded}
-\end{minted}
 
 \subsection{Project forking}
 \label{project-forking}
 
-The example software is hosted on the eng-git \program{Git} server at
+The template software is hosted on the eng-git \program{Git} server at
 \href{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021}{\url{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021}}.
-Your group leader should have forked this template project. This creates
-your own group copy of the project on the eng-git server that you can
-modify, add members, etc. To fork the project:
+To fork the template:
 
 \begin{enumerate}
 \item
@@ -104,6 +61,7 @@ modify, add members, etc. To fork the project:
   Click on the `Members' menu and add group members as Developers.
 \end{enumerate}
 
+
 \subsection{Project cloning}
 \label{project-cloning}
 
@@ -112,8 +70,9 @@ member needs to clone it. This makes a local copy of your project on
 your computer. 
 
 If you are using an ECE computer, it is advised that you clone the
-project on to a removable USB flash drive. This will make git operations
-and compilation a 100 times faster than using the networked file system.
+project on to a removable USB flash drive. This will make git
+operations and compilation a 100 times faster than using the networked
+file system.
 
 There are two ways to clone the project. If you are impatient and do not
 mind having to enter a username and password for every git pull and push
@@ -129,22 +88,84 @@ Otherwise, set up \program{ssh-keys} and use:
 $ git clone git@eng-git.canterbury.ac.nz:groupleader-userid/wacky-racers-2021.git wacky-racers
 \end{minted}
 
-You can several different cloned copies of your project in different
-directories. Sometimes if you feel that the world, and \program{git} in
-particular, is against you, clone a new copy, using:
-
-
+You can have several different cloned copies of your project in
+different directories. Sometimes if you feel that the world,
+and \program{git} in particular, is against you, clone a new copy,
+using:
+%
 \begin{minted}[breaklines]{bash}
 $ git clone https://eng-git.canterbury.ac.nz/groupleader-userid/wacky-racers-2021.git wacky-racers-new
 \end{minted}
+
+
+\subsection{Toolchain}
+\label{toolchain}
+
+The toolchain comprises the compiler, linker, debugger, C-libraries,
+and OpenOCD.
+
+The toolchain is installed on computers in the ESL and CAE. It should
+run under both Linux and Windows.  If there is a problem ask the
+technical staff.
+
+The toolchain can be downloaded for Windows, Linux, and MacOS from
+from \url{https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads}.
+
+To install parts of the toolchain separately, see the instructions in
+the following subsections.
+
+
+\subsubsection{Toolchain for Linux}
+
+First, if using Ubuntu or Mint, ensure the latest versions are
+downloaded:
+%
+\begin{minted}{bash}
+$ sudo apt update && sudo apt upgrade
+\end{minted}
+
+Then, install the compiler:
+%
+\begin{minted}{bash}
+$ sudo apt install gcc-arm-none-eabi
+\end{minted}
+
+Install the C and C++ libraries:
+%
+\begin{minted}{bash}    
+$ sudo apt install libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+\end{minted}
+
+Install the debugger, GDB:
+%
+\begin{minted}{bash}    
+$ sudo apt install gdb-multiarch
+\end{minted}
+
+Install OpenOCD:
+%
+\begin{minted}{bash}
+$ sudo apt install openocd
+\end{minted}
+
+\subsubsection{Toolchain for MacOS}
+
+For MacOS machines that have \href{https://brew.sh}{homebrew}
+installed, you can use the following command:
+
+\begin{minted}{bash}
+$ brew install openocd git
+$ brew cask install gcc-arm-embedded
+\end{minted}
+
 
 \subsection{Configuration}
 \label{configuration}
 
 Each board has different PIO definitions and requires its own
-configuration information. The \wfile{boards}
-directory contains a number of configurations; one for the hat and racer
-boards. Each configuration directory contains three files:
+configuration information. The \wfile{boards} directory contains a
+number of configurations; one for the hat and and one for racer boards
+that you edit.  Each configuration directory contains three files:
 
 \begin{itemize}
 \item
@@ -154,7 +175,7 @@ boards. Each configuration directory contains three files:
   \file{target.h} is a C header file that defines the PIO pins and
   clock speeds.
 \item
-  \file{config.h} is a C header file that wraps target.h. It's purpose
+  \file{config.h} is a C header file that wraps target.h. Its purpose
   is for porting to different compilers.
 \end{itemize}
 
@@ -186,13 +207,21 @@ Your first program to test your board should only flash an LED (the
 hello world equivalent for embedded systems). The key to testing new
 hardware is to have many programs that only do one simple task each.
 
+\begin{figure}
+\input{figs/openocd.schtex}
+\caption{How OpenOCD interacts with the debugger and the SAM4S.}
+\label{fig:openocd diagram}
+\end{figure}
+
+
 \subsection{OpenOCD}
 \label{openocd}
 
-\program{OpenOCD} is used to program the SAM4S. For this assignment,
-we are using a ST-link programmer to connect to the SAM4S using serial
-wire debug (SWD). This connects to your board with a 10-wire ribbon
-cable and an IDC connector.
+\program{OpenOCD} is used to program the SAM4S, see \reffig{openocd diagram}.
+
+For this assignment, we use a ST-link programmer to connect to the
+SAM4S using serial wire debug (SWD). This connects to your board with
+a 10-wire ribbon cable and an IDC connector.
 
 \begin{enumerate}
 \item
@@ -203,7 +232,8 @@ cable and an IDC connector.
   programming header on your PCB. This will provide 3.3 V to your
   board so your green power LED should light.
 \item
-  Open a \textbf{new terminal window} and start \program{OpenOCD}.
+  Open a \textbf{new terminal window, e.g., bash} and
+  start \program{OpenOCD}.
 \end{enumerate}
 
 \begin{minted}{bash}
