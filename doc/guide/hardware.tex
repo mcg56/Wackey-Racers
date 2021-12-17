@@ -12,15 +12,16 @@
   such as a short across the power rails.
 
 \item
-  Have a zener diode to protect against overvoltage input from a bench
-  power supply.
+  Have a zener diode to protect against overvoltage when your group
+  member inadvertently cranks up the voltage from the bench power
+  supply.
 
 \item
   Have current limiting resistors for all off-board signals.
 
 \item
-  Have plenty of testpoints, especially for power supplies and signals.
-  You will never have too many!
+  Have plenty of testpoints, especially for power supplies and
+  signals.  You will never have enough!
 
 \item
   Have at least one grunty ground testpoint for attaching a scope ground
@@ -112,9 +113,9 @@ the SAM4S.
 
 \subsection{DRV8833 dual H-bridge}\label{drv8833-dual-h-bridge}
 
-The H-bridge has four modes: forward, reverse, fast decay (brake), and
-slow decay (coast).  With fast decay mode, the motor is shorted so
-that it stops faster.  With slow decay mode, the motor is
+The H-bridge has four modes: forward, reverse, slow decay (brake), and
+fast decay (coast).  With slow decay mode, the motor is shorted so
+that it stops faster.  With fast decay mode, the motor is
 open-circuited and so it takes longer to stop.  However, there is
 little difference in practice, due to friction in the gearbox.
 
@@ -124,13 +125,12 @@ can provide four independent PWM signals but be \textbf{careful} since
 PWMxH and PWMxL are complementary signals driven from the same PWM
 source.
 
-You can drive the H-bridge with only two PWM signals but you will have
-fast decay in one direction and slow decay in the other.
+If you are clever, you can drive the H-bridge with only two PWM
+channels.  If you are not so clever, you will have fast decay in one
+direction and slow decay in the other.
 
 The capacitor connected to the bootstrap pin must be rated for
 16\,V. The datasheet recommends an X7R dielectric.
-
-
 
 \subsection{NRF24L01+ radio}\label{nrf24l01-radio}
 
@@ -146,11 +146,11 @@ pin is driven low to indicate a packet has been received.
 A well filtered power supply is critical otherwise the range will be
 limited on reception. Preferably, the device should have its own 3V3
 regulator with a low-pass RC filter comprised of a series resistor and
-large capacitor (say 22 uF) or a low-pass LC filter made with a ferrite
+large capacitor (say 22\,$\mu$F) or a low-pass LC filter made with a ferrite
 bead and capacitor.
 
 You cannot have a PCB plane near the antenna of the radio otherwise
-the range will be severely limited.
+the \textbf{range will be severely limited}.
 
 
 
@@ -159,10 +159,10 @@ the range will be severely limited.
 This contains a three axis accelerometer, a three axis gyroscope, and a
 three axis magnetometer. It appears that the magnetometer has been
 bolted on to the accelerometers/gyroscopes and requires more hoop
-jumping in software to make it work.
+jumping in software to make it work.,
 
-It has two different I2C addresses (0X68 and OX69) depending on
-the state of the AD0 pin.
+It has two different I2C addresses (0x68 and Ox69) depending on the
+state of the AD0 pin.
 
 
 \subsection{Voltage regulators}\label{voltage-regulators}

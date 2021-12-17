@@ -22,12 +22,13 @@ of the dreaded merge conflict.
 \item Commit changes 
 
 \begin{minted}{bash}  
-    $ git commit -m "Commit message"
+    $ git commit -m "Commit message" list-of-modified-files
 \end{minted}
 
-Note, you should commit at least every 15 min, preferably when you have
-made a single functional change.  Ideally each commit should be
-self-contained.
+Note, you should commit at least every 15 min, preferably when you
+have made a single functional change.  Ideally each commit should be
+self-contained.  \textbf{Note, do not add binary files (.o) etc.}
+These will make merging even more miserable.
   
 \item Push changes to server
 

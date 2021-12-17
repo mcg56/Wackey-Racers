@@ -1,2 +1,47 @@
 \chapter{Schematic}
 
+
+\section{Altium tutorial}
+
+
+See the ENCE471 Learn page for the Altium tutorial.
+
+
+\section{Suggestions}
+
+\begin{enumerate}
+\item If you get the schematic wrong, the PCB will be wrong, and you
+  will have rework grief.
+  
+\item A clear schematic is important for debugging.
+
+\item In general, you should aim to have inputs on the left, outputs
+  on the right, higher voltages at the top.
+
+\item Add notes to explain anything non-obvious.
+\end{enumerate}
+
+
+
+\section{Check list}
+\label{PCB-check-list}
+
+\begin{enumerate}
+\item
+  The SPI signals for the radio are connected to the correct MCU pins.
+\item
+  The PWM signals for the motor are connected to the correct MCU pins.
+  Note, the PWMLx and PWMHx pins are complementary and cannot be driven
+  independently.
+\item
+  All the MCU VDD pins need to be powered.
+\item
+  All the MCU GND pins need to be powered.
+\item
+  Avoid connecting to \pin{PB4} and \pin{PB5} (say for TWI1).  If you
+  do you will need to disable JTAG in software.
+\end{enumerate}
+
+
+
+

@@ -38,20 +38,25 @@ will avoid many hours of testing and rework grief!
 
 \begin{enumerate}
   
-\item
-  Use planes for power distribution.
+\item Use planes for power distribution.
 
-\item
-  If cannot use power plane for power connection, make trace as
-  wide\footnote{To reduce inductance and resistance.}  as possible.
+\item If cannot use power plane for power connection, make trace as
+  wide\footnote{To reduce inductance and resistance.} as possible.
 
+\item Do not put splits in planes\footnote{Unless you know what you
+  are doing.}.
+
+\item Keep planes away from the radio antenna; otherwise the radio
+  range is limited.
+
+\item Before `pouring' a polygon to create a power or ground plane
+  connect the nets with tracks and vias.
 \end{enumerate}
 
 
 \section{Signal traces}
 
 \begin{enumerate}
-
   
 \item
   Use microstrips for any signal above 50\,kHz.
@@ -70,24 +75,121 @@ will avoid many hours of testing and rework grief!
 \end{enumerate}
 
 
-\section{Check list}\label{check-list}
+\section{Recommended layouts}
+
+For any switching power supply, sensitive analogue, or BGA fanout, the
+chip manufacturer usually provides a recommended layout.
+
+\section{Check list}
+\label{PCB-check-list}
 
 \begin{enumerate}
-\item
-  No planes under or close to the radio antenna; otherwise the radio
-  range is limited.
-\item
-  The SPI signals for the radio are connected to the correct MCU pins.
-\item
-  The PWM signals for the motor are connected to the correct MCU pins.
-  Note, the PWMLx and PWMHx pins are complementary and cannot be driven
-  independently.
-\item
-  All the MCU VDD pins need to be powered.
-\item
-  All the MCU GND pins need to be powered.
-\item
-  Avoid connecting to \pin{PB4} and \pin{PB5} (say for TWI1).  If you
-  do you will need to disable JTAG in software.
-\end{enumerate}
+\item Check your schematic.  Then get someone else to check your
+  schematic.  Query every component.
+
+\item Perform a DRC (Design Rule Check)] on the PCB.
+  
+\item Add PCB test points, test points, and more test points.  '''You
+  never have enough''' for a prototype.  You have been warned!  If you
+  don't believe me, compare the size of an oscilloscope probe to a
+  surface mount IC pin.
+  
+\item Label the test points on the silk screen with meaningful names.
+  
+\item Add ground test points that you can clip an oscilloscope ground
+  lead to.  Keep these away from other test points to avoid shorting
+  with the oscilloscope ground clip.
+  
+\item Check mounting holes.
+  
+\item Check component footprints, especially connectors, voltage
+  regulators, and surface mount transistors by placing the parts on a
+  print-out of the PCB design.
+  
+\item Ensure that power supply traces are wide as possible, preferably
+  planes, to reduce their inductance.
+  
+\item Ensure that high current traces are wide as possible to reduce their resistance.
+  
+\item Do not connect IC pins directly between the pads since it is not
+  possible to tell if a solder blob is accidental or deliberate.
+
+\item Insert vias to ground plane to ensure that all parts are connected.  Do not leave unconnected copper.
+  
+\item If not using plated through vias do not place vias under
+  components.
+  
+\item If placing vias under components with exposed metal pads, make
+  sure the vias are "tented" (covered in solder mask) to prevent
+  unexpected shorts.
+  
+\item Stitch power or ground planes where vias or tracks cut them up.
+
+\item If a track is of width W it should be separated from the next
+  track by a width 2W to reduce crosstalk.  This is the 3-W rule since
+  the track centres are 3W.  An exception is for differential signals;
+  these should be routed close together with a uniform spacing.
+
+\item Do not run a microstrip traces right on the edge of the PCB.  If
+  track is of width W it should be at least W from the edge to reduce
+  electric field fringing effects.
+  
+\item Use large traces for pads on connectors that may be subject to
+  mechanical forces (power jacks, pluggable terminals, etc.) to
+  prevent trace cracking.
+  
+\item If you have high voltages check clearances.
+  
+\item Check pad to track clearances to avoid potential solder bridges.
+  
+\item Check that it is possible to top-solder through-hole components
+  on non-plated-through boards.
+  
+\item Ensure like signals are grouped, data lines, address lines, control lines, analogue signals, etc.
+  
+\item Check the thermal path for parts that get hot.
+  
+\item Run tracks over reference (power or ground) planes to create a
+  microstrip trace; avoid tracks running over cuts in a reference
+  plane.
+  
+\item Check that hole diameters are larger than the pin diameters for
+  connectors and through hole. 25\% over the lead diameters is
+  typical.  Remember to look at the diagonal dimension for square pins
+  or your holes may be too small.
+  
+\item Check the drill file report to make sure the hole sizes are what
+  you would expect. There should be no holes with sizes of zero, no
+  weird sizes, no super large sizes unless required by the design.
+  
+\item Check that connections of thermal vias have clearance to other
+  traces and pads.
+
+\item Pay close attention to clearances on internal planes of
+  multilayer boards; shorts on these planes can only be removed with
+  precision drilling.
+  
+\item Number pins on connectors, big ICs, selection jumpers, etc. For
+  connectors, number enough pins that pin ordering is obvious. For
+  large ICs consider adding tickmarks every 5 pins.
+  
+\item Make the pad for pin 1 of every IC square. Also consider putting
+  a silkscreen dot next to pin 1.
+
+\item Leave at least 20-50 mils (0.5-1.3 mm) clearance between components and the edge of the board. This makes it less likely that inaccuracies in board fabrication will cause part of a pad to get chopped off.
+  
+\item Check for component clearances from enclosure including heights.
+  
+\item Look at each net individually to ensure that it doesn’t take an
+  overly long path around the board. Many layout tools have a
+  highlight net feature that makes this a fast process.
+  
+\item Don't let the silkscreen overlap pads. Try to avoid having
+  silkscreen overlapping via holes or areas of the board that will be
+  routed away (large holes, slots, tabs, etc.), since legibility will
+  be poor.
+  
+\item If ICs are being soldered with solder paste ensure that there is
+  a solder mask between pads.
+ \end{enumerate}
 

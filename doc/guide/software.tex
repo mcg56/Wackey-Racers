@@ -71,7 +71,7 @@ your computer.
 
 If you are using an ECE computer, it is advised that you clone the
 project on to a removable USB flash drive. This will make git
-operations and compilation a 100 times faster than using the networked
+operations and compilation 100 times faster than using the networked
 file system.
 
 There are two ways to clone the project. If you are impatient and do not
@@ -259,8 +259,7 @@ For your first program, use
 \wfile{test-apps/ledflash1/ledflash1.c}. The macros
 \code{LED1_PIO} and \code{LED2_PIO} need to be defined in
 \file{target.h} (see
-\protect\hyperref[configuration]{configuration}). If your LEDs are
-active high, replace 1 with 0 in the LED config structures.
+\protect\hyperref[configuration]{configuration}).
 
 \inputminted{C}{../../src/test-apps/ledflash1/ledflash1.c}
 
@@ -284,7 +283,7 @@ If all goes well, you should see at the end:
 %
 \begin{verbatim}
    text    data     bss     dec     hex filename
-  19432    2420    2732   24584    6008 ledflash1.bin
+  11348	   2416	    176	  13940	   3674	ledflash1.bin
 \end{verbatim}
 
 To avoid having to specify the environment variable \code{BOARD}, you
@@ -299,16 +298,6 @@ and then just use:
 \begin{minted}{bash}
 $ make
 \end{minted}
-
-Note, if you compile with the \code{BOARD} environment variable set incorrectly, use:
-%
-\begin{minted}{bash}
-$ make clean
-$ make  
-\end{minted}
-%
-to delete all the object files and rebuild.
-
 
 \subsection{Booting from flash memory}
 \label{booting-from-flash-memory}
@@ -361,8 +350,9 @@ device on the SAM4S so that it can be used by the C stdio function
 \code{freopen}\footnote{When running a program with an operating
   system, this is all set up before \code{main} is called.}.
 
-To get this programme to work you need to compile it and program the SAM4S using:
-
+To get this program to work you need to compile it and program the
+SAM4S using:
+%
 \begin{minted}{bash}
 $ cd wacky-racers/src/test-apps/usb_serial_test1
 $ make program
@@ -388,23 +378,24 @@ Congrats if you see \texttt{ttyACM0:\ USB\ ACM\ device}!  If not, see
 
 You can now run a \wikiref{Serial_terminal_applications}{serial
   terminal program}. For example, on Linux:
-
+%
 \begin{minted}{bash}
 $ gtkterm -p /dev/ttyACM0
 \end{minted}
 
 All going well, this will repeatedly print 'Hello world'.
 
-If you get an error 'device is busy', it is likely that the ModemManager
-program has automatically connected to your device on the sly. This
-program should be disabled on the ECE computers. For more about this and
-using other operating systems, see \wikiref{USB CDC}{USB CDC}.
+If run Linux and get an error 'device is busy', it is likely that the
+ModemManager program has automatically connected to your device on the
+sly. This program should be disabled on the ECE computers. For more
+about this and using other operating systems, see \wikiref{USB
+CDC}{USB CDC}.
 
 \section{Test programs}
 \label{test-programs}
 
 There are a number of test programs in the directory
-\wfile{test-apps}. Where possible these are written to be
+\wfile{test-apps}.  Where possible these are written to be
 independent of the target board using configuration files (see
 \protect\hyperref[configuration]{configuration}).
 
@@ -573,6 +564,10 @@ Here's an example:
   result = pio_input_get (PIO_PA0);
 \end{minted}
 
+Note, you can reconfigure a PIO pin on the fly.  For example, you may
+want the pin to be driven by the PWM peripheral and then at some stage
+forced low.  To do this, use \code{pwm\_config\_set}.
+
 
 \subsection{Delaying}
 
@@ -593,13 +588,11 @@ An example program is \wfile{test-apps/delay_test1/delay_test1.c}.
 \subsection{Reading from ADC}
 \label{ADC}
 
-\wfile{test-apps/adc_usb_serial_test1/adc_usb_serial_test1.c} shows
-how to read a single ADC channel.  \textbf{Note, this is not tested!}
-For more details see \wfile{mat91lib/adc/adc.h}.
-
 \wfile{test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c} shows
-how to read from two multiplexed ADC channels.  \textbf{Note, this is
-  not tested!}
+how to read from two multiplexed ADC channels.  For more details
+see \wfile{mat91lib/adc/adc.h}.
+
+\inputminted{C}{../../src/test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c}
 
 The ADC can be also set up to stream data continuously; this is a lot
 more complicated.
@@ -612,6 +605,9 @@ more complicated.
 simple button driver to read a pushbutton.  This driver does button
 debouncing and state-transition detection.  For more details see
 \wfile{mmculib/button/button.h}.
+
+\inputminted{C}{../../src/test-apps/button_test2/button_test2.c}
+
 
 
 \subsection{Disabling JTAG pins}
@@ -663,10 +659,9 @@ SAM4S. It provides the hardware abstraction layer.
 
 The building is controlled by \wfile{mat91lib/mat91lib.mk}. This is a
 makefile fragment loaded by \wfile{mmculib/mmculib.mk}.
-\file{wacky-reacers/src/mat91lib/mat91lib.mk} loads other makefile fragments for each
-peripheral or driver required. It also automatically generates
-dependency files for the gazillions of other files that are required to
-make things work.
+\file{wacky-reacers/src/mat91lib/mat91lib.mk} loads other makefile fragments for each peripheral or driver required. It also automatically generates
+dependency files for the gazillions of other files that are required
+to make things work.
 
 
 \textbf{Please do not edit the files in the mat91lib, mmculib, and

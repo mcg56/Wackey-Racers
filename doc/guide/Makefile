@@ -8,7 +8,7 @@ figs/%.schtex: figs/*.sch
 	schtex $< $@
 
 clean:
-	-rm -rf *.out *.aux *.log
+	-rm -rf *.out *.aux *.log *.pdf
 
 push:
 	git push

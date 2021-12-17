@@ -192,10 +192,10 @@ does not work.
  \begin{itemize}
  \item Add a delay before sending data.  This is because the driver
    takes a while to set up the connection after the USB cable is
-   plugged in If you try to send some data in this time, the data gets
-   stored into a ring buffer for later transmission.  However, the
-   ring buffer is not large and once it is filled, the USB serial
-   driver will drop characters.
+   plugged in.  If you try to send some data during this time, the
+   data gets stored into a ring buffer for later transmission.
+   However, the ring buffer is not large and once it is filled, the
+   USB serial driver will drop characters.
  \end{itemize}
 
 \section{Testing peripherals}
@@ -416,7 +416,7 @@ bit-shifted or unreliable.
     \code{make debug}.  This will start the
     \protect\hyperref[debugging]{debugger} and attach to your MCU. If
     the debugger says that your program has stopped in
-    \code{\_hardfault\_handler}, then your program is likely to have
+    \code{_hardfault_handler}, then your program is likely to have
     accessed invalid memory. Use the \code{bt} command to print a
     stack trace to see how your program went astray.
   \item You are printing output using USB but a terminal program is
@@ -428,37 +428,6 @@ bit-shifted or unreliable.
   is not connected directly to a SAM4S pin (say for battery monitoring)
   since this will cause an ESD protection diode inside the SAM4S to
   conduct.
-\item
-  \emph{The ADC works fine for one channel but hangs for multiple
-    channels.}  Check the configuration structure.  If using a single
-  channel, its channel number is specified in the \code{.channel}
-  field.  For example:
-
-  \begin{minted}{C}
-static const adc_cfg_t adc_cfg =
-{
-    .bits = 12,
-    .channel = ADC_CHANNEL_0,
-    .trigger = ADC_TRIGGER_SW,
-    .clock_speed_kHz = ADC_CLOCK_FREQ / 1000
-};    
-  \end{minted}
-
-  However, multiple channels are encoded as a bitmask as specified in
-  the \code{.channels} field, for example:
-  
-  \begin{minted}{C}
-static const adc_cfg_t adc_cfg =
-{
-    .bits = 12,
-    .channels = BIT(ADC_CHANNEL_4) | BIT(ADC_CHANNEL_2),
-    .trigger = ADC_TRIGGER_SW,
-    .clock_speed_kHz = ADC_CLOCK_FREQ / 1000
-};    
-  \end{minted}  
-
-
-  
   
 \end{enumerate}
 
