@@ -1,8 +1,8 @@
 DRIVERS = pacer ledtape
 
-TARGET = ledtape-test2.bin
+TARGET = ledtape_test1.bin
 OPT = -O2
 
-SRC = ledtape-test2.c
+SRC = ledtape_test1.c
 
 include ../../boards/board.mk

@@ -1,4 +1,4 @@
-/* File:   ledtape-test2.c
+/* File:   ledtape_test2.c
    Author: B Mitchell, UCECE
    Date:   14 April 2021
    Descr:  Test ledtape

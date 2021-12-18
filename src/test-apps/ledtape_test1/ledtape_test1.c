@@ -1,4 +1,4 @@
-/* File:   ledtape-test11.c
+/* File:   ledtape_test11.c
    Author: M. P. Hayes, UCECE
    Date:   30 Jan 2020
    Descr:  Test ledtape
@@ -33,7 +33,7 @@
       to your target file)
     * Change the color being set on all the LEDs.
     * Make an interesting pattern.
-    * Make the pattern scroll down the LEDs (see ledtape-test2 for an option).
+    * Make the pattern scroll down the LEDs (see ledtape_test2 for an option).
 */
 
 
