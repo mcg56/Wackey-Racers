@@ -227,9 +227,10 @@ orientations. The 461 Altium library has a component named
 
 \subsection{LED Tape}
 
-The LED tape is a string of WS2812 LEDs connected in a line. These LEDs use a
-clever mechanism to pass the RGB data down the string. They are connected in
-series like:
+The LED tape is a daisy-chained string of WS2812 LEDs.  These LEDs use
+a clever mechanism to pass the RGB data down the string with different
+pulse lengths for 1 and 0.  They are connected as shown
+in \reffig{LED-chaining}.
 
 \begin{figure}[h]
   \centering
@@ -256,14 +257,15 @@ series like:
     \draw (10.5, -4) -- (10.5, -3) node[above] {GND};
 
   \end{circuitikz}
+  \label{fig:LED-chaining}
 \end{figure}
 
-This means you will need to provide a three pin header (0.1" standard header)
-with the pinout: pin 1 \SI{5}{\volt}, pin 2 signal, pin 3 ground. Each
-individual LED has a maximum supply current of \SI{60}{\milli\ampere}
-(\SI{20}{\milli\ampere} per red, green, blue channel). We will provide up to
-half a metre of LED tape to each car or hat, giving a maximum number of 30 LEDs
-to be driven.
+This means you will need to provide a three pin header (0.1" standard
+header) with the pinout: pin 1 \SI{5}{\volt}, pin 2 signal, pin 3
+ground. Each individual LED has a maximum supply current
+of \SI{60}{\milli\ampere} (\SI{20}{\milli\ampere} per red, green, blue
+channel). We will provide up to half a metre of LED tape to each car
+or hat, giving a maximum number of 30 LEDs to be driven.
 
 
 \subsection{Bumper}
@@ -284,24 +286,27 @@ switch is normally open and on contact will close.
   \end{circuitikz}
 \end{figure}
 
-Note that the pullup resistor shown could simple be the internal pullup resistor
-on a PIO pin. The connector for the limit switch should be a simple 2 pin 0.1"
-header. 
+Note that the pullup resistor shown could simple be the internal
+pullup resistor on a PIO pin. The connector for the limit switch
+should be a simple 2 pin 0.1" header.
 
 \subsection{Buzzer}
 
-The buzzers supplied are passive piezo-electric devices. Applying a voltage
-across the two terminals causes the element to deform. Applying an alternating
-current to the device generates an audible tone. The larger the applied voltage
-differential, the louder the tone becomes. There are plenty of example circuits
-for piezo buzzers available online.
+The buzzers supplied are passive piezo-electric devices. Applying a
+voltage across the two terminals causes the element to
+deform. Applying an alternating current to the device generates an
+audible tone. The larger the applied voltage differential, the louder
+the tone becomes. There are plenty of example circuits for piezo
+buzzers available online.  Note, you need to be able to charge and
+discharge the capacitance of the pizeocrystal.
 
 \subsection{Motors}
 
-The motors available in the provided chassis are \SI{6}{\volt} DC motors. These
-have a low DC resistance and will take as much current as the DRV8833 motor
-driver can supply. You need to add connectors for the motors, either 2 pin 0.1"
-headers or screw terminals are suggested.
+The motors available in the provided chassis are \SI{6}{\volt} DC
+motors. These have a low DC resistance and will take as much current
+as the DRV8833 motor driver can supply. You need to add connectors for
+the motors, either 2 pin 0.1" headers or screw terminals are
+suggested.
 
 
 \subsection{Connectors}

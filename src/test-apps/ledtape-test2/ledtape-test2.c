@@ -35,13 +35,17 @@ main (void)
     {
         pacer_wait();
 
-        if (count++ == NUM_LEDS) {
+        if (count++ == NUM_LEDS)
+        {
             // wait for a revolution
             ledbuffer_clear(leds);
-            if (blue) {
+            if (blue)
+            {
                 ledbuffer_set(leds, 0, 0, 0, 255);
                 ledbuffer_set(leds, NUM_LEDS / 2, 0, 0, 255);
-            } else {
+            }
+            else
+            {
                 ledbuffer_set(leds, 0, 255, 0, 0);
                 ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 0);
             }
