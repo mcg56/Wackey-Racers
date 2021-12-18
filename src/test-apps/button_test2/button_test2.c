@@ -19,6 +19,8 @@ static const led_cfg_t led1_cfg =
     .active = 1
 };
 
+
+/* Define button configuration.  */
 static const button_cfg_t button1_cfg =
 {
     .pio = BUTTON_PIO

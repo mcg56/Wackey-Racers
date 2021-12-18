@@ -9,10 +9,10 @@
 
 /* Define how fast ticks occur.  This must be faster than
    TICK_RATE_MIN.  */
-enum {LOOP_POLL_RATE = 200};
+#define LOOP_POLL_RATE 200
 
 /* Define LED flash rate in Hz.  */
-enum {LED_FLASH_RATE = 2};
+#deifne LED_FLASH_RATE 2
 
 #ifndef UDP_VBUS_PIO
 #define UDP_VBUS_PIO BUTTON_PIO

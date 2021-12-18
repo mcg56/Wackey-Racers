@@ -8,7 +8,7 @@
 #include "pacer.h"
 
 /* Define LED flash rate in Hz.  */
-enum {LED_FLASH_RATE = 2};
+#define LED_FLASH_RATE 2
 
 /*
     This test app is the faithful blinky program.  It works as follows:

@@ -173,12 +173,17 @@ see \wfile{mat91lib/adc/adc.h}.
 
 \inputminted{C}{../../src/test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c}
 
-The ADC can be also set up to stream data continuously; this is a lot
-more complicated.
+The ADC can be also set up to stream data continuously but you need to
+use interrrupts or DMA.
 
 
 \section{Pushbutton}
 \label{pushbutton}
+
+\wfile{test-apps/button_test1/button_test1.c} shows the use of a
+simple button driver to read a pushbutton.  This driver does not debounce the button.
+
+\inputminted{C}{../../src/test-apps/button_test1/button_test1.c}
 
 \wfile{test-apps/button_test2/button_test2.c} shows the use of a
 simple button driver to read a pushbutton.  This driver does button
