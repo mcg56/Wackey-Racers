@@ -5,8 +5,6 @@ This contains a directory structure for your assignment.
 
 doc -- documentation
 
-hw  -- hardware
-
 src -- source code
 
 

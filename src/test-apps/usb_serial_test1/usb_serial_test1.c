@@ -4,13 +4,11 @@
 #include "sys.h"
 #include "pacer.h"
 #include "delay.h"
-#include <fcntl.h>
 
 #define HELLO_DELAY 500
 
 int main (void)
 {
-    usb_cdc_t usb_cdc;
     int i = 0;
 
     pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
