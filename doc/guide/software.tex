@@ -1,10 +1,6 @@
 \label{software}
-\chapter{Software}
+\chapter{Software installation}
 
-
-
-\section{Preparation}
-\label{preparation}
 
 Do not underestimate the effort required to flash your first LED. You
 require:
@@ -161,143 +157,11 @@ $ brew cask install gcc-arm-embedded
 \end{minted}
 
 
-\section{Your hat/racer program}
-\label{your-hatracer-program}
+\section{IDE}
 
-We recommend that build your programs incrementally and that you poll
-your devices with a paced loop and not use interrupts.  It is a good
-idea to disable the \hyperref[watchdog-timer]{watchdog timer} until
-you have robust code.
+I am content with using the command-line and emacs as a text editor
+but I guess that you are not.  If you are familiar with geany I
+suggest that you use that.  If you want bells and whistles, I suggest
+using Visual Studio Code.  While it is written by Microsoft, it is
+free and runs on Windows, Linux and macOS.
 
-\section{Howtos}
-\label{howtos}
-
-\subsection{PIO pins}
-
-mat91lib provides efficient PIO abstraction routines in
-\wfile{mat91lib/sam4s/pio.h}.  Each pin can be configured as follows:
-%
-\begin{minted}{C}
-    PIO_INPUT,              /* Configure as input pin.  */
-    PIO_PULLUP,             /* Configure as input pin with pullup.  */
-    PIO_PULLDOWN,           /* Configure as input pin with pulldown.  */
-    PIO_OUTPUT_LOW,         /* Configure as output, initially low.  */
-    PIO_OUTPUT_HIGH,        /* Configure as output, initially high.  */
-    PIO_PERIPH_A,           /* Configure as peripheral A.  */
-    PIO_PERIPH_A_PULLUP,    /* Configure as peripheral A with pullup.  */
-    PIO_PERIPH_B,           /* Configure as peripheral B.  */
-    PIO_PERIPH_B_PULLUP,    /* Configure as peripheral B with pullup.  */
-    PIO_PERIPH_C,           /* Configure as peripheral C.  */
-    PIO_PERIPH_C_PULLUP     /* Configure as peripheral C with pullup.  */
-\end{minted}
-
-Here's an example:
-%
-\begin{minted}{C}
-  #include "pio.h"
-
-  // Configure PA0 as an output and set default state to low.
-  pio_config_set (PIO_PA0, PIO_OUTPUT_LOW);
-
-  // Set PA0 high.
-  pio_output_high (PIO_PA0);
-
-  // Set PA0 low.  
-  pio_output_low (PIO_PA0);
-
-  // Set PA0 to value.
-  pio_output_set (PIO_PA0, value);  
-
-  // Toggle PA0.  
-  pio_output_toggle (PIO_PA0);    
-
-  // Reonfigure PA0 as an output connected to peripheral A.
-  pio_config_set (PIO_PA0, PIO_PERIPH_A);
-
-  // Reonfigure PA0 as an input with pullup enabled.
-  pio_config_set (PIO_PA0, PIO_INPUT_PULLUP);
-
-  // Read state of PIO pin.
-  result = pio_input_get (PIO_PA0);
-\end{minted}
-
-Note, you can reconfigure a PIO pin on the fly.  For example, you may
-want the pin to be driven by the PWM peripheral and then at some stage
-forced low.  To do this, use \code{pwm\_config\_set}.
-
-
-\subsection{Delaying}
-
-mat91lib provides a macro \code{DELAY_US} in
-\wfile{mat91lib/delay.h} for a busy-wait delay in microseconds
-(this can be a floating point value).  The CPU just spins for a
-precomputed number of clock cycles.  The argument should be a constant
-so the compiler can compute the number of clock cycles.  This function
-needs to be compiled with optimisation.
-
-mat91lib also provides a function \code{delay_ms} for a busy-wait
-delay in milliseconds (this must be an integer).  All this function
-does is call \code{DELAY_US (1000)} the required number of times.
-
-An example program is \wfile{test-apps/delay_test1/delay_test1.c}.
-
-
-\subsection{Disabling JTAG pins}
-\label{disabling-jtag-pins}
-
-By default \pin{PB4} and \pin{PB5} are configured as JTAG pins. You can turn
-them into PIO pins or use them for TWI1 using:
-%
-\begin{minted}{C}
-#include "mcu.h"
-
-void main (void)
-{
-    mcu_jtag_disable ();
-}
-\end{minted}
-
-
-\subsection{Watchdog timer}
-\label{watchdog-timer}
-
-The watchdog timer is useful for resetting the SAM4S if it hangs in a
-loop.  It is disabled by default but can be enabled using:
-%
-\begin{minted}{C}
-#include "mcu.h"
-
-void main (void)
-{
-    mcu_watchdog_enable ();
-   
-    while (1)
-    {
-         /* Do your stuff here.  */
-
-         mcu_watchdog_reset ();
-    }
-}
-\end{minted}
-
-\section{Under the bonnet}
-\label{under-the-bonnet}
-
-\file{mmculib} is a library of C drivers, mostly for performing high-level I/O.
-It is written to be microcontroller neutral.
-
-\file{mat91lib} is a library of C drivers specifically for interfacing
-with the peripherals of Atmel AT91 microcontrollers such as the Atmel
-SAM4S. It provides the hardware abstraction layer.
-
-The building is controlled by \wfile{mat91lib/mat91lib.mk}. This is a
-makefile fragment loaded by \wfile{mmculib/mmculib.mk}.
-\file{wacky-reacers/src/mat91lib/mat91lib.mk} loads other makefile fragments for each peripheral or driver required. It also automatically generates
-dependency files for the gazillions of other files that are required
-to make things work.
-
-
-\textbf{Please do not edit the files in the mat91lib, mmculib, and
-wackylib} directories since this can lead to merge problems in the
-future. If you find a bug or would like additional functionality let MPH
-or one of the TAs know.

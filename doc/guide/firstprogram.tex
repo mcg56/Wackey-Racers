@@ -196,3 +196,37 @@ To reset your SAM4S, you can use:
 \begin{minted}{bash}
 $ make reset
 \end{minted}
+
+
+\section{Compilation}
+
+Compilation is performed using makefiles, since each application
+requires many files.  Rather than having large makefiles, a heirarchy
+of makefile fragments is employed.  Dependencies are automatically
+generated.
+
+A board description can be selected with the \code{BOARD} environment
+variable.  This can be defined for each command, for example,
+%
+\begin{minted}{bash}
+$ BOARD=racer make program  
+\end{minted}
+
+
+Alternatively, this can be defined for a session:
+%
+\begin{minted}{bash}
+$ export BOARD=racer
+  $ make program
+\end{minted}
+
+
+Each of the makefiles has the following phony targets:
+%
+\begin{description}
+\item[all]  --- compile the application
+\item[program] --- compile the application and download to the MCU (you need Openocd running)
+\item[debug] --- start the debugger GDB (you need Openocd running)  
+\item[reset] --- reset the MCU (you need Openocd running)
+\item[clean] --- delete the executable, object files, and dependency files.
+\end{description}

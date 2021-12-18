@@ -3,6 +3,7 @@
 \usepackage{circuitikz}
 \usepackage{amssymb,amsmath}
 \usepackage{siunitx}
+\usepackage{ulem}
 
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -87,7 +88,7 @@
 \newcommand{\reftab}[1]{\mbox{Table~\ref{tab:#1}}}
 \newcommand{\refeqn}[1]{\mbox{(\ref{eqn:#1})}}
 
-\title{Mutley's Guide To The Wacky Racers, V.013E-3}
+\title{\sout{Mutley's} Guide To The Wacky Racers, V.013E-3}
 \author{Michael Hayes}
 \date{2021}
 
@@ -96,13 +97,16 @@
 \tableofcontents
 
 %\input{requirements}
-\input{schedule}
+%\input{schedule}
+\input{introduction}
 \input{hardware}
 \input{schematic}
 \input{PCB}
 \input{software}
 \input{firstprogram}
 \input{testprograms}
+\input{application}
+\input{libraries}
 \input{troubleshooting}
 \input{rework}
 \input{debugging}

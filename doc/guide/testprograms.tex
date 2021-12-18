@@ -7,13 +7,12 @@ independent of the target board using configuration files (see
 \protect\hyperref[configuration]{configuration}).
 
 
-\section{USB interfacing}
+\section{USB}
 \label{usb-interfacing}
 
-To help debug your programs, it is wise to use \wikiref{USB CDC}{USB
-  CDC}.  This is a serial protocol for USB.  With some magic, the
-stdin, stdout, and stderr streams can sent over USB.  For example,
-here's an example program
+To help debug your programs, it is useful to be able to print values.
+This can be achieved by redirecting stdio using the \wikiref{USB
+  CDC}{USB CDC} protocol.  For example, here's an example program
 \wfile{test-apps/usb_serial_test1/usb_serial_test1.c}.
 
 \inputminted{C}{../../src/test-apps/usb_serial_test1/usb_serial_test1.c}
@@ -59,7 +58,7 @@ sly. This program should be disabled on the ECE computers. For more
 about this and using other operating systems, see \wikiref{USB
 CDC}{USB CDC}.
 
-\section{PWM test}
+\section{PWM}
 \label{pwm-test}
 
 The program \wfile{test-apps/pwm_test2/pwm_test2.c} provides an
@@ -92,7 +91,7 @@ with the current limit set at 100\,mA maximum in case there are any
 board shorts.  When all is well, you can increase the current limit;
 you will need at least 1\,A.
 
-\section{IMU test}
+\section{IMU}
 \label{imu-test}
 
 The MPU9250 IMU connects to the SAM4S using the I2C bus (aka TWI bus).
@@ -128,7 +127,7 @@ the \pin{TWCK/SCL} signal.
 \end{enumerate}
 
 
-\section{Radio test}
+\section{Radio}
 \label{radio-test}
 
 The program \wfile{test-apps/radio_tx_test1/radio_tx_test1.c} provides
@@ -165,7 +164,7 @@ communicating with the radio test modules Scott Lloyd has in the SMT
 lab.
 
 
-\section{ADC test}
+\section{ADC}
 \label{ADC}
 
 \wfile{test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c} shows
@@ -178,7 +177,7 @@ The ADC can be also set up to stream data continuously; this is a lot
 more complicated.
 
 
-\section{Pushbutton test}
+\section{Pushbutton}
 \label{pushbutton}
 
 \wfile{test-apps/button_test2/button_test2.c} shows the use of a
@@ -189,7 +188,7 @@ debouncing and state-transition detection.  For more details see
 \inputminted{C}{../../src/test-apps/button_test2/button_test2.c}
 
 
-\section{LEDtape tests}
+\section{LEDtape}
 \label{ledtape}
 
 \wfile{test-apps/ledtape_test1/ledtape_test1.c} shows how to drive the
