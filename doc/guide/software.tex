@@ -165,3 +165,33 @@ suggest that you use that.  If you want bells and whistles, I suggest
 using Visual Studio Code.  While it is written by Microsoft, it is
 free and runs on Windows, Linux and macOS.
 
+
+\subsection{Visual Studio Code}
+
+VS Code is a modern and highly versatile text editor.  With the right
+extensions, it can be used to develop code for just about anything!
+This project has been configured for VS Code on the ESL computers (but
+its relatively easy to modify it to work on a home computer, be it
+Windows, Linux, or Mac). For the simplest use, simply go \code{File ->
+Open Folder} and point it at the wacky-racers repository.  This will
+give you access to the build tools (Ctrl-Shift-B) that have been
+setup. These must be run from inside a program (i.e., ledflash1.c).
+Finally, opening a program and pressing F5 will launch a debugging
+session that will allow the use of breakpoints and variable
+inspection.
+
+When building your programs, the \code{BOARD} configuration variable
+must be set. In VS Code this is done by choosing your C++
+configuration (bottom right of the window) which by default will be
+either hat or racer.
+
+As a side note, the compilation and debugging requires the
+installation of two VS Code extensions:
+%
+\begin{enumerate}
+\item C/C++ (Microsoft)
+\item Native Debug (Web Freak)
+\end{enumerate}
+%
+VS Code should automatically prompt you to install these when you open
+  the wacky-racers directory.
