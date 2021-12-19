@@ -158,14 +158,14 @@ These occur every 100\,ms, see \reffig{openocd-poll}.  If the SAM4S
 responds, the waveform seen in \reffig{openocd-response} should be
 observed on the SWD pin.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[height=2.60417in]{figs/OpenOCDTimingGood.png}
 \caption{OpenOCD polls every 100\,ms while connected.}
 \label{fig:openocd-poll}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[height=2.60417in]{figs/OpenOCDPollingGood.png}
 \caption{SWD signal when there is a response from the SAM4S.}
@@ -187,14 +187,18 @@ crystal.  If there is a problem with the crystal oscillator the SAM4S
 will not run since it has no clock.  Moreover, \program{OpenOCD} will
 then fail to communicate with the SAM4S.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[height=2.60417in]{figs/ClockSignal.png}
 \caption{12\,MHz clock sine wave measured on the XOUT pin.}
 \label{fig:xout}
 \end{figure}
 
-\mtodo{Add scope picture of CPU clock signals when not working}
+\begin{figure}[!h]
+  \centering
+  \mtodo{Add scope picture of CPU clock signals when not working}
+  \caption{Oscillator waveform when not working.}
+\end{figure}
 
 \begin{enumerate}
 \item Connect a scope pin to the XOUT pin. A 12\,MHz sinewave should
@@ -334,7 +338,7 @@ If the PWM duty is wrong:
   thousand. (e.g., 1000 = 100\% duty cycle; 50 = 5\% duty cycle)
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[height=2.60417in]{figs/PWM_2.png}
 \caption{Two PWM signals at 1\,kHz and 10\,kHz.}
@@ -384,9 +388,18 @@ For the IMU to work:
   \hyperref[disabling-jtag-pins]{disabling JTAG pins}.
 \end{enumerate}
 
-\mtodo{Add scope picture of I2C signals}
+\begin{figure}[!h]
+  \centering
+  \mtodo{Add scope picture of I2C signals}
+  \caption{I2c signals with acknowledgement.}
+\end{figure}
 
-\mtodo{Add scope picture of I2C signals with no acknowledge}
+
+\begin{figure}[!h]
+  \centering
+  \mtodo{Add scope picture of I2C signals with no acknowledge}
+  \caption{I2c signals with no acknowledgement.}
+\end{figure}
 
 
 \section{NRF24L01+ radio}
@@ -445,7 +458,12 @@ software.
 \subsection{Checking the radio power supply}
 \label{checking-the-radio-power-supply}
 
-\mtodo{Add scope picture of expected radio power supply voltage}
+\begin{figure}[!h]
+  \centering
+  \mtodo{Add scope picture of expected radio power supply voltage}
+  \caption{Waveform showing radio power supply voltage.}
+\end{figure}
+
 
 \subsection{Debugging SPI}
 \label{debugging-spi}
@@ -466,7 +484,12 @@ the unwary; these are due to two clock polarity modes and two clock
 phase modes.  When using the wrong mode, the read data can be out by a
 bit or unreliable.
 
-\mtodo{Add scope picture of SPI signals}
+\begin{figure}[!h]
+  \centering
+  \mtodo{Add scope picture of SPI signals}
+  \caption{SPI signals.}
+\end{figure}
+
 
 
 \section{Other problems}
