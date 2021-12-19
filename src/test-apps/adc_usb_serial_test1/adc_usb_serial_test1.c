@@ -1,4 +1,4 @@
-/* File:   adc_usb_cdc_test1.c
+/* File:   adc_usb_serial_test1.c
    Author: M. P. Hayes, UCECE
    Date:   3 May 2021
    Descr:  This reads from ADC channel 0.
