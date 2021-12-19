@@ -1,4 +1,4 @@
-/* File:   adc_usb_cdc_test2.c
+/* File:   adc_usb_serial_test2.c
    Author: M. P. Hayes, UCECE
    Date:   3 May 2021
    Descr:  This reads from ADC channels 2 and 4.

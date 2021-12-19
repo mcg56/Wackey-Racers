@@ -170,7 +170,7 @@ void _reset_handler (void)
        This register is zero on reset.  */
     SCB->VTOR = (uint32_t) &exception_table & SCB_VTOR_TBLOFF_Msk;
 
-    /* Set up clocks, etc.  */
+    /* Set up clocks, wait-states, etc.  */
     mcu_init ();
 
     /* Call constructors and init functions.   */
