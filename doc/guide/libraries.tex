@@ -131,6 +131,28 @@ The mat91lib and mmculib libraries try to use the POSIX I/O model.  In
 general, non-blocking I/O is used so if data is not available, the
 functions return without waiting, or with a short timeout.
 
+The read/write functions have three arguments:
+%
+\begin{enumerate}
+\item A device handle created by the init function.
+\item A pointer to a buffer.
+\item The number of bytes to transfer (type \code{size_t})
+\end{enumerate}
+%
+The return value is of type \code{ssize_t} and is either:
+%
+\begin{enumerate}
+\item The number of bytes transferred if greater than or equal to zero.
+\item -1 for error, in which case the error number is stored in \code{errno}.
+\end{enumerate}
+
+Here is an example:
+
+\begin{minted}{C}
+  char *buffer[4];
+  
+  ret = adc_read (adc, buffer, sizeof (buffer));
+\end{minted}
 
 
 \section{Coding style}

@@ -6,6 +6,10 @@ of gumption and an open mind. Difficult problems are usually a
 combination of two or more problems. So \textbf{do not attempt if you
   are tired or in a hurry}.
 
+Before you start, you need an A3 printed schmematic, annotated with
+any changes your group may have made.
+
+
 \section{The scientific method}
 
 Successful troubleshooting requires application of the scientific
@@ -54,7 +58,7 @@ The best tool for debugging an embedded system is an oscilloscope.
 
 \item Use the correct probes for the scope so that they can be automatically
   detected.
-  
+
 \item Compensate the probes by clipping to the probe test signal on
   the scope and adjusting the variable capacitor in the probe to
   ensure a square wave without undershoot or overshoot. This is one of
@@ -62,7 +66,7 @@ The best tool for debugging an embedded system is an oscilloscope.
 
 \item Check that the probe gains are correct; they should by $\times
   10$ for $\times 10$ probes.
-  
+
 \item Hypothesise what you should expect to observe and set up the
   oscilloscope accordingly.  Pushing the auto-set button only works
   for AC or DC signals and is hopeless for transient signals, such as
@@ -123,9 +127,9 @@ If a program has been loaded:
 \begin{enumerate}
 \item  \protect\hyperref[checking-the-crystal-oscillator]{Check the
     crystal oscillator}.
-  
+
 \item \hyperref[erasing-flash-memory]{Erase flash memory}.
-  
+
 \item Re-enable \hyperref[booting-from-flash-memory]{booting from flash
   memory}.
 
@@ -139,7 +143,7 @@ If a program has been loaded:
 \begin{enumerate}
 \item Connect the ERASE pin to 3.3\,V.
 
-\item Re-start OpenOCD.  
+\item Re-start OpenOCD.
 
 \item Re-enable \hyperref[booting-from-flash-memory]{booting from
   flash memory}.
@@ -195,13 +199,13 @@ then fail to communicate with the SAM4S.
 \begin{enumerate}
 \item Connect a scope pin to the XOUT pin. A 12\,MHz sinewave should
   be visible, see \reffig{xout}.
-  
+
 \item If there is no sinewave:
 
   \begin{enumerate}
   \item Measure the voltage on the VDDPLL pin of the MCU with a
     scope. This should be 3.3\,V to power the oscillator.
-    
+
   \item Check the bypass capacitors across the crystal.  These should
     be approx. 20 pF.
   \end{enumerate}
@@ -241,7 +245,7 @@ does not work.
   \begin{itemize}
   \item
     Check that the termination resistors are 27\,ohms.
-    
+
   \item Check the SAM4S is running at the correct frequency of
     96\,MHz\footnote{The SAM4S has two PLLs so it is possible to clock
       the CPU at other frequencies.}.  Check the SAM4S XIN pin with an
@@ -262,14 +266,14 @@ does not work.
    USB serial driver will drop characters.
  \end{itemize}
 
- 
+
 \section{Motors}
 \label{motors-testing}
 
 For the motors to work:
 %
 \begin{enumerate}
-\item The H-bridge must be correctly configured.  
+\item The H-bridge must be correctly configured.
 \item The PWM signals must be correctly generated.
 \end{enumerate}
 
@@ -343,7 +347,7 @@ If the PWM duty is wrong:
 For the IMU to work:
 %
 \begin{enumerate}
-\item The IMU chip must be correctly configured.  
+\item The IMU chip must be correctly configured.
 \item The I2C bus must be working.
 \end{enumerate}
 
@@ -356,7 +360,7 @@ For the IMU to work:
 \item Check the auxiliary I2C bus signals are not connected on the IMU
   (otherwise the magnetometer will not respond).
 \item Check \sig{nCS} on the IMU is pulled high.
-\item Check \sig{FSYNC} on the IMU is pulled low.  
+\item Check \sig{FSYNC} on the IMU is pulled low.
 \item Try pressing on a side of the IMU with a fingernail to see if it
   starts working; you might have a dry joint.  Otherwise look under
   the microscope at the pins of the IMU and touch them up with a
@@ -393,9 +397,9 @@ For the radio to work you need:
 \begin{enumerate}
 \item No ground planes near the antenna\footnote{You might have to
   mount the radio vertically.}.
-  
+
 \item A working SPI interface.
-  
+
 \item The correct channel and address.
 
 \item A well filtered power supply for the radio, see \reffig{radio-filtering}.
@@ -473,7 +477,7 @@ bit or unreliable.
   \emph{\program{OpenOCD} does not run}. The most common problem is
   that the USB permissions are not correct\footnote{On Linux this is
     controlled by udev.}.
-  
+
 \item
   \emph{A program does not correctly build after a file has been
     changed}. Every now and then the file timestamps are incorrect
@@ -481,7 +485,7 @@ bit or unreliable.
   clocks) and make will not correctly rebuild a file. Running
   \textbf{make clean} will remove the existing dependency and object
   files so you can start afresh.
-  
+
 \item
   \emph{A program hangs.} This can be observed by an LED no longer
   flashing. There are a number of reasons:
@@ -501,11 +505,11 @@ bit or unreliable.
     \code{_hardfault_handler}, then your program is likely to have
     accessed invalid memory. Use the \code{bt} command to print a
     stack trace to see how your program went astray.
-    
+
   \item You are printing output using USB but a terminal program is
     not running.
   \end{enumerate}
-  
+
 \item
   \emph{The output of the 3V3 regulator works fine when powered from
     USB but gives 6\,V when powered from a 7.2\,V battery}. Check that
@@ -527,4 +531,3 @@ bit or unreliable.
   \end{enumerate}
 
 \end{enumerate}
-
