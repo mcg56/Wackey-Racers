@@ -7,11 +7,9 @@ It is written to be microcontroller neutral.
 with the peripherals of Atmel AT91 microcontrollers such as the Atmel
 SAM4S. It provides the hardware abstraction layer.
 
-\textbf{Please do not edit the files in the mat91lib, mmculib, and
-  wackylib} directories since this can lead to merge problems in the
-future. If you find a bug or would like additional functionality let
-us know.
-
+%\textbf{Please do not edit the files in the mat91lib and mmculib}
+%directories since this can lead to merge problems in the future.
+If you find a bug or would like additional functionality let us know.
 
 \section{PIO pins}
 
@@ -43,14 +41,14 @@ Here's an example:
   // Set PA0 high.
   pio_output_high (PIO_PA0);
 
-  // Set PA0 low.  
+  // Set PA0 low.
   pio_output_low (PIO_PA0);
 
   // Set PA0 to value.
-  pio_output_set (PIO_PA0, value);  
+  pio_output_set (PIO_PA0, value);
 
-  // Toggle PA0.  
-  pio_output_toggle (PIO_PA0);    
+  // Toggle PA0.
+  pio_output_toggle (PIO_PA0);
 
   // Reonfigure PA0 as an output connected to peripheral A.
   pio_config_set (PIO_PA0, PIO_PERIPH_A);
@@ -113,7 +111,7 @@ loop.  It is disabled by default but can be enabled using:
 void main (void)
 {
     mcu_watchdog_enable ();
-   
+
     while (1)
     {
          /* Do your stuff here.  */
@@ -150,7 +148,7 @@ Here is an example:
 
 \begin{minted}{C}
   char *buffer[4];
-  
+
   ret = adc_read (adc, buffer, sizeof (buffer));
 \end{minted}
 
@@ -173,5 +171,3 @@ makefile fragment loaded by \wfile{mmculib/mmculib.mk}.
 fragments for each peripheral or driver required. It also
 automatically generates dependency files for the gazillions of other
 files that are required to make things work.
-
-
