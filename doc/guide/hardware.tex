@@ -1,5 +1,7 @@
-\chapter{Hardware}
+\chapter{System design}
 \label{hardware}
+
+The system requirements are specified in the assignment instructions.
 
 
 \section{Recommendations}\label{recommendations}
@@ -299,7 +301,7 @@ switch is normally open and on contact will close.
   \end{circuitikz}
 \end{figure}
 
-Note that the pullup resistor shown could simple be the internal
+Note that the pullup resistor shown could simply be the internal
 pullup resistor on a PIO pin. The connector for the limit switch
 should be a simple 2 pin 0.1" header.
 
@@ -342,3 +344,23 @@ suggested.
   These are stocked in the SMT lab.  For any other components you may
   require, see Scott Lloyd in the SMT lab.
 \end{enumerate}
+
+
+\section{Reading datasheets}
+
+The manufacturer will tell you what they are proud of on the first
+page.  They will omit details of poor aspects.
+
+There is a knack in reading a large datasheet.  Here's what I do
+first:
+
+\begin{enumerate}
+\item Look at the example circuits.
+
+\item Read the absolute maximum ratings.
+
+\item Read the pin definitions.
+\end{enumerate}
+
+
+% SAM4S hardware checklist
