@@ -21,36 +21,38 @@ static void panic (void)
 
 int main (void)
 {
-    uint8_t count = 0;
-    spi_cfg_t nrf_spi =
+    nrf24_cfg_t nrf24_cfg =
         {
-            .channel = 0,
-            .clock_speed_kHz = 1000,
-            .cs = RADIO_CS_PIO,
-            .mode = SPI_MODE_0,
-            .cs_mode = SPI_CS_MODE_FRAME,
-            .bits = 8,
+            .ce_pio = RADIO_CE_PIO,
+            .irq_pio = RADIO_IRQ_PIO,
+            .channel = 4,
+            .address = 0x0123456789,
+            .spi =
+            {
+                .channel = 0,
+                .clock_speed_kHz = 1000,
+                .cs = RADIO_CS_PIO,
+                .mode = SPI_MODE_0,
+                .cs_mode = SPI_CS_MODE_FRAME,
+                .bits = 8,
+            }
         };
+    uint8_t count = 0;
     nrf24_t *nrf;
-    spi_t spi;
 
-    /* Configure LED PIO as output.  */
+    // Configure LED PIO as output.
     pio_config_set (LED1_PIO, PIO_OUTPUT_HIGH);
     pio_config_set (LED2_PIO, PIO_OUTPUT_LOW);
     pacer_init (10);
 
 #ifdef RADIO_PWR_EN
+    // Enable radio regulator if present.
     pio_config_set (RADIO_PWR_EN, PIO_OUTPUT_HIGH);
     delay_ms (10);
 #endif
 
-    spi = spi_init (&nrf_spi);
-    nrf = nrf24_create (spi, RADIO_CE_PIO, RADIO_IRQ_PIO);
+    nrf = nrf24_init (&nrf24_cfg);
     if (! nrf)
-        panic ();
-
-    // Initialize the NRF24 radio on channel 4 with its unique 5 byte address
-    if (! nrf24_begin (nrf, 4, 0x0123456789, 32))
         panic ();
 
     while (1)

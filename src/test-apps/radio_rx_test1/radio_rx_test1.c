@@ -8,6 +8,7 @@
 #include "pio.h"
 #include "delay.h"
 
+
 static void panic (void)
 {
     while(1)
@@ -20,41 +21,40 @@ static void panic (void)
 
 int main(void)
 {
-    spi_cfg_t nrf_spi =
+    nrf24_cfg_t nrf24_cfg =
         {
-            .channel = 0,
-            .clock_speed_kHz = 1000,
-            .cs = RADIO_CS_PIO,
-            .mode = SPI_MODE_0,
-            .cs_mode = SPI_CS_MODE_FRAME,
-            .bits = 8,
+            .ce_pio = RADIO_CE_PIO,
+            .irq_pio = RADIO_IRQ_PIO,
+            .channel = 4,
+            .address = 0x0123456789,
+            .spi =
+            {
+                .channel = 0,
+                .clock_speed_kHz = 1000,
+                .cs = RADIO_CS_PIO,
+                .mode = SPI_MODE_0,
+                .cs_mode = SPI_CS_MODE_FRAME,
+                .bits = 8,
+            }
         };
     nrf24_t *nrf;
-    spi_t spi;
     usb_cdc_t usb_cdc;
 
-    /* Configure LED PIO as output.  */
+    // Configure LED PIO as output.
     pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
     pio_config_set (LED2_PIO, PIO_OUTPUT_LOW);
 
-    // Redirect stdio to USB serial
+    // Redirect stdio to USB serial.
     usb_serial_stdio_init ();
 
 #ifdef RADIO_PWR_EN
+    // Enable radio regulator if present.
     pio_config_set (RADIO_PWR_EN, PIO_OUTPUT_HIGH);
     delay_ms (10);
 #endif
 
-    spi = spi_init (&nrf_spi);
-    nrf = nrf24_create (spi, RADIO_CE_PIO, RADIO_IRQ_PIO);
-    if(! nrf)
-        panic ();
-
-    // Initialize the NRF24 radio on channel 4 with its unique 5 byte address
-    if(! nrf24_begin (nrf, 4, 0x0123456789, 32))
-        panic ();
-
-    if(! nrf24_listen (nrf))
+    nrf = nrf24_init (&nrf24_cfg);
+    if (! nrf)
         panic ();
 
     while(1)
