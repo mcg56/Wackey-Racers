@@ -9,61 +9,63 @@
 #include "stdio.h"
 #include "delay.h"
 
-static void panic(void)
+static void panic (void)
 {
-    while (1) {
-        pio_output_toggle(LED1_PIO);
-        pio_output_toggle(LED2_PIO);
-        delay_ms(400);
+    while (1)
+    {
+        pio_output_toggle (LED1_PIO);
+        pio_output_toggle (LED2_PIO);
+        delay_ms (400);
     }
 }
 
 int main (void)
 {
     uint8_t count = 0;
-    spi_cfg_t nrf_spi = {
-        .channel = 0,
-        .clock_speed_kHz = 1000,
-        .cs = RADIO_CS_PIO,
-        .mode = SPI_MODE_0,
-        .cs_mode = SPI_CS_MODE_FRAME,
-        .bits = 8,
-    };
+    spi_cfg_t nrf_spi =
+        {
+            .channel = 0,
+            .clock_speed_kHz = 1000,
+            .cs = RADIO_CS_PIO,
+            .mode = SPI_MODE_0,
+            .cs_mode = SPI_CS_MODE_FRAME,
+            .bits = 8,
+        };
     nrf24_t *nrf;
     spi_t spi;
 
     /* Configure LED PIO as output.  */
-    pio_config_set(LED1_PIO, PIO_OUTPUT_HIGH);
-    pio_config_set(LED2_PIO, PIO_OUTPUT_LOW);
-    pacer_init(10);
+    pio_config_set (LED1_PIO, PIO_OUTPUT_HIGH);
+    pio_config_set (LED2_PIO, PIO_OUTPUT_LOW);
+    pacer_init (10);
 
 #ifdef RADIO_PWR_EN
-    pio_config_set(RADIO_PWR_EN, PIO_OUTPUT_HIGH);
+    pio_config_set (RADIO_PWR_EN, PIO_OUTPUT_HIGH);
+    delay_ms (10);
 #endif
 
-    spi = spi_init(&nrf_spi);
-    nrf = nrf24_create(spi, RADIO_CE_PIO, RADIO_IRQ_PIO);
-    if (!nrf)
-        panic();
+    spi = spi_init (&nrf_spi);
+    nrf = nrf24_create (spi, RADIO_CE_PIO, RADIO_IRQ_PIO);
+    if (! nrf)
+        panic ();
 
-    // initialize the NRF24 radio with its unique 5 byte address
-    if (!nrf24_begin(nrf, 4, 0x0123456789, 32))
-        panic();
+    // Initialize the NRF24 radio on channel 4 with its unique 5 byte address
+    if (! nrf24_begin (nrf, 4, 0x0123456789, 32))
+        panic ();
 
     while (1)
     {
         char buffer[32];
 
-        pacer_wait();
-        pio_output_toggle(LED2_PIO);
-        pio_output_set(LED1_PIO, 1);
+        pacer_wait ();
+        pio_output_toggle (LED2_PIO);
+        pio_output_set (LED1_PIO, 1);
 
         sprintf (buffer, "Hello world %d\r\n", count++);
 
-        if (! nrf24_write(nrf, buffer, sizeof (buffer)))
-            pio_output_set(LED1_PIO, 0);
+        if (! nrf24_write (nrf, buffer, sizeof (buffer)))
+            pio_output_set (LED1_PIO, 0);
         else
-            pio_output_set(LED1_PIO, 1);
+            pio_output_set (LED1_PIO, 1);
     }
 }
-
