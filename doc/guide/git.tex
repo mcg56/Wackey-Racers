@@ -11,17 +11,17 @@ of the dreaded merge conflict.
 \begin{enumerate}
 \item Edit file
 
-\item Save changes  
+\item Save changes
 
 \item Check differences
-  
-\begin{minted}{bash}  
+
+\begin{minted}{bash}
     $ git diff .
 \end{minted}
-  
-\item Commit changes 
 
-\begin{minted}{bash}  
+\item Commit changes
+
+\begin{minted}{bash}
     $ git commit -m "Commit message" list-of-modified-files
 \end{minted}
 
@@ -29,16 +29,16 @@ Note, you should commit at least every 15 min, preferably when you
 have made a single functional change.  Ideally each commit should be
 self-contained.  \textbf{Note, do not add binary files (.o) etc.}
 These will make merging even more miserable.
-  
+
 \item Push changes to server
 
-\begin{minted}{bash}    
+\begin{minted}{bash}
     $ git push
 \end{minted}
 
 The more often you push, the lower the chance that you will get a
 merge conflict.
-  
+
 \end{enumerate}
 
 
@@ -61,15 +61,15 @@ To be able to get updates if the template project is modified you will
 need to:
 
 \begin{minted}{bash}
-$ cd wacky-racers 
-$ git remote add upstream https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021.git  
+$ cd wacky-racers
+$ git remote add upstream https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021.git
 \end{minted}
 
 Again if you do not want to manually enter your password (and have
 ssh-keys uploaded) you can use:
 %
 \begin{minted}[breaklines]{bash}
-$ cd wacky-racers 
+$ cd wacky-racers
 $ git remote add upstream git@eng-git.canterbury.ac.nz:wacky-racers/wacky-racers-2021.git
 \end{minted}
 
@@ -80,8 +80,8 @@ main repository use:
 $ git pull upstream master
 \end{minted}
 
-If you enter the wrong URL make a mistake, you can list the remote
-servers and delete the dodgy entry using:
+If you enter the wrong URL by mistake, you can list the remote servers
+and delete the dodgy entry:
 
 \begin{minted}{bash}
 $ git remote -v
@@ -99,7 +99,7 @@ conflict. You can reduce the chance of this happening by committing and
 pushing faster than other people in your group.
 
 If you get a message such as:
-
+%
 \begin{verbatim}
 From https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021
  * branch            master     -> FETCH_HEAD
@@ -107,14 +107,14 @@ error: Your local changes to the following files would be overwritten by merge:
     src/test-apps/imu_test1/imu_test1.c
 Please, commit your changes or stash them before you can merge.
 \end{verbatim}
-
-what you should so is:
-
+%
+what you should do is:
+%
 \begin{minted}{bash}
 $ git stash
 $ git pull
 $ git stash pop
-# You may now have a merge error.  You will now have to edit the offending file, in this case imu_test1.c
+# You may now have a merge error and will have to edit the problem file, in this case imu_test1.c
 # Once the file has been fixed
 $ git add src/test-apps/imu_test1/imu_test1.c
 $ git commit -m "Fix merge"
@@ -123,11 +123,11 @@ $ git commit -m "Fix merge"
 Sometimes when you do a git pull you will be thrown into a text editor
 to type a merge comment. The choice of editor is controlled by an
 environment variable \code{EDITOR}. On the ECE computers this defaults
-to emacs. You can changed this by adding a line such as the following to
-the \file{.bash\_profile} file in your home directory.
+to emacs\footnote{To exit emacs type ctrl-x ctrl-c, to exit vi or vim
+  type \code{:q!}.}  on Linux. You can changed this by adding a line
+such as the following to the \file{.bash\_profile} file in your home
+directory.
 
 \begin{minted}{bash}
 $ export EDITOR=geany
 \end{minted}
-
-By the way, to exit emacs type ctrl-x ctrl-c, to exit vi or vim type \code{:q!}

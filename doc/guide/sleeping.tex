@@ -43,7 +43,7 @@ Further power reduction can be achieved by disabling the CPU clock.
 In effect, this reduces $C$ in \refeqn{power}.  The clock is disabled
 using the ARM WFI (wait for interrupt) instruction.  The clock remains
 disabled until an interrupt occurs.  The WFI instruction is executed
-by calling the mat91lib \code{cpu_wifi ()} function, defined as:
+by calling the mat91lib \code{cpu_wfi ()} function, defined as:
 %
 \begin{minted}{C}
 static inline void
@@ -82,7 +82,3 @@ resistors connected in parallel when the MCU is running normally, and
 to switch out the low value one when the MCU is sleeping.  There are
 special current measuring devices that dynamically vary the voltage
 drop resistor.
-
-
-
-

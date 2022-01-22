@@ -21,7 +21,8 @@ Faraday's law,
 \end{equation}
 %
 where $M$ is the mutual inductance.  The mutual inductance depends on
-the areas of the aggressor and victim loops and their orientation.
+the areas of the aggressor and victim loops and their orientation.  It
+is minimised by using microstrips.
 
 A changing aggressor voltage induces a current in a victim circuit
 according to
@@ -30,5 +31,8 @@ according to
   i_v(t) = C \frac{\ud v_a(t)}{\ud t},
 \end{equation}
 %
-where $C$ is the mutual capacitance.  From Ohm's law, this will
-produce a voltage $i_v(t) R$ across a resistance $R$.
+where $C$ is the mutual capacitance that depends on the separation
+between the traces and the distance the traces run beside each other.
+From Ohm's law, the victim current will produce a voltage $i_v(t) R$
+across a resistance $R$.  Thus low resistance circuits are more immune
+to capacitive coupling.
