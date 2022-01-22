@@ -77,7 +77,7 @@ Notes:
   The \code{pwm_cfg_t} structure configures the frequency, duty
   cycle and alignment of the output PWM.
 \item The frequency is likely to be too high for your motor.
-\item \code{pwm_channels_start} is used to start the PWM channels simultaneously.  
+\item \code{pwm_channels_start} is used to start the PWM channels simultaneously.
 \end{enumerate}
 
 The most likely problem is that you have not used a PIO pin that can
@@ -137,26 +137,39 @@ The companion program
 \wfile{test-apps/radio_rx_test1/radio_rx_test1.c} provides an example
 of using the radio as a receiver.
 
+\inputminted{C}{../../src/test-apps/radio_rx_test1/radio_rx_test1.c}
+
+
 Notes:
 %
 \begin{enumerate}
-\item
-  Both programs must use the same RF channel and the same address. Some
-  RF channels are better than others since some overlap with WiFi
-  and Bluetooth. The address is used to distinguish devices
-  operating on the same channel. Note, the transmitter expects an
-  acknowledge from a receiver on the same address and channel.
-\item
-  The radio `write` method blocks waiting for an auto-acknowledgement
-  from the receiver device. This acknowledgement is performed in
-  hardware. If no acknowledgement is received, it retries for up to 15
-  times. The auto-acknowledgement and number of retries can be
-  configured in software.
+\item Both programs must use the same RF channel and the same address.
+
+\item Some RF channels are better than others since some overlap with
+  WiFi and Bluetooth.
+
+\item The address is used to distinguish devices operating on the same
+  channel. Note, the transmitter expects an acknowledge from a
+  receiver on the same address and channel.
+
+\item The number of bytes that can be transmitted is set by the
+  \code{payload\size} field in the configuration structure.  This has a
+  maximum value of 32.
+
+\item The radio `write` method blocks waiting for an
+  auto-acknowledgement from the receiver device. This acknowledgement
+  is performed in hardware. If no acknowledgement is received, it
+  retries for up to 15 times. The auto-acknowledgement and number of
+  retries can be configured in software.
 
 \item If the program hangs in the \code{panic} loop, there is no
   response from the radio module, check SPI connections and see
   \hyperref[debugging_Spi]{SPI debugging}.
-  
+
+\item The radio has two modes: transmit and receive.  Calling
+  \code{nrf24_write} switches to transmit mode and calling
+  \code{nrf24_read} switches to receive mode.
+
 \end{enumerate}
 
 If you cannot communicate between your hat and racer boards, try
@@ -206,4 +219,3 @@ LEDtape.
 sophisticated means of controlling the LEDs.
 
 \inputminted{C}{../../src/test-apps/ledtape_test2/ledtape_test2.c}
-
