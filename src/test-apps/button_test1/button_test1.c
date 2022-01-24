@@ -16,7 +16,7 @@ main (void)
     pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
 
     /* Configure button PIO as input with pullup.  */
-    pio_config_set (BUTTON_PIO, PIO_INPUT_PULLUP);    
+    pio_config_set (BUTTON_PIO, PIO_INPUT_PULLUP);
 
     pacer_init (PACER_RATE);
 
@@ -24,12 +24,10 @@ main (void)
     {
         /* Wait until next clock tick.  */
         pacer_wait ();
-        
 
         if (pio_input_get (BUTTON_PIO))
             pio_output_high (LED1_PIO);
         else
-            pio_output_low (LED1_PIO);            
-    }    
+            pio_output_low (LED1_PIO);
+    }
 }
-

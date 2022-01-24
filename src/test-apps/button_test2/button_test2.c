@@ -11,7 +11,6 @@
 
 #define BUTTON_POLL_RATE 100
 
-
 /* Define LED configuration.  */
 static const led_cfg_t led1_cfg =
 {
@@ -26,8 +25,7 @@ static const button_cfg_t button1_cfg =
     .pio = BUTTON_PIO
 };
 
-int
-main (void)
+int main (void)
 {
     led_t led1;
     button_t button1;
@@ -53,9 +51,8 @@ main (void)
 
         if (button_pushed_p (button1))
         {
-            led_toggle (led1);        
+            led_toggle (led1);
         }
     }
     return 0;
 }
-

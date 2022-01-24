@@ -27,6 +27,7 @@ int main (void)
         {
             .channel = RADIO_CHANNEL,
             .address = RADIO_ADDRESS,
+            .payload_size = 32,
             .ce_pio = RADIO_CE_PIO,
             .irq_pio = RADIO_IRQ_PIO,
             .spi =
