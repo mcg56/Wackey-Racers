@@ -3,10 +3,10 @@ DRIVERS =
 TARGET = hat.bin
 
 SRC = hat.c
-OPT = -O2
 
-ifneq ($(BOARD), hat)
-$(error BOARD should be set to hat!)
-endif
+# Use low level of optimisation to simplify debugging
+OPT = -O1
+
+BOARD = hat
 
 include ../../boards/board.mk

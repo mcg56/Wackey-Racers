@@ -3,10 +3,10 @@ DRIVERS =
 TARGET = racer.bin
 
 SRC = racer.c
-OPT = -O2
 
-ifneq ($(BOARD), racer)
-$(error BOARD should be set to racer!)
-endif
+# Use low level of optimisation to simplify debugging
+OPT = -O1
+
+BOARD = racer
 
 include ../../boards/board.mk
