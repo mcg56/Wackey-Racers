@@ -16,7 +16,6 @@ static void panic (void)
     while (1)
     {
         pio_output_toggle (LED1_PIO);
-        pio_output_toggle (LED2_PIO);
         delay_ms (400);
     }
 }

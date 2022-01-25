@@ -3,7 +3,8 @@
    Date:   15/4/2021
    Descr:  Read from an MP9250 IMU and write its output to the USB serial.
 */
-#include <pio.h>
+#include "pio.h"
+#include "delay.h"
 #include <fcntl.h>
 #include "target.h"
 #include "pacer.h"
@@ -13,22 +14,43 @@
 static twi_cfg_t mpu_twi_cfg =
 {
     .channel = TWI_CHANNEL_0,
-    .period = TWI_PERIOD_DIVISOR(100000), // 100 kHz
+    .period = TWI_PERIOD_DIVISOR (100000), // 100 kHz
     .slave_addr = 0
 };
+
+
+static void panic (void)
+{
+    while(1)
+    {
+        pio_output_toggle (LED1_PIO);
+        delay_ms (400);
+    }
+}
 
 
 int
 main (void)
 {
+    twi_t mpu_twi;
+    mpu_t *mpu;
+
     // Redirect stdio to USB serial
     usb_serial_stdio_init ();
 
+    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
+
     // Initialise the TWI (I2C) bus for the MPU
-    twi_t twi_mpu = twi_init (&mpu_twi_cfg);
+    mpu_twi = twi_init (&mpu_twi_cfg);
+
+    if (! mpu_twi)
+        panic ();
 
     // Initialise the MPU9250 IMU
-    mpu_t* mpu = mpu9250_init (twi_mpu, MPU_ADDRESS);
+    mpu = mpu9250_init (mpu_twi, MPU_ADDRESS);
+
+    if (! mpu)
+        panic ();
 
     pacer_init (10);
 
@@ -37,29 +59,22 @@ main (void)
         /* Wait until next clock tick.  */
         pacer_wait ();
 
-        if (mpu)
+        /* Read in the accelerometer data.  */
+        if (! mpu9250_is_imu_ready (mpu))
         {
-            /* read in the accelerometer data */
-            if (! mpu9250_is_imu_ready (mpu))
-            {
-                printf("Waiting for IMU to be ready...\n");
-            }
-            else
-            {
-                int16_t accel[3];
-                if (mpu9250_read_accel (mpu, accel))
-                {
-                    printf("x: %5d  y: %5d  z: %5d\n", accel[0], accel[1], accel[2]);
-                }
-                else
-                {
-                    printf("ERROR: failed to read acceleration\n");
-                }
-            }
+            printf("Waiting for IMU to be ready...\n");
         }
         else
         {
-            printf("ERROR: can't find MPU9250!\n");
+            int16_t accel[3];
+            if (mpu9250_read_accel (mpu, accel))
+            {
+                printf("x: %5d  y: %5d  z: %5d\n", accel[0], accel[1], accel[2]);
+            }
+            else
+            {
+                printf ("ERROR: failed to read acceleration\n");
+            }
         }
 
         fflush(stdout);
