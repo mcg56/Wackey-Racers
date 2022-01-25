@@ -1,4 +1,4 @@
-DRIVERS = pacer usb_serial rf button
+DRIVERS = pacer usb_serial nrf24 button
 PERIPHERALS = adc
 
 TARGET = rf_tester.bin
