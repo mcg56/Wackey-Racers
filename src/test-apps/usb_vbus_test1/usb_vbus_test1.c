@@ -23,11 +23,10 @@ main (void)
 {
     uint8_t flash_ticks;
 
-    /* Configure LED PIO as output.  */
     pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_config_set (UDP_VBUS_PIO, PIO_INPUT);
-    
+
     pacer_init (LOOP_POLL_RATE);
     flash_ticks = 0;
 
@@ -35,15 +34,15 @@ main (void)
     {
 	pacer_wait ();
 
-        // Turn on LED if VBUS detected
-        pio_output_set (LED_STATUS_PIO, pio_input_get (UDP_VBUS_PIO));
+        // Turn on error LED if VBUS not detected
+        pio_output_set (LED_ERROR_PIO, ! pio_input_get (UDP_VBUS_PIO));
 
-        // Flash other LED
+        // Flash status LED
 	flash_ticks++;
 	if (flash_ticks >= LOOP_POLL_RATE / (LED_FLASH_RATE * 2))
 	{
 	    flash_ticks = 0;
-	    pio_output_toggle (LED_ERROR_PIO);
+	    pio_output_toggle (LED_STATUS_PIO);
 	}
     }
 }

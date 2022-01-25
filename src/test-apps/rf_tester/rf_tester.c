@@ -117,7 +117,7 @@ int main (void)
     if (!rx_btn)
         panic ();
 
-#if 0 // LED/switch tester for confirming hardware is ok
+#if 0 // LED/switch tester for confirming hardware is okay
     while (1)
     {
         pio_output_set (TX_LED, pio_input_get (TX_BTN));
