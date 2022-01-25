@@ -85,7 +85,7 @@
 
 static uint8_t adc_devices_num = 0;
 static adc_dev_t adc_devices[ADC_DEVICES_NUM];
-static adc_dev_t *adc_config_last = 0;
+static bool adc_config_dirty = 0;
 
 
 /** Reset ADC.  */
@@ -134,6 +134,7 @@ adc_trigger_set (adc_t adc, adc_trigger_t trigger)
         /* Enable trigger.  */
         adc->MR |= ADC_MR_TRGEN_EN;
     }
+    adc_config_dirty = 1;    
 }
 
 
@@ -152,6 +153,7 @@ adc_clock_divisor_set (adc_t adc, adc_clock_divisor_t clock_divisor)
 
     BITS_INSERT (adc->MR, clock_divisor - 1, 8, 15);
     adc->clock_divisor = clock_divisor;
+    adc_config_dirty = 1;        
 }
 
 
@@ -189,6 +191,8 @@ adc_clock_speed_kHz_set (adc_t adc, adc_clock_speed_t clock_speed_kHz)
        Let's allocate 4.  */
     BITS_INSERT (adc->MR, 3, 24, 27);
 
+    adc_config_dirty = 1;    
+    
     return clock_speed / 1000;
 }
 
@@ -199,6 +203,7 @@ bool
 adc_channels_set (adc_t adc, adc_channels_t channels)
 {
     adc->channels = channels;
+    adc_config_dirty = 1;        
     return 1;
 }
 
@@ -235,6 +240,7 @@ adc_bits_set (adc_t adc, uint8_t bits)
     }
 
     adc->bits = bits;
+    adc_config_dirty = 1;        
     return bits;
 }
 
@@ -259,7 +265,8 @@ adc_comparison_set (adc_t adc, adc_channel_t channel, bool all_channels,
     BITS_INSERT(cwr, low_threshold, 0, 11);
     BITS_INSERT(cwr, low_threshold, 16, 27);
     adc->CWR = cwr;    
-
+    adc_config_dirty = 1;    
+    
     return 1;
 }
 
@@ -270,6 +277,7 @@ void
 adc_tag_set (adc_t adc, bool tag)
 {
     BITS_INSERT (adc->EMR, tag, 24, 24);
+    adc_config_dirty = 1;        
 }
 
 
@@ -279,6 +287,7 @@ adc_channels_select (adc_t adc)
 {
     ADC->ADC_CHDR = ~0;
     ADC->ADC_CHER = adc->channels;
+    adc_config_dirty = 1;        
 }
 
 
@@ -304,15 +313,43 @@ adc_conversion_start (adc_t adc)
 }
 
 
+/** Start calibration.   This is required every time the ADC is reset.  */
+void
+adc_calibration_start (adc_t adc)
+{
+    /* Software trigger.  */
+    ADC->ADC_CR = ADC_CR_AUTOCAL;
+}
+
+
+/** Returns true if a calibration has finished.  */
+bool
+adc_calibration_finished_p (adc_t adc)
+{
+    return (ADC->ADC_ISR & ADC_ISR_EOCAL) != 0;
+}
+
+
+void
+adc_calibrate (adc_t adc)
+{
+    adc_calibration_start (adc);
+
+    // This takes 306 ADC clocks.
+    while (! adc_calibration_finished_p (adc))
+        continue;
+}
+
+
 /* Configure ADC controller.  */
 bool
 adc_config (adc_t adc)
 {
     adc_channels_select (adc);
 
-    if (adc == adc_config_last)
+    if (! adc_config_dirty)
         return 1;
-    adc_config_last = adc;
+    adc_config_dirty = 0;
 
     /* Set mode register.  */
     ADC->ADC_MR = adc->MR;
@@ -346,31 +383,6 @@ adc_disable (adc_t adc)
 }
 
 
-/** The ADC multiplexer is not reset on a soft reset.
-    Note, this disables tagging.  */
-void
-adc_sync (adc_t adc)
-{
-    uint16_t channels;
-    uint16_t dummy = 0;
-    uint8_t max_channel;
-    
-    adc_tag_set (adc, 1);
-    adc_config (adc);
-
-    channels = adc->channels;
-    for (max_channel = 0; channels; max_channel++)
-        channels >>= 1;
-    do
-    {
-        adc_read (adc, &dummy, sizeof (dummy));
-    } while ((dummy >> 12) != max_channel);
-        
-    adc_tag_set (adc, 0);
-    adc_config (adc);    
-}
-
-
 /** Initalises the ADC registers for polling operation.  */
 adc_t
 adc_init (const adc_cfg_t *cfg)
@@ -385,9 +397,6 @@ adc_init (const adc_cfg_t *cfg)
         };
     
     if (adc_devices_num >= ADC_DEVICES_NUM)
-        return 0;
-
-    if ((cfg->channels == 0) && (cfg->channel >= ADC_CHANNEL_NUM))
         return 0;
 
     if (adc_devices_num == 0)
@@ -417,12 +426,6 @@ adc_init (const adc_cfg_t *cfg)
     /* Note, the ADC is not configured until adc_config called.  */
     adc_config (adc);
 
-#if 0
-    /* Synchronise ADC multiplexer.  */
-    if (cfg->channels != 0)
-        adc_sync (adc);
-#endif
-    
 #if 0
     /* I'm not sure why a dummy read is required; it is probably a
        quirk of the SAM7.  This will require a software trigger... */
@@ -514,3 +517,5 @@ adc_convert_bipolar (adc_sample_t *src, int16_t *dst, uint16_t samples)
 
     return dst;
 }
+
+

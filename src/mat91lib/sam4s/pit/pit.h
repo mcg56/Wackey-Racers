@@ -13,11 +13,10 @@ extern "C" {
 
 #include "config.h"
 
-/* Tick once every millisecond */
-#define PIT_CLOCK_DIVISOR 1000
+#define PIT_CLOCK_DIVISOR 1
 
 /** Rate in Hz that the pit is incremented.  */
-#define PIT_RATE (uint32_t)(F_CPU / PIT_CLOCK_DIVISOR)
+#define PIT_RATE (F_CPU / PIT_CLOCK_DIVISOR)
 
 
 /** Define pit ticks.  */

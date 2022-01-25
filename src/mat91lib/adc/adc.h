@@ -173,12 +173,11 @@ bool
 adc_comparison_p (adc_t adc);
 
 
-/** The ADC multiplexer is not reset on a soft reset.
-    Note, this disables tagging.  */
+/** Perform a calibration cycle.  */    
 void
-adc_sync (adc_t adc);
-    
+adc_calibrate (adc_t adc);
 
+    
 /** Initalises the ADC registers for specified configuration.  */
 adc_t 
 adc_init (const adc_cfg_t *cfg);

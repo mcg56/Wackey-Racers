@@ -34,6 +34,8 @@ typedef enum
 
 typedef enum
 {
+    /** Do nothing.  */
+    TC_MODE_NONE,    
     /** Active high repetitive pulse.  */
     TC_MODE_PULSE,
     /** Active low repetitive pulse.  */
@@ -42,6 +44,8 @@ typedef enum
     TC_MODE_PULSE_ONESHOT,
     /** Active low single pulse.  */
     TC_MODE_PULSE_ONESHOT_INVERT,
+    /** single toggle pulse */
+    TC_MODE_PULSE_ONESHOT_TOGGLE,
     /** Drive output high after delay.  */
     TC_MODE_DELAY_ONESHOT,
     /** Generate square wave (or close to it).  */
@@ -96,12 +100,14 @@ typedef uint16_t tc_prescale_t;
 /** TC configuration structure.  */
 typedef struct
 {
-    pio_t pio;
+    pio_t pio;                  /* TIOA */
     tc_mode_t mode;
+    tc_mode_t aux_mode;    
     tc_prescale_t prescale;     /* 2, 8, 32, 128.  0 defaults to 2.  */
     /* If frequency is non-zero then it overrides period and delay.  */
     tc_period_t period;         /* Clocks */
     tc_period_t delay;          /* Clocks */
+    tc_period_t aux_delay;      /* Clocks */    
     tc_frequency_t frequency;   /* Hz */
 } tc_cfg_t;
 
@@ -145,6 +151,24 @@ tc_period_t
 tc_delay_get (tc_t tc);
 
 
+/** Set the delay in clocks.  */
+tc_period_t
+tc_delay_set (tc_t tc, tc_period_t delay);
+    
+
+/** Get the aux delay in clocks.  */
+tc_period_t
+tc_aux_delay_get (tc_t tc);    
+
+    
+/** Set the aux delay in clocks.  */
+tc_period_t
+tc_aux_delay_set (tc_t tc, tc_period_t delay);    
+
+/** Set the pulse mode */
+tc_ret_t
+tc_aux_mode_set (tc_t tc, tc_mode_t mode);
+    
 /** Get the period in clocks.  */
 tc_period_t
 tc_period_get (tc_t tc);

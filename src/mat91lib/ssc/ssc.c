@@ -2,7 +2,7 @@
     @author  Stuart Duncan, Michael Hayes
     @date    10 January 2012
     @brief   Routines for control and configuration of the AT91SAM SSC
-   
+
    */
 
 #include "ssc.h"
@@ -12,9 +12,15 @@
 
 
 /* A word can be transmitted over TD during the frame sync period,
-   using the contents of the 16-bit TSHR register.  Similarly, RD can
-   be sampled during the frame sync period and stored in the 16-bit
-   RSHR.  */
+   using the contents of the 16-bit TSHR register (this is a
+   preamble).  Similarly, RD can be sampled during the frame sync
+   period and stored in the 16-bit RSHR.
+
+   The following data packet can be up to 32 bits long.  Thus if one
+   is cunning, a 48 bit word can be transferred: 16 bits in the
+   preamble and 32 bits after.  However, the 48 bits cannot be sent by
+   DMA.
+*/
 
 
 static ssc_dev_t ssc_dev;
@@ -22,7 +28,7 @@ static ssc_dev_t ssc_dev;
 
 /* Set the clock divider.  */
 static void
-ssc_clock_divisor_set (ssc_t ssc, ssc_clock_divisor_t clock_divisor) 
+ssc_clock_divisor_set (ssc_t ssc, ssc_clock_divisor_t clock_divisor)
 {
    SSC->SSC_CMR = clock_divisor;
    ssc->clock_divisor = clock_divisor;
@@ -57,19 +63,19 @@ ssc_fs_period_set (ssc_t ssc, ssc_fs_period_t fs_period, ssc_module_t module)
 
     if (module == SSC_TX)
         BITS_INSERT (SSC->SSC_TCMR, period, 24, 31);
-    else 
+    else
         BITS_INSERT (SSC->SSC_RCMR, period, 24, 31);
 }
 
 
-ssc_fs_period_t 
+ssc_fs_period_t
 ssc_fs_period_get (ssc_t ssc, ssc_module_t module)
 {
     uint8_t period;
 
     if (module == SSC_TX)
         period = BITS_EXTRACT (SSC->SSC_TCMR, 24, 31);
-    else 
+    else
         period = BITS_EXTRACT (SSC->SSC_RCMR, 24, 31);
 
     return (period + 1) << 1;
@@ -78,7 +84,7 @@ ssc_fs_period_get (ssc_t ssc, ssc_module_t module)
 
 /* Configure a module.  */
 static uint8_t
-ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module) 
+ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
 {
     /* Select options to apply to clock mode register.  */
     uint32_t cmr;
@@ -86,11 +92,10 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
     uint8_t fslen;
     uint8_t fslen_ext;
     uint8_t datlen;
-    
+
     if (!cfg)
         return 0;
 
-    // initialise the mode register to it's reset value
     if (module == SSC_TX)
     {
         SSC->SSC_TCMR = 0;
@@ -99,7 +104,7 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
     {
         SSC->SSC_RCMR = 0;
     }
-                
+
     ssc_fs_period_set (ssc, cfg->fs_period, module);
 
     cmr = cfg->start_delay << 16;
@@ -112,13 +117,13 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
 
     /* Select clock source.  */
     cmr |= cfg->clock_select;
-    
+
     /* Select clock output mode.  */
     cmr |= cfg->clock_out_mode;
 
     /* Select gating of the clock by the frame sync.  */
     cmr |= cfg->clock_gate_mode;
-    
+
     if (cfg->fs_length < 1)
         cfg->fs_length = 1;
 
@@ -137,10 +142,10 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
 
     /* Select frame sync edge that will generate interrupt.  */
     fmr |= cfg->fs_edge;
-    
+
     if (cfg->data_msb_first)
         fmr |= SSC_RFMR_MSBF;
-    
+
     /* Apply the configuration to the appropriate module.  */
     if (module == SSC_TX)
     {
@@ -150,11 +155,11 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
         SSC->SSC_TFMR = fmr | cfg->sync_data_enable;
         SSC->SSC_TCMR |= cmr;
     }
-    else 
+    else
     {
         if (cfg->loop_mode)
             fmr |= SSC_RFMR_LOOP;
-        
+
         SSC->SSC_RFMR = fmr;
         SSC->SSC_RCMR |= cmr | cfg->stop_mode;
     }
@@ -164,20 +169,20 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
 
 /* Configure the ssc peripheral.  */
 static void
-ssc_config_set (ssc_t ssc, const ssc_cfg_t *cfg) 
+ssc_config_set (ssc_t ssc, const ssc_cfg_t *cfg)
 {
     /* Enable the peripheral clock.  */
     mcu_pmc_enable (ID_SSC);
 
     /* Reset receiver and transmitter.  */
-    SSC->SSC_CR = SSC_CR_SWRST | SSC_CR_RXDIS | SSC_CR_TXDIS;        
+    SSC->SSC_CR = SSC_CR_SWRST | SSC_CR_RXDIS | SSC_CR_TXDIS;
 
     /* Set the clock divider.  */
     ssc_clock_speed_kHz_set (ssc, cfg->clock_speed_kHz);
-    
+
     /* Configure the receiver module if the configuration exists.  */
     ssc_module_config (ssc, cfg->rx, SSC_RX);
-    
+
     /* Configure the transmit module if the configuration exists.  */
     ssc_module_config (ssc, cfg->tx, SSC_TX);
 }
@@ -199,32 +204,54 @@ ssc_module_ready_p (ssc_t ssc, ssc_module_t tx_rx)
         mask = SSC_SR_RXRDY;
         break;
     }
-    
+
     return (mask & SSC->SSC_SR) != 0;
 }
 
 
-bool
-ssc_read_ready_p (ssc_t ssc)
+void
+ssc_sync(ssc_t ssc)
 {
-    return ssc_module_ready_p (ssc, SSC_RX);
-}
+    int i;
 
+    #define TIMEOUT 10000
 
-bool
-ssc_write_ready_p (ssc_t ssc)
-{
-    return ssc_module_ready_p (ssc, SSC_TX);
+    SSC->SSC_CR |= SSC_CR_RXDIS;
+    pio_config_set (RF_PIO, PIO_INPUT);
+
+    /* Wait for high transition.  */
+    for (i = 0; i < TIMEOUT; i++)
+    {
+        if (pio_input_get (RF_PIO))
+            break;
+    }
+
+    /* Wait for low transition.  */
+    for (i = 0; i < TIMEOUT; i++)
+    {
+        if (! pio_input_get (RF_PIO))
+            break;
+    }
+
+    /* Wait for high transition.  */
+    for (i = 0; i < TIMEOUT; i++)
+    {
+        if (pio_input_get (RF_PIO))
+            break;
+    }
+
+    pio_config_set (RF_PIO, RF_PERIPH);
+    SSC->SSC_CR |= SSC_CR_RXEN;
 }
 
 
 /* Enable an SSC module.  */
 static void
-ssc_module_enable (ssc_t ssc, ssc_module_t tx_rx) 
+ssc_module_enable (ssc_t ssc, ssc_module_t tx_rx)
 {
-    switch (tx_rx) 
+    switch (tx_rx)
     {
-    case SSC_TX: 
+    case SSC_TX:
         pio_config_set (TD_PIO, TD_PERIPH);
         pio_config_set (TK_PIO, TK_PERIPH);
         pio_config_set (TF_PIO, TF_PERIPH);
@@ -245,11 +272,11 @@ ssc_module_enable (ssc_t ssc, ssc_module_t tx_rx)
 
 /* Disable an SSC module.  */
 static void
-ssc_module_disable (ssc_t ssc, ssc_module_t tx_rx) 
+ssc_module_disable (ssc_t ssc, ssc_module_t tx_rx)
 {
     switch (tx_rx)
     {
-    case SSC_TX: 
+    case SSC_TX:
         SSC->SSC_CR |= SSC_CR_TXDIS;
 
         pio_config_set (TD_PIO, PIO_INPUT);
@@ -277,7 +304,7 @@ ssc_disable (ssc_t ssc)
 
     if (ssc->rx)
         ssc_module_disable (ssc, SSC_RX);
-} 
+}
 
 
 /* Enable all of the modules.  */
@@ -293,65 +320,139 @@ ssc_enable (ssc_t ssc)
 
 
 /* Read data from the rx buffer.  */
-static uint16_t
-ssc_read_8 (ssc_t ssc, void *buffer, uint16_t length)
+static uint32_t
+ssc_read_8 (ssc_t ssc, void *buffer, uint32_t length)
 {
     uint8_t *dst = buffer;
-    int i;
+    uint32_t i;
 
     for (i = 0; i < length; i++)
     {
         while (!ssc_read_ready_p (ssc))
             continue;
-        *dst++ = SSC->SSC_RHR;
+        *dst++ = ssc_read_value (ssc);
     }
     return length;
 }
 
 
 /* Read data from the rx buffer.  */
-static uint16_t
-ssc_read_16 (ssc_t ssc, void *buffer, uint16_t length)
+static uint32_t
+ssc_read_16 (ssc_t ssc, void *buffer, uint32_t length)
 {
     uint16_t *dst = buffer;
-    int i;
+    uint32_t i;
 
     for (i = 0; i < length; i++)
     {
         while (!ssc_read_ready_p (ssc))
             continue;
-        *dst++ = SSC->SSC_RHR;
+        *dst++ = ssc_read_value (ssc);
     }
     return length << 1;
 }
 
 
 /* Read data from the rx buffer.  */
-static uint16_t
-ssc_read_32 (ssc_t ssc, void *buffer, uint16_t length)
+static uint32_t
+ssc_read_32 (ssc_t ssc, void *buffer, uint32_t length)
 {
-    uint8_t *dst = buffer;
-    int i;
+    uint32_t *dst = buffer;
+    uint32_t i;
 
     for (i = 0; i < length; i++)
     {
         while (!ssc_read_ready_p (ssc))
             continue;
-        *dst++ = SSC->SSC_RHR;
+        *dst++ = ssc_read_value (ssc);
     }
     return length << 2;
 }
 
 
 /* Read data from the rx buffer.  */
-uint16_t
-ssc_read (ssc_t ssc, void *buffer, uint16_t bytes)
+uint32_t
+ssc_read (ssc_t ssc, void *buffer, uint32_t bytes)
 {
     if (ssc->rx->data_length <= 8)
         return ssc_read_8 (ssc, buffer, bytes);
     else if (ssc->rx->data_length <= 16)
         return ssc_read_16 (ssc, buffer, (bytes + 1) >> 1);
     return ssc_read_32 (ssc, buffer, (bytes + 3) >> 2);
+}
+
+
+uint32_t
+ssc_read_32_unpack_int16_sum (ssc_t ssc, int32_t *buffer, uint32_t length)
+{
+    uint32_t i;
+
+    for (i = 0; i < length; i++)
+    {
+        int32_t val;
+
+        while (!ssc_read_ready_p (ssc))
+            continue;
+
+        val = ssc_read_value (ssc);
+        *buffer++ += val >> 16;
+        *buffer++ += (val << 16) >> 16;
+    }
+    return length;
+}
+
+
+uint32_t
+ssc_read_16_add (ssc_t ssc, int32_t *buffer, uint32_t length)
+{
+    uint32_t i;
+
+    for (i = 0; i < length; i++)
+    {
+        int16_t val;
+
+        while (!ssc_read_ready_p (ssc))
+            continue;
+
+        val = ssc_read_value (ssc);
+        *buffer++ += val;
+    }
+    return length;
+}
+
+
+uint32_t
+ssc_read_16_subtract (ssc_t ssc, int32_t *buffer, uint32_t length)
+{
+    uint32_t i;
+
+    for (i = 0; i < length; i++)
+    {
+        int16_t val;
+
+        while (!ssc_read_ready_p (ssc))
+            continue;
+
+        val = ssc_read_value (ssc);
+        *buffer++ -= val;
+    }
+    return length;
+}
+
+
+uint32_t
+ssc_read_ignore (ssc_t ssc, uint32_t length)
+{
+    uint32_t i;
+
+    for (i = 0; i < length; i++)
+    {
+        while (!ssc_read_ready_p (ssc))
+            continue;
+
+        ssc_read_value (ssc);
+    }
+    return length;
 }
 
 
@@ -366,7 +467,7 @@ ssc_write_8 (ssc_t ssc, void *buffer, uint16_t length)
     {
         while (!ssc_write_ready_p (ssc))
             continue;
-        SSC->SSC_THR = *src++;        
+        SSC->SSC_THR = *src++;
     }
     return length;
 }
@@ -383,7 +484,7 @@ ssc_write_16 (ssc_t ssc, void *buffer, uint16_t length)
     {
         while (!ssc_write_ready_p (ssc))
             continue;
-        SSC->SSC_THR = *src++;        
+        SSC->SSC_THR = *src++;
     }
     return length << 1;
 }
@@ -400,7 +501,7 @@ ssc_write_32 (ssc_t ssc, void *buffer, uint16_t length)
     {
         while (!ssc_write_ready_p (ssc))
             continue;
-        SSC->SSC_THR = *src++;        
+        SSC->SSC_THR = *src++;
     }
     return length << 2;
 }
@@ -425,7 +526,7 @@ ssc_pdc_get (ssc_t ssc)
 }
 
 
-ssc_t 
+ssc_t
 ssc_init (const ssc_cfg_t *cfg)
 {
     ssc_t ssc;
@@ -453,8 +554,15 @@ ssc_shutdown (ssc_t ssc)
     pio_config_set (RD_PIO, PIO_OUTPUT_LOW);
     pio_config_set (RK_PIO, PIO_OUTPUT_LOW);
     pio_config_set (RF_PIO, PIO_OUTPUT_LOW);
-    
+
     pio_config_set (TD_PIO, PIO_OUTPUT_LOW);
     pio_config_set (TK_PIO, PIO_OUTPUT_LOW);
     pio_config_set (TF_PIO, PIO_OUTPUT_LOW);
+}
+
+
+void
+ssc_reset (ssc_t ssc)
+{
+    SSC->SSC_CR |= BIT(15);
 }

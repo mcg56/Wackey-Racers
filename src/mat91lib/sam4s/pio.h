@@ -55,9 +55,7 @@ typedef enum pio_config_enum
 {
     PIO_INPUT = 1,          /* Configure as input pin.  */
     PIO_PULLUP,             /* Configure as input pin with pullup.  */
-    PIO_INPUT_PULLUP = PIO_PULLUP, /* Configure as input pin with pullup.  */ 
     PIO_PULLDOWN,           /* Configure as input pin with pulldown.  */
-    PIO_INPUT_PULLDOWN = PIO_PULLDOWN, /* Configure as input pin with pulldown.  */    
     PIO_OUTPUT_LOW,         /* Configure as output, initially low.  */
     PIO_OUTPUT_HIGH,        /* Configure as output, initially high.  */
     PIO_PERIPH_A,
@@ -169,6 +167,13 @@ typedef enum pio_config_enum
 #define TIOA2_PIO PA26_PIO
 #define TIOA2_PERIPH PIO_PERIPH_B
 
+#define TIOB0_PIO PA1_PIO
+#define TIOB0_PERIPH PIO_PERIPH_B
+#define TIOB1_PIO PA16_PIO
+#define TIOB1_PERIPH PIO_PERIPH_B
+#define TIOB2_PIO PA27_PIO
+#define TIOB2_PERIPH PIO_PERIPH_B    
+
 /* TWI  */
 #define TWD0_PIO PA3_PIO
 #define TWD0_PERIPH PIO_PERIPH_A
@@ -263,16 +268,7 @@ pio_config_set (pio_t pio, pio_config_t config)
     case PIO_PULLUP:
         PIO_BASE (pio)->PIO_ODR = PIO_BITMASK_ (pio);
         PIO_BASE (pio)->PIO_PER = PIO_BITMASK_ (pio);
-        PIO_BASE (pio)->PIO_PPDDR = PIO_BITMASK_ (pio);
         PIO_BASE (pio)->PIO_PUER = PIO_BITMASK_ (pio);
-        pio_init (pio);
-        return 1;
-
-    case PIO_PULLDOWN:
-        PIO_BASE (pio)->PIO_ODR = PIO_BITMASK_ (pio);
-        PIO_BASE (pio)->PIO_PER = PIO_BITMASK_ (pio);
-        PIO_BASE (pio)->PIO_PUDR = PIO_BITMASK_ (pio);
-        PIO_BASE (pio)->PIO_PPDER = PIO_BITMASK_ (pio);
         pio_init (pio);
         return 1;
 
@@ -326,7 +322,7 @@ pio_config_set (pio_t pio, pio_config_t config)
 
 /** Set PIO high.
     @param pio  */
-static inline __attribute__((optimize (2))) void
+static __always_inline__ __attribute__((optimize (2))) void
 pio_output_high (pio_t pio)
 {
     PIO_BASE (pio)->PIO_SODR = PIO_BITMASK_ (pio);
@@ -335,7 +331,7 @@ pio_output_high (pio_t pio)
 
 /** Set PIO low.
     @param pio  */
-static inline __attribute__((optimize (2))) void 
+static __always_inline__ __attribute__((optimize (2))) void 
 pio_output_low (pio_t pio)
 {
     PIO_BASE (pio)->PIO_CODR = PIO_BITMASK_ (pio);
@@ -345,7 +341,7 @@ pio_output_low (pio_t pio)
 /** Set PIO to desired state.
     @param pio 
     @param state  */
-static inline __attribute__((optimize (2))) void
+static __always_inline__ __attribute__((optimize (2))) void
 pio_output_set (pio_t pio, bool state)
 {
     state ? pio_output_high (pio) : pio_output_low (pio);
@@ -355,7 +351,7 @@ pio_output_set (pio_t pio, bool state)
 /** Get output state of PIO.
     @param pio
     @return state  */
-static inline __attribute__((optimize (2))) bool
+static __always_inline__ __attribute__((optimize (2))) bool
 pio_output_get (pio_t pio)
 {
     return (PIO_BASE (pio)->PIO_ODSR & PIO_BITMASK_ (pio)) != 0;
@@ -365,7 +361,7 @@ pio_output_get (pio_t pio)
 /** Read input state of PIO.
     @param pio
     @return state  */
-static inline __attribute__((optimize (2))) bool
+static __always_inline__ __attribute__((optimize (2))) bool
 pio_input_get (pio_t pio)
 {
     return (PIO_BASE (pio)->PIO_PDSR & PIO_BITMASK_ (pio)) != 0;
@@ -374,7 +370,7 @@ pio_input_get (pio_t pio)
 
 /** Toggle PIO.
     @param pio  */
-static inline __attribute__((optimize (2))) void
+static __always_inline__ __attribute__((optimize (2))) void
 pio_output_toggle (pio_t pio)
 {
     pio_output_get (pio) ? pio_output_low (pio) : pio_output_high (pio);
@@ -452,7 +448,7 @@ pio_irq_config_set (pio_t pio, pio_irq_config_t config)
     necessary to read PIO_ISR to clear the interrupt source.
     Unfortunately, this will clear other pending input change
     interrupts from the same PIO controller.  */
-static inline void
+static __always_inline__ void
 pio_irq_enable (pio_t pio)
 {
     PIO_BASE (pio)->PIO_IER = PIO_BITMASK_ (pio);
@@ -460,7 +456,7 @@ pio_irq_enable (pio_t pio)
 
 
 /** Disable PIO input change interrupt for specified PIO.   */
-static inline void
+static __always_inline__ void
 pio_irq_disable (pio_t pio)
 {
     PIO_BASE (pio)->PIO_IDR = PIO_BITMASK_ (pio);
@@ -472,7 +468,7 @@ pio_irq_disable (pio_t pio)
     gnarly side-effect of clearing ALL the PIO interrupts on the same
     port.  The work-around is to have a common interrupt handler that
     delegates to previously registered sub-handlers.  */
-static inline uint32_t
+static __always_inline__ uint32_t
 pio_irq_clear (pio_t pio)
 {
     return PIO_BASE (pio)->PIO_ISR;

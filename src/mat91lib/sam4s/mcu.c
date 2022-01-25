@@ -9,14 +9,23 @@
 #include "cpu.h"
 #include "irq.h"
 
-/* TODO: CHECKME  */
-#define MCU_FLASH_SPEED 30e6
 
-#ifndef MCU_FLASH_READ_CYCLES 
-#define MCU_FLASH_READ_CYCLES 2
+#define MCU_FLASH_WAIT_STATES ((MCU_FLASH_READ_CYCLES) - 1)
+
+/* This must be in range 0--6.  The default is 1 giving a prescale
+   value of 2.  */
+#ifndef MCU_MCK_PRESCALER_VALUE
+#define MCU_MCK_PRESCALER_VALUE 1
 #endif
 
+#if MCU_MCK_PRESCALER_VALUE > 6
+#error MCU_MCK_PRESCLAER_VALUE must be 6 or smaller
+#endif
 
+#define MCU_MCK_PRESCALE (1 << (MCU_MCK_PRESCALER_VALUE))
+
+/* CPU_PLL_DIV and CPU_PLL_MUL are for backward compatibility and
+   shall be deprecated.  */
 #ifdef CPU_PLL_DIV
 #define MCU_PLL_DIV CPU_PLL_DIV
 #endif
@@ -25,33 +34,47 @@
 #define MCU_PLL_MUL CPU_PLL_MUL
 #endif
 
-#if MCU_PLL_MUL > 80
-#error MCU_PLL_MUL must be less than 80
+#ifndef MCU_PLLA_MUL
+#define MCU_PLLA_MUL MCU_PLL_MUL
 #endif
 
+#ifndef MCU_PLLA_DIV
+#define MCU_PLLA_DIV MCU_PLL_DIV
+#endif
 
-#define F_PLL_IN  (F_XTAL / MCU_PLL_DIV)
-#define F_PLL_OUT  (F_PLL_IN * MCU_PLL_MUL)
+#if MCU_PLLA_MUL > 62
+/* See errata in datasheet.  */
+#error MCU_PLLA_MUL must be 62 or smaller
+#endif
 
-/* The PLL input frequency needs to be between 3 and 32 MHz.  This is
+#ifdef MCU_PLLB_MUL
+#if MCU_PLLB_MUL > 62
+/* See errata in datasheet.  */
+#error MCU_PLLB_MUL must be 62 or smaller
+#endif
+#endif
+
+#define F_PLLA_IN  (F_XTAL / MCU_PLLA_DIV)
+#define F_PLLA_OUT  (F_PLLA_IN * MCU_PLLA_MUL)
+
+/* The PLLA input frequency needs to be between 3 and 32 MHz.  This is
    the frequency after the divider and before the frequency
    multiplier.  */
-#define F_PLL_IN_MIN    3000000
-#define F_PLL_IN_MAX   32000000
+#define F_PLLA_IN_MIN    3000000
+#define F_PLLA_IN_MAX   32000000
 
-
-/* The PLL output frequency needs to be between 80 and 240 MHz.   */
-#define F_PLL_OUT_MIN  80000000
-#define F_PLL_OUT_MAX 240000000
+/* The PLLA output frequency needs to be between 80 and 240 MHz.   */
+#define F_PLLA_OUT_MIN  80000000
+#define F_PLLA_OUT_MAX 240000000
 
 #if 0
 /* Not all C preprocessors can handle floating point macros.  */
-#if F_PLL_IN < F_PLL_IN_MIN
-#error MCU_PLL_MUL is too large, the PLL input frequency is too low
+#if F_PLLA_IN < F_PLLA_IN_MIN
+#error MCU_PLLA_MUL is too large, the PLLA input frequency is too low
 #endif
 
-#if F_PLL_IN > F_PLL_IN_MAX
-#error MCU_PLL_MUL is too small, the PLL input frequency is too high
+#if F_PLLA_IN > F_PLLA_IN_MAX
+#error MCU_PLLA_MUL is too small, the PLLA input frequency is too high
 #endif
 #endif
 
@@ -69,9 +92,10 @@
 
 #define MCU_USB_LOG2_DIV 0
 
-/* The PLL frequency is given by (F_XTAL * MCU_PLL_MUL) / MCU_PLL_DIV.
-   This is then divided by the prescaler (assumed 2) for MCK.  */
+/* The PLLA frequency is given by (F_XTAL * MCU_PLLA_MUL) / MCU_PLLA_DIV.
 
+   The MCK frequency is given by (F_XTAL * MCU_PLLA_MUL) / MCU_PLLA_DIV / MCU_MCK_PRESCALE.
+*/
 
 
 /* The AT91 Flash is single plane so it is not possible
@@ -79,38 +103,20 @@
 
 /** Initialise flash memory controller.  */
 static void
-mcu_flash_init (void)
+mcu_flash_wait_states_set (uint8_t wait_states)
 {
-#if 0
-    /* TODO  */
-    switch (MCU_FLASH_READ_CYCLES)
-    {
-    case 1:
-        /* Set 0 flash wait states for reading, 1 for writing.  */
-        EEFC->MC_FMR = MC_FWS_0FWS;
-        break;
-
-    case 2:
-        /* Set 1 flash wait state for reading, 2 for writing.  */
-        EEFC->MC_FMR = MC_FWS_1FWS;
-        break;
-
-    case 3:
-        /* Set 2 flash wait states for reading, 3 for writing.  */
-        EEFC->MC_FMR = MC_FWS_2FWS;
-        break;
-
-    default:
-        /* Set 3 flash wait states for reading, 4 for writing.  */
-        EEFC->MC_FMR = MC_FWS_3FWS;
-        break;
-    }
-
     /* Set number of MCK cycles per microsecond for the Flash
        microsecond cycle number (FMCN) field of the Flash mode
        register (FMR).  */
-    BITS_INSERT (EEFC->MC_FMR, (uint16_t) (F_CPU / 1e6), 16, 23);
-#endif
+     EFC0->EEFC_FMR = EEFC_FMR_FWS (wait_states);
+}
+
+
+/** Initialise flash memory controller.  */
+static void
+mcu_flash_init (void)
+{
+   mcu_flash_wait_states_set (MCU_FLASH_WAIT_STATES);
 }
 
 
@@ -121,13 +127,13 @@ mcu_xtal_mainck_start (void)
         CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCXTEN |
         CKGR_MOR_MOSCXTST (MCU_MAINCK_COUNT);
     
-    /* Wait for the xtal oscillator to stabilize.  */
+    /* Wait for the XTAL oscillator to stabilize.  */
     while (! (PMC->PMC_SR & PMC_SR_MOSCXTS))
         continue;
     
     PMC->CKGR_MOR |= CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCSEL;
 
-    /* Could check if xtal oscillator fails to start; say if xtal
+    /* Could check if XTAL oscillator fails to start; say if XTAL
        not connected.  */
 }
 
@@ -147,7 +153,7 @@ mcu_mck_ready_wait (void)
 }
 
 
-/** Set up the main clock (MAINCK), PLL clock, and master clock (MCK).   */
+/** Set up the main clock (MAINCK), PLLA clock, and master clock (MCK).   */
 static int
 mcu_clock_init (void)
 {
@@ -155,25 +161,31 @@ mcu_clock_init (void)
        oscillator is disabled after reset and slow clock is
        selected. 
 
-       There are four clock sources: SLCK (the 32 kHz internal RC
-       oscillator or 32 kHz external crystal slow clock), MAINCK (the
-       external 3-20 MHz crystal or internal 4/8/12 MHz internal fast
-       RC oscillator main clock), PLLACK, and PLLBCK.  The two PLL
-       clocks are the outputs of the the phase locked loop driven by
-       MAINCK).  One of these four clock sources can be fed to a
-       prescaler (with divisors 2^0 ... 2^6) to drive MCK (master
-       clock).
+       There are four clock sources: 
+       1. SLCK (the 32 kHz internal RC oscillator or
+          32 kHz external crystal slow clock), 
+
+       2. MAINCK (the external 3-20 MHz crystal or internal 4/8/12 MHz
+       internal fast RC oscillator main clock),
+
+       3. PLLACK,
+
+       4. PLLBCK.
+
+       The PLLs are driven by MAINCK.
+
+       One of these four clock sources can be fed to a prescaler (with
+       divisors 2^0 ... 2^6) to drive MCK (master clock).   
        
        The main oscillator (external crystal) can range from 3--20 MHz.
-       The PLL frequency can range from 80--240 MHz.
+       The PLLA frequency can range from 80--240 MHz.
 
        Here we assume that an external crystal is used for the MAINCK
        and this is multiplied by PLLA to drive MCK.
 
-       PLLB is not touched here.  Currently, the USB clock is derived
-       from PLLA; this restricts MCK to be a multiple of 48 MHz
-       required for the USB clock.  This restriction could be relaxed
-       using PLLB for the USB.
+       If the USB clock is derived from PLLA this restricts MCK to be
+       a multiple of 48 MHz required for the USB clock.  This
+       restriction can be relaxed using PLLB for the USB.
 
        Initially MCK is driven from the 4 MHz internal fast RC oscillator.
     */
@@ -184,7 +196,7 @@ mcu_clock_init (void)
     if ((PMC->PMC_MCKR & PMC_MCKR_CSS_Msk) == PMC_MCKR_CSS_PLLA_CLK)
         mcu_reset ();
 
-    /* Start xtal oscillator and select as MAINCK.  */
+    /* Start XTAL oscillator and select as MAINCK.  */
     mcu_xtal_mainck_start ();
     
     /* Select MAINCK for MCK (this should already be selected).  */
@@ -193,8 +205,9 @@ mcu_clock_init (void)
     if (!mcu_mck_ready_wait ())
         return 0;
 
-    /* Set prescaler to 2.  */
-    PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_PRES_Msk)) | PMC_MCKR_PRES_CLK_2;
+    /* Set prescaler.  */
+    PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_PRES_Msk)) | (MCU_MCK_PRESCALER_VALUE << 4);
+    
     if (!mcu_mck_ready_wait ())
         return 0;
 
@@ -204,17 +217,31 @@ mcu_clock_init (void)
     /* Disable PLLA if it is running and reset fields.  */
     PMC->CKGR_PLLAR = CKGR_PLLAR_ONE | CKGR_PLLAR_MULA (0);
 
-    /* Configure and start PLLA.  The PLL start delay is MCU_PLL_COUNT
-       SLCK cycles.  Note, PLLA (but not PLBB) needs the mysterious
+    /* Configure and start PLLA.  The PLLA start delay is MCU_PLL_COUNT
+       SLCK cycles.  Note, PLLA (but not PLLB) needs the mysterious
        bit CKGR_PLLAR_ONE set.  */
-    PMC->CKGR_PLLAR = CKGR_PLLAR_MULA (MCU_PLL_MUL - 1) 
-        | CKGR_PLLAR_DIVA (MCU_PLL_DIV) 
+    PMC->CKGR_PLLAR = CKGR_PLLAR_MULA (MCU_PLLA_MUL - 1) 
+        | CKGR_PLLAR_DIVA (MCU_PLLA_DIV) 
         | CKGR_PLLAR_PLLACOUNT (MCU_PLL_COUNT) | CKGR_PLLAR_ONE;
 
+    #ifdef MCU_PLLB_MUL
+    /* Configure and start PLLB.  The PLLB start delay is MCU_PLLB_COUNT
+       SLCK cycles.  */
+    PMC->CKGR_PLLBR = CKGR_PLLBR_MULB (MCU_PLLB_MUL - 1) 
+        | CKGR_PLLBR_DIVB (MCU_PLLB_DIV) 
+        | CKGR_PLLBR_PLLBCOUNT (MCU_PLL_COUNT);
+    #endif
+    
     /* Wait for PLLA to start up.  */
     while (! (PMC->PMC_SR & PMC_SR_LOCKA))
         continue;
 
+    #ifdef MCU_PLLB_MUL    
+    /* Wait for PLLB to start up.  */
+    while (! (PMC->PMC_SR & PMC_SR_LOCKB))
+        continue;
+    #endif
+    
     /* Switch to PLLA_CLCK for MCK.  */
     PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_CSS_Msk)) 
         | PMC_MCKR_CSS_PLLA_CLK;
@@ -281,16 +308,13 @@ mcu_init (void)
     irq_id_t id;
     int i;
 
-    EFC0->EEFC_FMR = EEFC_FMR_FWS (5);
-
+    mcu_flash_init ();
+    
     /* Disable all interrupts to be sure when debugging.  */
     for (i = 0; i < 8; i++)
         NVIC->ICER[i] = ~0;
 
     mcu_reset_enable ();
-
-    /* Reduce the number of wait states for the flash memory.  */
-    mcu_flash_init ();
 
     mcu_watchdog_disable ();
 
@@ -318,10 +342,10 @@ mcu_reset (void)
 void
 mcu_select_slowclock (void)
 {
-    /* Switch main clock (MCK) from PLLCLK to SLCK.  Note the prescale
+    /* Switch master clock (MCK) from PLLACLK to SLCK.  Note the prescale
        (PRES) and clock source (CSS) fields cannot be changed at the
-       same time.  We first switch from the PLLCLK to SLCK then set
-       the prescaler to divide by 64. */
+       same time.  We first switch from the PLLACLK to SLCK then set
+       the prescaler to divide by 64.  */
     PMC->PMC_MCKR = (PMC->PMC_MCKR & PMC_MCKR_PRES_Msk)
         | PMC_MCKR_CSS_SLOW_CLK;
 
@@ -335,10 +359,10 @@ mcu_select_slowclock (void)
     while (!(PMC->PMC_SR & PMC_SR_MCKRDY))
         continue;
 
-    /* Disable PLL.  */
+    /* Disable PLLA.  */
     PMC->CKGR_PLLAR = CKGR_PLLAR_ONE | CKGR_PLLAR_MULA (0);
 
-    ///* Disable main oscillator.  */
+    /* Disable main oscillator.  */
     PMC->CKGR_MOR = CKGR_MOR_KEY (0x37);
 }
 
@@ -413,5 +437,55 @@ mcu_udp_enable (void)
     /* TODO.  */
     PMC->PMC_PCER |= (1 << AT91C_ID_UDP);
     UDP->UDP_TXVC &= ~AT91C_UDP_TXVDIS;
+#endif
+}
+
+
+/* Place this function in SRAM to avoid problem when switching from
+   PLLCK to SLCK.  See errata 39.4.4.2.  */
+void
+mcu_power_mode_low (void)
+    __attribute__ ((section(".ramtext")));
+
+
+void
+mcu_power_mode_low (void)
+{
+    /* Deactivating the brownout detector saves 20 uA; this requires
+       programming of the GPNVM bits.  */
+       
+    /* Disabling the UDP saves ??? uA.  Connecting the USB port pins
+       to ground also saves about 100 uA.  */
+    mcu_udp_disable ();
+
+#if 0
+    /* TODO.  */
+
+    /* Switch main clock (MCK) from PLLCLK to SLCK.  Note the prescale
+       (PRES) and clock source (CSS) fields cannot be changed at the
+       same time.  We first switch from the PLLCLK to SLCK then set
+       the prescaler to divide by 64. */
+    PMC->PMC_MCKR = (PMC->PMC_MCKR & AT91C_PMC_PRES)
+        | AT91C_PMC_CSS_SLOW_CLK;
+
+    while (!(PMC->PMC_SR & AT91C_PMC_MCKRDY))
+        continue;
+    
+    /* Set prescaler to divide by 64.  */
+    PMC->PMC_MCKR = (PMC->PMC_MCKR & AT91C_PMC_CSS)
+        | AT91C_PMC_PRES_CLK_64;
+
+    while (!(PMC->PMC_SR & AT91C_PMC_MCKRDY))
+        continue;
+
+    /* Disable PLL.  */
+    PMC->PMC_PLLR = 0;
+
+    /* Disable main oscillator.  */
+    PMC->PMC_MOR = 0;
+
+    /* Switch voltage regulator to standby (low-power) mode.
+       This reduces its static current requirement from 100 uA to 25 uA.  */
+    VREG->VREG_MR |= AT91C_VREG_PSTDBY;
 #endif
 }

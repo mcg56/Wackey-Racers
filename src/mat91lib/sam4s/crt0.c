@@ -30,8 +30,6 @@ void reset (void)
 
 void _reset_handler (void);
 
-void _systick_handler (void);
-
 void _unexpected_handler (void);
 
 
@@ -101,7 +99,7 @@ irq_handler_t exception_table[] =
     _unexpected_handler,
     0,                 /* Reserved  */
     _unexpected_handler,
-    _systick_handler,
+    _unexpected_handler,
     
     /* Configurable interrupts  */
     _unexpected_handler,    /* 0  Supply Controller */
@@ -170,7 +168,7 @@ void _reset_handler (void)
        This register is zero on reset.  */
     SCB->VTOR = (uint32_t) &exception_table & SCB_VTOR_TBLOFF_Msk;
 
-    /* Set up clocks, wait-states, etc.  */
+    /* Set up clocks, etc.  */
     mcu_init ();
 
     /* Call constructors and init functions.   */

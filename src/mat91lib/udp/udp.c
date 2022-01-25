@@ -265,6 +265,11 @@
 #endif
 
 
+#ifndef F_PLLA
+#define F_PLLA F_PLL
+#endif
+
+
 #ifdef USB_PIO_DETECT
 #define USB_VBUS_PIO USB_PIO_DETECT
 #endif
@@ -1551,8 +1556,13 @@ udp_enable (udp_t udp)
     // Set the PLL USB divider
     PMC->PMC_PLLR |= AT91C_CKGR_USBDIV_1;
 #else
-    /* Note, this clears USBS to select PLLA.  */
-    PMC->PMC_USB = PMC_USB_USBDIV ((int)(F_PLL / 48e6 + 0.5) - 1);
+    #ifdef MCU_PLLB_MUL
+    /* Set USBS to select PLLB.  */    
+    PMC->PMC_USB = PMC_USB_USBDIV ((int)(F_PLLB / 48e6 + 0.5) - 1) | 1;
+    #else
+    /* Clear USBS to select PLLA.  */
+    PMC->PMC_USB = PMC_USB_USBDIV ((int)(F_PLLA / 48e6 + 0.5) - 1);
+    #endif
 #endif
 
     // Enable the 48MHz USB clock UDPCK and System Peripheral USB clock

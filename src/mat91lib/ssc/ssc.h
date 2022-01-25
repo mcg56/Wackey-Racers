@@ -2,7 +2,7 @@
     @author Stuart Duncan, Michael Hayes
     @date 16 December 2011
     @brief Simple hardware driver for the AT91SAM7 SSC peripheral
-   
+
 
     The driver does not support interrupts or DMA, and only the RX
     module has been tested (the TX module was sort-of tested via
@@ -13,7 +13,7 @@
     peripheral.  The flexibility is it's downfall, making it tricky
     and complicated to configure.  Before attempting to use this you
     should thoroughly read the SSC section of the datasheet for a
-    clear description of the options available.  
+    clear description of the options available.
 */
 
 #ifndef SSC_H
@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 
 #include "config.h"
 
@@ -48,32 +48,32 @@ typedef uint8_t  ssc_data_num_t;    // Data words per frame
 typedef enum
 {
     // Data are sampled/shifted on clock falling edge
-    SSC_CLOCK_FALLING = 0,         
+    SSC_CLOCK_FALLING = 0,
     // Data are sampled/shifted on clock rising edge
-    SSC_CLOCK_RISING  = SSC_RCMR_CKI 
+    SSC_CLOCK_RISING  = SSC_RCMR_CKI
 } ssc_clock_edge_t;
 
 
 
 /* Stop condition select.  This only applies if a data transfer has
    started with a compare register 0 match.  */
-typedef enum 
+typedef enum
 {
     // Wait for next compare register 0 match
-    SSC_STOP_WAIT       = (0 << 12),       
+    SSC_STOP_WAIT       = (0 << 12),
     // Operate continuously until a compare register 1 match
-    SSC_STOP_CONTINUOUS = (1 << 12)        
+    SSC_STOP_CONTINUOUS = (1 << 12)
 } ssc_stop_mode_t;
 
 
-typedef enum 
+typedef enum
 {
     SSC_TX, SSC_RX
 } ssc_module_t;
 
 
 /* Clock source.  */
-typedef enum 
+typedef enum
 {
     // Use internal clock
     SSC_CLOCK_INTERNAL = 0,
@@ -85,7 +85,7 @@ typedef enum
 
 
 /* Clock mode.  */
-typedef enum 
+typedef enum
 {
     // Configure TK or RK as input
     SSC_CLOCK_INPUT = SSC_RCMR_CKO_NONE,
@@ -97,7 +97,7 @@ typedef enum
 
 
 /* Clock gating.  */
-typedef enum 
+typedef enum
 {
     // Receive clock always enabled
     SSC_CLOCK_GATE_NONE = 0,
@@ -119,25 +119,25 @@ typedef enum
     // Start one clock after falling edge of RF
     SSC_START_LOW           = SSC_RCMR_START_RF_LOW,
     // Start one clock after rising edge of RF
-    SSC_START_HIGH          = SSC_RCMR_START_RF_HIGH, 
+    SSC_START_HIGH          = SSC_RCMR_START_RF_HIGH,
     // Start after falling edge of RF
     SSC_START_FALLING       = SSC_RCMR_START_RF_FALLING,
     // Start after rising edge of RF
-    SSC_START_RISING        = SSC_RCMR_START_RF_RISING,  
+    SSC_START_RISING        = SSC_RCMR_START_RF_RISING,
     // Start one clock after next rising or falling edge of RF
     SSC_START_LEVEL_CHANGE  = SSC_RCMR_START_RF_LEVEL,
     // Start after next rising or falling edge of RF
     SSC_START_ANY_EDGE      = SSC_RCMR_START_RF_EDGE,
     // Start when compare register 0 matches sync data
-    SSC_START_COMPARE0      = SSC_RCMR_START_CMP_0        
+    SSC_START_COMPARE0      = SSC_RCMR_START_CMP_0
 } ssc_start_mode_t;
 
 
 /* Frame sync output mode.  */
-typedef enum 
+typedef enum
 {
     // RF/TF pin is input
-    SSC_FS_INPUT      = SSC_RFMR_FSOS_NONE,    
+    SSC_FS_INPUT      = SSC_RFMR_FSOS_NONE,
     // Output negative pulse before data transfer
     SSC_FS_NEGATIVE   = SSC_RFMR_FSOS_NEGATIVE,
     // Output positive pulse before data transfer
@@ -152,7 +152,7 @@ typedef enum
 
 
 /* Frame sync edge which generates interrupts.  */
-typedef enum 
+typedef enum
 {
     SSC_FS_EDGE_POSITIVE = 0,
     SSC_FS_EDGE_NEGATIVE = SSC_RFMR_FSEDGE
@@ -160,7 +160,7 @@ typedef enum
 
 
 /* Frame sync data enable.  */
-typedef enum 
+typedef enum
 {
     // The default value is output on TD during the frame sync period
     SSC_FSDEN_DEFAULT = 0,
@@ -170,10 +170,10 @@ typedef enum
 
 
 /* Configuration structure for the SSC.  */
-typedef struct 
+typedef struct
 {
     /* Period between fs assertions (clocks).  */
-    ssc_fs_period_t      fs_period;   
+    ssc_fs_period_t      fs_period;
     /* Delay after start event before data reception/transmission (clocks).  */
     ssc_delay_t          start_delay;
     /* Length of the frame sync pulse when it is pulsed.  */
@@ -197,11 +197,11 @@ typedef struct
 } ssc_module_cfg_t;
 
 
-typedef struct 
+typedef struct
 {
     // Transmitter configuration
     ssc_module_cfg_t *tx;
-    
+
     // Receiver configuration
     ssc_module_cfg_t *rx;
 
@@ -214,14 +214,14 @@ typedef ssc_dev_t *ssc_t;
 
 /* SSC configuration structure, allows tx and rx modules to be independently
    configured.  */
-typedef struct 
+typedef struct
 {
     // Transmitter configuration
     ssc_module_cfg_t *tx;
-    
+
     // Receiver configuration
     ssc_module_cfg_t *rx;
-    
+
     /* Clock speed in kHz (maximum).  */
     ssc_clock_speed_t clock_speed_kHz;
 } ssc_cfg_t;
@@ -241,25 +241,60 @@ void
 ssc_disable (ssc_t ssc);
 
 
-bool
-ssc_read_ready_p (ssc_t ssc);
+static __always_inline__ bool
+ssc_read_ready_p (ssc_t ssc)
+{
+    return (SSC_SR_RXRDY & SSC->SSC_SR) != 0;
+}
 
 
-bool
-ssc_write_ready_p (ssc_t ssc);
+static __always_inline__ uint32_t
+ssc_read_value (ssc_t ssc)
+{
+    return SSC->SSC_RHR;
+}
 
 
-/** Read the data in the rx buffer TODO (test)
-   @return the data read from the buffer
-   @param boolean wait for buffer ready, true = wait, false = don't wait
+static __always_inline__ bool
+ssc_write_ready_p (ssc_t ssc)
+{
+    return (SSC_SR_TXRDY & SSC->SSC_SR) != 0;
+}
+
+
+
+/** Read the data in the rx buffer
+   @return the number of values read
  */
-uint16_t
-ssc_read (ssc_t ssc, void *buffer, uint16_t length);
+uint32_t
+ssc_read (ssc_t ssc, void *buffer, uint32_t length);
 
 
-/** Write to the tx buffer TODO (test)
+/** Read 32-bit data; extract upper and lower 16-bit signed values
+    and sum into buffers.
+    @return number of 32-bit values read
+ */
+uint32_t
+ssc_read_32_unpack_int16_add (ssc_t ssc, int32_t *buffer, uint32_t length);
+
+
+uint32_t
+ssc_read_16_add (ssc_t ssc, int32_t *buffer, uint32_t length);
+
+
+uint32_t
+ssc_read_16_subtract (ssc_t ssc, int32_t *buffer, uint32_t length);
+
+
+/** Read and throw away data.
+    @return number of bytes read
+*/
+uint32_t
+ssc_read_ignore (ssc_t ssc, uint32_t length);
+
+
+/** Write to the tx buffer
     @param the data to write
-    @param boolean wait for ready, true = wait, false = don't wait
  */
 uint16_t
 ssc_write (ssc_t ssc, void *buffer, uint16_t length);
@@ -269,7 +304,7 @@ void
 ssc_fs_period_set (ssc_t ssc, ssc_fs_period_t fs_period, ssc_module_t module);
 
 
-ssc_fs_period_t 
+ssc_fs_period_t
 ssc_fs_period_get (ssc_t ssc, ssc_module_t module);
 
 
@@ -280,10 +315,10 @@ ssc_pdc_get (ssc_t ssc);
 /** Initialize/configure the SSC. You still need to enable the
     appropriate modules.  If a module is to be disabled then the
     pointer to its configuration from within the ssc config should be
-    null. 
+    null.
     @param pointer to the ssc configuration structure to apply
 */
-ssc_t 
+ssc_t
 ssc_init (const ssc_cfg_t *);
 
 
@@ -291,9 +326,14 @@ void
 ssc_shutdown (ssc_t ssc);
 
 
+void
+ssc_reset (ssc_t ssc);
+
+
+void
+ssc_sync(ssc_t ssc);
+
 #ifdef __cplusplus
 }
-#endif    
+#endif
 #endif //SSC_H
-
-

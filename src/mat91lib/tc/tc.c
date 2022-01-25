@@ -52,7 +52,7 @@
 #endif
 
 
-/* Define known TC pins.  */
+/* Define known TC pins (A channel).  */
 static const pinmap_t tc_pins[] = 
 {
     {0, TIOA0_PIO, TIOA0_PERIPH, 0}, /* TIOA0 */
@@ -256,7 +256,7 @@ static tc_ret_t
 tc_output_set (tc_t tc)
 {
     if ((tc->mode == TC_MODE_ADC) || (tc->mode == TC_MODE_COUNTER)
-        || (tc->mode == TC_MODE_INTERRUPT))
+        || (tc->mode == TC_MODE_INTERRUPT) || (tc->mode == TC_MODE_NONE))
         
         return TC_OK;
 
@@ -264,9 +264,7 @@ tc_output_set (tc_t tc)
        to desired state.  Note, the clock is stopped.  */
     tc->base->TC_CCR |= TC_CCR_CLKDIS | TC_CCR_SWTRG; 
 
-    /* Make timer pin TIOAx a timer output.  Perhaps we could use
-       different logical timer channels to generate pulses on TIOBx
-       pins?  */
+    /* Make timer pin TIOAx a timer output.  */
     switch (TC_CHANNEL (tc))
     {
     case TC_CHANNEL_0:
@@ -290,11 +288,54 @@ tc_output_set (tc_t tc)
 }
 
 
+static tc_ret_t
+tc_aux_output_set (tc_t tc)
+{
+    if ((tc->mode == TC_MODE_ADC) || (tc->mode == TC_MODE_COUNTER)
+        || (tc->mode == TC_MODE_INTERRUPT))
+        return TC_OK;
+
+    /* Generate a software trigger with the clock stopped to set TIOBx
+       to desired state.  Note, the clock is stopped.  */
+    tc->base->TC_CCR |= TC_CCR_CLKDIS | TC_CCR_SWTRG; 
+
+    /* Make timer pin TIOBx a timer output.  */
+    switch (TC_CHANNEL (tc))
+    {
+    case TC_CHANNEL_0:
+        /* Switch to peripheral B and disable pin as PIO.  */
+        pio_config_set (TIOB0_PIO, TIOB0_PERIPH);
+        break;
+
+    case TC_CHANNEL_1:
+        pio_config_set (TIOB1_PIO, TIOB1_PERIPH);
+        break;
+
+    case TC_CHANNEL_2:
+        pio_config_set (TIOB2_PIO, TIOB2_PERIPH);
+        break;
+
+    default:
+        return TC_ERROR_CHANNEL;
+    }
+
+    return TC_OK;
+}
+
+
 /** Get the delay in clocks.  */
 tc_period_t
 tc_delay_get (tc_t tc)
 {
     return tc->delay;
+}
+
+
+/** Get the aux delay in clocks.  */
+tc_period_t
+tc_aux_delay_get (tc_t tc)
+{
+    return tc->aux_delay;
 }
 
 
@@ -317,6 +358,22 @@ tc_delay_set (tc_t tc, tc_period_t delay)
 
     /* This register is read only when not in wave mode.  */
     tc->base->TC_RA = delay;
+
+    return delay;
+}
+
+
+/** Set the aux delay in clocks.  In clock modes this sets the duty.  */
+tc_period_t
+tc_aux_delay_set (tc_t tc, tc_period_t delay)
+{
+    tc->aux_delay = delay;
+
+    if (!delay)
+        delay = tc->period >> 1;
+
+    /* This register is read only when not in wave mode.  */
+    tc->base->TC_RB = delay;
 
     return delay;
 }
@@ -398,6 +455,13 @@ tc_mode_set (tc_t tc, tc_mode_t mode)
             | TC_CMR_ACPA_CLEAR | TC_CMR_ACPC_SET
             | TC_CMR_ASWTRG_SET;
         break;
+    
+    case TC_MODE_PULSE_ONESHOT_TOGGLE:
+        /* Set TIOBx to output. Toggle TIOBx when RC matches. 
+        Stop the clock when RC matches. */
+        tc->base->TC_CMR = TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_CPCSTOP | TC_CMR_WAVSEL_UP_RC
+            | TC_CMR_ACPC_TOGGLE | TC_CMR_ASWTRG_SET;
 
     case TC_MODE_DELAY_ONESHOT:
         /* Don't change TIOAx.  Stop clock when RC matches.  */
@@ -444,7 +508,8 @@ tc_mode_set (tc_t tc, tc_mode_t mode)
             | TC_CMR_ABETRG | TC_CMR_ETRGEDG_NONE;
         tc->base->TC_IER = TC_IER_COVFS | TC_IER_LDRAS | TC_IER_LDRBS;
         break;
-
+    
+    case TC_MODE_NONE:
     case TC_MODE_COUNTER:
         break;
         
@@ -457,13 +522,100 @@ tc_mode_set (tc_t tc, tc_mode_t mode)
 }
 
 
+/** Configure TC with specified aux mode.  */
+tc_ret_t
+tc_aux_mode_set (tc_t tc, tc_mode_t mode)
+{
+    /* Many timer counters can only generate a pulse with a single
+       timer clock period.  This timer counter allows the pulse width
+       to be varied.  It is specified by period - delay. 
+
+       We configure the TC in mode WAVSEL_UP_RC.  Here the counter
+       is incremented and is reset when RC matches.  The output is
+       driven when RB matches.  */
+    switch (mode)
+    {
+    case TC_MODE_NONE:
+            return TC_OK;
+        
+    case TC_MODE_ADC:
+    case TC_MODE_CLOCK:
+    case TC_MODE_INTERRUPT:
+    case TC_MODE_PULSE:
+        /* Set TIOBx to output. Set high when RB matches and clear 
+        TIOBx when RC matches. */
+        tc->base->TC_CMR |= TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_WAVSEL_UP_RC | TC_CMR_BCPB_SET | TC_CMR_BCPC_CLEAR
+            | TC_CMR_BSWTRG_CLEAR | TC_CMR_EEVT_XC0;
+        break;
+
+    case TC_MODE_PULSE_INVERT:
+        /* Set TIOBx to output. Clear TIOBx when RB matches and set 
+        TIOBx high when RC matches.  */
+        tc->base->TC_CMR |= TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_WAVSEL_UP_RC | TC_CMR_BCPB_CLEAR | TC_CMR_BCPC_SET
+            | TC_CMR_BSWTRG_SET | TC_CMR_EEVT_XC0;
+        break;
+
+    case TC_MODE_PULSE_ONESHOT:
+        /* Set TIOBx to output. Set high when RB matches and clear 
+        TIOBx when RC matches. Stop clock when RC matches.   */
+        tc->base->TC_CMR |= TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_CPCSTOP | TC_CMR_WAVSEL_UP_RC
+            | TC_CMR_BCPB_SET | TC_CMR_BCPC_CLEAR
+            | TC_CMR_BSWTRG_CLEAR | TC_CMR_EEVT_XC0;
+        break;
+
+    case TC_MODE_PULSE_ONESHOT_INVERT:
+        /* Set TIOBx to output. Clear TIOBx when RB matches and set 
+        TIOBx when RC matches. Stop clock when RC matches.  */
+        tc->base->TC_CMR = TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_CPCSTOP | TC_CMR_WAVSEL_UP_RC
+            | TC_CMR_BCPB_CLEAR | TC_CMR_BCPC_SET
+            | TC_CMR_BSWTRG_SET | TC_CMR_EEVT_XC0;
+        break;
+    
+    case TC_MODE_PULSE_ONESHOT_TOGGLE:
+        /* Set TIOBx to output. Toggle TIOBx when RB matches. 
+        Stop the clock when RC matches. */
+        tc->base->TC_CMR |= TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_CPCSTOP | TC_CMR_WAVSEL_UP_RC
+            | TC_CMR_BCPC_TOGGLE | TC_CMR_BSWTRG_NONE
+            | TC_CMR_EEVT_XC0;
+        break;
+
+    case TC_MODE_DELAY_ONESHOT:
+        /* Set TIOBx to output. Don't change TIOBx.  Stop clock 
+        when RC matches.  */
+        tc->base->TC_CMR |= TC_CMR_BURST_NONE | TC_CMR_WAVE
+            | TC_CMR_CPCSTOP | TC_CMR_WAVSEL_UP_RC
+            | TC_CMR_EEVT_XC0;
+        break;
+
+    case TC_MODE_CAPTURE_RISE_RISE:
+    case TC_MODE_CAPTURE_RISE_FALL:
+    case TC_MODE_CAPTURE_FALL_RISE:
+    case TC_MODE_CAPTURE_FALL_FALL:
+    case TC_MODE_COUNTER:
+        break;
+        
+    default:
+        return TC_ERROR_MODE;
+    }
+
+    tc->aux_mode = mode;
+    return TC_OK;
+}
+
+
 tc_prescale_t
 tc_prescale_set (tc_t tc, tc_prescale_t prescale)
 {
     /* The available prescaler values are 1, 4, 16, 64 for MCK / 2.
        Thus the effective prescaler values are 2, 8, 32, and 128.  On
        the SAM7 TIMER_CLOCK5 is MCK / 1024 but on the SAM4S it is
-       SLCK.  */
+       SLCK.  To reduce the jitter from a start command to a pin
+       transition, choose a smaller prescale value.  */
     if (prescale > 32 && prescale <= 128)
     {
         tc->base->TC_CMR |= TC_CMR_TCCLKS_TIMER_CLOCK4;
@@ -496,13 +648,22 @@ tc_config_set (tc_t tc, const tc_cfg_t *cfg)
 {
     tc_ret_t ret;
 
+    if (cfg->aux_delay)
+    {
+        ret = tc_aux_mode_set (tc, cfg->aux_mode);
+        if (ret < 0)
+            return ret;
+    }
+    else
+    {
+        ret = tc_mode_set (tc, cfg->mode);
+        if (ret < 0)
+            return ret;
+    }
+
     if (tc_prescale_set (tc, cfg->prescale) != cfg->prescale
         && cfg->prescale != 0)
         return TC_ERROR_PRESCALE;
-
-    ret = tc_mode_set (tc, cfg->mode);
-    if (ret < 0)
-        return ret;
     
     if (cfg->frequency)
     {
@@ -512,6 +673,7 @@ tc_config_set (tc_t tc, const tc_cfg_t *cfg)
     {
         tc_period_set (tc, cfg->period);
         tc_delay_set (tc, cfg->delay);
+        tc_aux_delay_set (tc, cfg->aux_delay);        
     }
 
     return TC_OK;
@@ -573,8 +735,9 @@ tc_init (const tc_cfg_t *cfg)
     
     tc_config_set (tc, cfg);
 
-    /* Configure output pin if applicable.  */
+    /* Configure output pins if applicable.  */
     tc_output_set (tc);
+    tc_aux_output_set (tc);    
 
     tc->overflows = 0;
     tc->capture_state = 0;
@@ -636,5 +799,3 @@ tc_sync (void)
 {
     TC_BASE->TC_BCR = TC_BCR_SYNC;
 }
-
-

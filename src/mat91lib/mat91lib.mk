@@ -13,7 +13,7 @@ $(error MCU undefined, this needs to be defined in the Makefile)
 endif
 
 ifndef RUN_MODE
-RUN_MODE = ROM	
+RUN_MODE = ROM
 endif
 
 ifndef OPT
@@ -30,6 +30,12 @@ else
 # This supersedes arm-none-eabi-gdb
 GDB = gdb-multiarch
 endif
+
+BUILD_DIR ?= .
+
+ABS_BUILD_DIR = $(abspath $(BUILD_DIR))
+
+TARGET := $(ABS_BUILD_DIR)/$(TARGET)
 
 TARGET_MAP = $(addsuffix .map, $(basename $(TARGET)))
 
@@ -72,7 +78,7 @@ INCLUDES += -I.
 
 ifeq ($(RUN_MODE), RAM)
 LDFLAGS +=-L$(LDSCRIPTS) -T$(MCU)-RAM.ld
-else 
+else
 LDFLAGS +=-L$(LDSCRIPTS) -T$(MCU)-ROM.ld
 endif
 
@@ -88,8 +94,12 @@ LDFLAGS += -lstdc++
 endif
 
 
-OBJDIR = objs
-DEPDIR = deps
+ifndef BOARD
+BOARD=
+endif
+
+OBJDIR = $(ABS_BUILD_DIR)/objs-$(BOARD)
+DEPDIR = $(ABS_BUILD_DIR)/deps-$(BOARD)
 
 # Dirty hack: add _x suffix for C++ files as a workaround for Windows'
 # lack of case discrimination where Adc.o is considered the same as
@@ -98,9 +108,9 @@ DEPDIR = deps
 # filename with the library name.  An even better approach is to
 # rewrite using cmake.
 
-OBJ1 = $(CCSRC:.cpp=_x.o) $(CSRC:.c=.o) 
+OBJ1 = $(CCSRC:.cpp=_x.o) $(CSRC:.c=.o)
 
-DEP1 = $(CCSRC:.cpp=_x.d) $(CSRC:.c=.d) 
+DEP1 = $(CCSRC:.cpp=_x.d) $(CSRC:.c=.d)
 
 # Create list of object and dependency files.  Note, sort removes duplicates.
 OBJS = $(sort $(addprefix $(OBJDIR)/, $(notdir $(sort $(OBJ1)))))
@@ -197,14 +207,14 @@ else
 $(OBJDIR)/%.o: %.c Makefile
 	$(CC) -c $(CFLAGS) $< -o $@
 # Generate dependencies to see if object file needs recompiling.
-	@printf "$(OBJDIR)/" > deps/$*.d
-	$(CC) -MM $(CFLAGS) $< >> deps/$*.d
+	@printf "$(OBJDIR)/" > $(DEPDIR)/$*.d
+	$(CC) -MM $(CFLAGS) $< >> $(DEPDIR)/$*.d
 
 $(OBJDIR)/%_x.o: %.cpp Makefile
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 # Generate dependencies to see if object file needs recompiling.
-	@printf "$(OBJDIR)/" > deps/$*_x.d
-	$(CXX) -MM $(CXXFLAGS) $< >> deps/$*_x.d
+	@printf "$(OBJDIR)/" > $(DEPDIR)/$*_x.d
+	$(CXX) -MM $(CXXFLAGS) $< >> $(DEPDIR)/$*_x.d
 endif
 
 # Link object files to form output file.
@@ -217,9 +227,14 @@ $(TARGET): $(DEPDIR) $(OBJS) $(EXTRA_OBJS)
 
 # Remove non-source files.
 .PHONY: clean
-clean: 
+ifeq ($(ABS_BUILD_DIR), $(abspath .))
+clean:
 	-$(DEL) *.o *.out *.hex *.bin *.elf *.d *.lst *.map *.sym *.lss *.cfg *.ocd *~
 	-$(DEL) -r $(OBJDIR) $(DEPDIR)
+else
+clean:
+	-$(DEL) -r $(ABS_BUILD_DIR)
+endif
 
 # Program the device.
 .PHONY: program
@@ -240,4 +255,3 @@ bootflash:
 .PHONY: debug
 debug:
 	$(GDB)  -x $(SCRIPTS)/debug.gdb $(TARGET)
-
