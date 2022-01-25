@@ -14,7 +14,7 @@
 /* Define LED configuration.  */
 static const led_cfg_t led1_cfg =
 {
-    .pio = LED1_PIO,
+    .pio = LED_ERROR_PIO,
     .active = 1
 };
 

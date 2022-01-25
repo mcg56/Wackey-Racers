@@ -14,7 +14,7 @@ static void panic (void)
 {
     while(1)
     {
-        pio_output_toggle (LED1_PIO);
+        pio_output_toggle (LED_ERROR_PIO);
         delay_ms (400);
     }
 }
@@ -41,8 +41,8 @@ int main(void)
     nrf24_t *nrf;
 
     // Configure LED PIO as output.
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
-    pio_config_set (LED2_PIO, PIO_OUTPUT_HIGH);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
 
     // Redirect stdio to USB serial.
     usb_serial_stdio_init ();
@@ -67,7 +67,7 @@ int main(void)
         {
             buffer[bytes] = 0;
             printf ("%s\n", buffer);
-            pio_output_toggle (LED1_PIO);
+            pio_output_toggle (LED_ERROR_PIO);
         }
     }
 }

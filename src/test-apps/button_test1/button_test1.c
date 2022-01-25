@@ -13,7 +13,7 @@ int
 main (void)
 {
     /* Configure LED PIO as output.  */
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
 
     /* Configure button PIO as input with pullup.  */
     pio_config_set (BUTTON_PIO, PIO_INPUT_PULLUP);
@@ -26,8 +26,8 @@ main (void)
         pacer_wait ();
 
         if (pio_input_get (BUTTON_PIO))
-            pio_output_high (LED1_PIO);
+            pio_output_high (LED_ERROR_PIO);
         else
-            pio_output_low (LED1_PIO);
+            pio_output_low (LED_ERROR_PIO);
     }
 }

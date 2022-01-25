@@ -15,7 +15,7 @@ static void panic (void)
 {
     while (1)
     {
-        pio_output_toggle (LED1_PIO);
+        pio_output_toggle (LED_ERROR_PIO);
         delay_ms (400);
     }
 }
@@ -43,8 +43,8 @@ int main (void)
     nrf24_t *nrf;
 
     // Configure LED PIO as output.
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
-    pio_config_set (LED2_PIO, PIO_OUTPUT_HIGH);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
     pacer_init (10);
 
 #ifdef RADIO_PWR_EN
@@ -62,13 +62,13 @@ int main (void)
         char buffer[32];
 
         pacer_wait ();
-        pio_output_toggle (LED2_PIO);
+        pio_output_toggle (LED_STATUS_PIO);
 
         sprintf (buffer, "Hello world %d\r\n", count++);
 
         if (! nrf24_write (nrf, buffer, sizeof (buffer)))
-            pio_output_set (LED1_PIO, 0);
+            pio_output_set (LED_ERROR_PIO, 0);
         else
-            pio_output_set (LED1_PIO, 1);
+            pio_output_set (LED_ERROR_PIO, 1);
     }
 }

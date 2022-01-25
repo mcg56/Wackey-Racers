@@ -27,8 +27,8 @@
 int
 main (void)
 {
-    /* Configure LED PIO as output.  */
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
+    /* Configure STATUS LED PIO as output.  */
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
 
     pacer_init (LED_FLASH_RATE * 2);
 
@@ -36,8 +36,8 @@ main (void)
     {
         /* Wait until next clock tick.  */
         pacer_wait ();
-        
+
         /* Toggle LED.  */
-        pio_output_toggle (LED1_PIO);
+        pio_output_toggle (LED_STATUS_PIO);
     }
 }

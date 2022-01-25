@@ -9,7 +9,7 @@ int main (void)
 {
     int i = 0;
 
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
 
     // Redirect stdio to USB serial    
     usb_serial_stdio_init ();
@@ -20,6 +20,6 @@ int main (void)
         
         printf ("Hello world %d\n", i++);
 
-        pio_output_toggle(LED1_PIO);
+        pio_output_toggle(LED_ERROR_PIO);
     }
 }

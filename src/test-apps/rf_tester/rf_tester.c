@@ -146,7 +146,7 @@ int main (void)
             if (nrf24_read(nrf, buffer, sizeof(buffer))) {
                 pio_output_set(RX_LED, 0);
                 printf("RX: %s\n", buffer);
-                pio_output_set(LED2_PIO, 0);
+                pio_output_set(LED_STATUS_PIO, 0);
             } else {
                 pio_output_set(RX_LED, 1);
             }

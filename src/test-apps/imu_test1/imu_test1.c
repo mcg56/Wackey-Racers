@@ -23,7 +23,7 @@ static void panic (void)
 {
     while(1)
     {
-        pio_output_toggle (LED1_PIO);
+        pio_output_toggle (LED_ERROR_PIO);
         delay_ms (400);
     }
 }
@@ -38,7 +38,7 @@ main (void)
     // Redirect stdio to USB serial
     usb_serial_stdio_init ();
 
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
 
     // Initialise the TWI (I2C) bus for the MPU
     mpu_twi = twi_init (&mpu_twi_cfg);
@@ -76,7 +76,6 @@ main (void)
                 printf ("ERROR: failed to read acceleration\n");
             }
         }
-
         fflush(stdout);
     }
 }

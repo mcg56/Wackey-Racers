@@ -13,13 +13,13 @@
 int
 main (void)
 {
-    pio_config_set (LED1_PIO, PIO_OUTPUT_HIGH);
-    pio_config_set (LED2_PIO, PIO_OUTPUT_HIGH);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_HIGH);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
 
     while (1)
     {
         delay_ms (1000 / (FLASH_RATE * 2));
 
-        pio_output_toggle (LED1_PIO);
+        pio_output_toggle (LED_ERROR_PIO);
     }
 }
