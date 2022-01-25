@@ -21,14 +21,14 @@ static twi_cfg_t mpu_twi_cfg =
 int
 main (void)
 {
-    // Redirect stdio to USB serial    
-    usb_serial_stdio_init ();    
+    // Redirect stdio to USB serial
+    usb_serial_stdio_init ();
 
     // Initialise the TWI (I2C) bus for the MPU
     twi_t twi_mpu = twi_init (&mpu_twi_cfg);
-    
+
     // Initialise the MPU9250 IMU
-    mpu_t* mpu = mpu9250_create (twi_mpu, MPU_ADDRESS);
+    mpu_t* mpu = mpu9250_init (twi_mpu, MPU_ADDRESS);
 
     pacer_init (10);
 

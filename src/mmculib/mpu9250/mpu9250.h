@@ -17,9 +17,10 @@ extern "C" {
 #include "twi.h"
 
 /** Define datatype for handle to MPU functions.  */
-typedef struct {
-	twi_t twi; /* TWI bus */
-	twi_slave_addr_t imu_addr; /* Address of the MPU9250 - one of 0x68 or 0x69 */
+typedef struct
+{
+    twi_t twi; /* TWI bus */
+    twi_slave_addr_t imu_addr; /* Address of the MPU9250 - one of 0x68 or 0x69 */
 } mpu_t;
 
 /**
@@ -29,7 +30,7 @@ typedef struct {
  * @parma slave_addre TWI address of the MPU device
  * @return MPU object, or NULL on failure
  */
-mpu_t *mpu9250_create(twi_t twi, twi_slave_addr_t slave_addr);
+mpu_t *mpu9250_init(twi_t twi, twi_slave_addr_t slave_addr);
 
 /**
  * Return true if IMU has data ready.

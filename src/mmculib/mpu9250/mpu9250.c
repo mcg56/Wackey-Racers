@@ -34,12 +34,12 @@
 /* This can be 0x69 if the AD0 pin is high.  */
 #define MPU9250_IMU_SLAVE_ADDR 0x68
 
-#define MPU9250_IMU_SELF_TEST_X_GYRO 0x00                  
-#define MPU9250_IMU_SELF_TEST_Y_GYRO 0x01                                                                          
+#define MPU9250_IMU_SELF_TEST_X_GYRO 0x00
+#define MPU9250_IMU_SELF_TEST_Y_GYRO 0x01
 #define MPU9250_IMU_SELF_TEST_Z_GYRO 0x02
 
 #define MPU9250_IMU_SELF_TEST_X_ACCEL 0x0D
-#define MPU9250_IMU_SELF_TEST_Y_ACCEL 0x0E    
+#define MPU9250_IMU_SELF_TEST_Y_ACCEL 0x0E
 #define MPU9250_IMU_SELF_TEST_Z_ACCEL 0x0F
 
 #define MPU9250_IMU_SELF_TEST_A      0x10
@@ -55,15 +55,15 @@
 #define MPU9250_IMU_GYRO_CONFIG      0x1B
 #define MPU9250_IMU_ACCEL_CONFIG     0x1C
 #define MPU9250_IMU_ACCEL_CONFIG2    0x1D
-#define MPU9250_IMU_LP_ACCEL_ODR     0x1E   
-#define MPU9250_IMU_WOM_THR          0x1F   
+#define MPU9250_IMU_LP_ACCEL_ODR     0x1E
+#define MPU9250_IMU_WOM_THR          0x1F
 
 #define MPU9250_IMU_MOT_DUR          0x20
 #define MPU9250_IMU_ZMOT_THR         0x21
 #define MPU9250_IMU_ZRMOT_DUR        0x22
 
 #define MPU9250_IMU_FIFO_EN          0x23
-#define MPU9250_IMU_I2C_MST_CTRL     0x24   
+#define MPU9250_IMU_I2C_MST_CTRL     0x24
 #define MPU9250_IMU_I2C_SLV0_ADDR    0x25
 #define MPU9250_IMU_I2C_SLV0_REG     0x26
 #define MPU9250_IMU_I2C_SLV0_CTRL    0x27
@@ -139,7 +139,7 @@
 #define MPU9250_IMU_DMP_RW_PNT       0x6E
 #define MPU9250_IMU_DMP_REG          0x6F
 #define MPU9250_IMU_DMP_REG_1        0x70
-#define MPU9250_IMU_DMP_REG_2        0x71 
+#define MPU9250_IMU_DMP_REG_2        0x71
 #define MPU9250_IMU_FIFO_COUNTH      0x72
 #define MPU9250_IMU_FIFO_COUNTL      0x73
 #define MPU9250_IMU_FIFO_R_W         0x74
@@ -167,10 +167,10 @@ static uint8_t mpu9250_imu_read(mpu_t *mpu, const uint8_t addr)
     return response;
 }
 
-static bool mpu9250_imu_write(mpu_t *mpu, const uint8_t addr,
+static bool mpu9250_imu_write (mpu_t *mpu, const uint8_t addr,
                                  const uint8_t value)
 {
-    twi_ret_t status = twi_master_addr_write(mpu->twi, mpu->imu_addr, addr, 1, &value, 1);
+    twi_ret_t status = twi_master_addr_write (mpu->twi, mpu->imu_addr, addr, 1, &value, 1);
     return (status == 1);
 }
 
@@ -186,12 +186,12 @@ static uint8_t mpu9250_mag_read(mpu_t *mpu, const uint8_t addr)
     return response;
 }
 
-static bool mpu9250_mag_write(mpu_t *mpu, const uint8_t addr, const uint8_t value)
+static bool mpu9250_mag_write (mpu_t *mpu, const uint8_t addr, const uint8_t value)
 {
     uint8_t response = 0;
     twi_ret_t status;
 
-    status = twi_master_addr_write(mpu->twi, MPU9250_MAG_SLAVE_ADDR, addr, 1, &value, 1);
+    status = twi_master_addr_write (mpu->twi, MPU9250_MAG_SLAVE_ADDR, addr, 1, &value, 1);
     return status == 1;
 }
 
@@ -206,15 +206,16 @@ static bool mpu9250_read_imu_data(mpu_t *mpu, const uint8_t addr, int16_t data[3
     twi_ret_t status;
 
     status = twi_master_addr_read(mpu->twi, mpu->imu_addr, addr, 1, rawdata, 6);
-    if (status != 6) {
+    if (status != 6)
+    {
         data[0] = data[1] = data[2] = 0;
         return false;
     }
 
     data[0] = ((int16_t)rawdata[0] << 8) | rawdata[1];
-    data[1] = ((int16_t)rawdata[2] << 8) | rawdata[3];  
-    data[2] = ((int16_t)rawdata[4] << 8) | rawdata[5]; 
-    
+    data[1] = ((int16_t)rawdata[2] << 8) | rawdata[3];
+    data[2] = ((int16_t)rawdata[4] << 8) | rawdata[5];
+
     return true;
 }
 
@@ -240,41 +241,42 @@ bool mpu9250_read_mag(mpu_t *mpu, int16_t magdata[3])
     twi_ret_t status;
 
     status = twi_master_addr_read(mpu->twi, MPU9250_MAG_SLAVE_ADDR, MPU9250_MAG_HXL, 1, rawdata, 7);
-    if (status != 7 || (rawdata[6] & (1 << 3))) {
+    if (status != 7 || (rawdata[6] & (1 << 3)))
+    {
         magdata[0] = magdata[1] = magdata[2] = 0;
         return false;
     }
 
     /* Note, magnetometer registers are LS byte first.  */
     magdata[0] = ((int16_t)rawdata[1] << 8) | rawdata[0];
-    magdata[1] = ((int16_t)rawdata[3] << 8) | rawdata[2];  
-    magdata[2] = ((int16_t)rawdata[5] << 8) | rawdata[4]; 
+    magdata[1] = ((int16_t)rawdata[3] << 8) | rawdata[2];
+    magdata[2] = ((int16_t)rawdata[5] << 8) | rawdata[4];
 
     return true;
 }
 
-static bool mpu9250_init_imu(mpu_t *mpu)
+static bool mpu9250_init_imu (mpu_t *mpu)
 {
     uint8_t response;
 
-    /* Make sure we can see the IMU ID */
+    /* Make sure we can see the IMU ID.  */
     response = mpu9250_imu_read(mpu, MPU9250_IMU_WHO_AM_I);
     if (response != 0x71)
         return false;
 
-    mpu9250_imu_write(mpu, MPU9250_IMU_PWR_MGMT_1, 0x00);
+    mpu9250_imu_write (mpu, MPU9250_IMU_PWR_MGMT_1, 0x00);
     DELAY_US (100);
 
     /* Choose best clock source.  */
-    mpu9250_imu_write(mpu, MPU9250_IMU_PWR_MGMT_1, 0x01);
+    mpu9250_imu_write (mpu, MPU9250_IMU_PWR_MGMT_1, 0x01);
     DELAY_US (200);
 
-    mpu9250_imu_write(mpu, MPU9250_IMU_CONFIG, 0x03);
+    mpu9250_imu_write (mpu, MPU9250_IMU_CONFIG, 0x03);
 
-    mpu9250_imu_write(mpu, MPU9250_IMU_SMPLRT_DIV, 0x04);
+    mpu9250_imu_write (mpu, MPU9250_IMU_SMPLRT_DIV, 0x04);
 
     /* Enable I2C bypass so commands can be sent to magnetometer.  */
-    mpu9250_imu_write(mpu, MPU9250_IMU_INT_PIN_CFG, 0x02);    
+    mpu9250_imu_write (mpu, MPU9250_IMU_INT_PIN_CFG, 0x02);
 
     return true;
 }
@@ -288,27 +290,28 @@ static bool mpu9250_init_mag(mpu_t *mpu)
     if (response != 0x48)
         return false;
 
-    /* Reset the device */
-    if (!mpu9250_mag_write(mpu, MPU9250_MAG_CNTL2, 0x1))
+    /* Reset the device.  */
+    if (!mpu9250_mag_write (mpu, MPU9250_MAG_CNTL2, 0x1))
         return false;
 
-    /* Set to continuous measurement 2 mode and 16-bit output */
-    if (!mpu9250_mag_write(mpu, MPU9250_MAG_CNTL1, (1 << 4) | (6 << 0)))
+    /* Set to continuous measurement 2 mode and 16-bit output.  */
+    if (!mpu9250_mag_write (mpu, MPU9250_MAG_CNTL1, (1 << 4) | (6 << 0)))
         return false;
 
     return true;
 }
 
-mpu_t *mpu9250_create(twi_t twi, twi_slave_addr_t imu_addr)
+
+mpu_t *mpu9250_init (twi_t twi, twi_slave_addr_t imu_addr)
 {
     mpu_t *mpu = &_static_mpu;
     mpu->imu_addr = imu_addr;
     mpu->twi = twi;
 
-    if (!mpu9250_init_imu(mpu))
+    if (!mpu9250_init_imu (mpu))
         return NULL;
 
-    if (!mpu9250_init_mag(mpu))
+    if (!mpu9250_init_mag (mpu))
         return NULL;
 
     return mpu;
