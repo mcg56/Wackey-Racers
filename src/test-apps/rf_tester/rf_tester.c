@@ -159,7 +159,8 @@ int main (void)
 
         // If we're listening, and there is data available, then
         // pulse the LED low and print the data to the usb port
-        if (listening) {
+        if (listening)
+        {
             if (nrf24_read (nrf, buffer, sizeof (buffer)))
             {
                 pio_output_set (RX_LED, 0);

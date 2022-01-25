@@ -76,6 +76,5 @@ main (void)
                 printf ("ERROR: failed to read acceleration\n");
             }
         }
-        fflush(stdout);
     }
 }
