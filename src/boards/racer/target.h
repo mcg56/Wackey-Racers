@@ -1,7 +1,7 @@
 /** @file   target.h
     @author M. P. Hayes, UCECE
     @date   12 February 2018
-    @brief 
+    @brief
 */
 #ifndef TARGET_H
 #define TARGET_H
@@ -41,12 +41,7 @@
 
 /* H-bridges   */
 #define MOTOR_LEFT_PWM_PIO PA11_PIO
-#define MOTOR_LEFT_PHASE_PIO PB4_PIO
-#define MOTOR_LEFT_MODE_PIO PA27_PIO
 #define MOTOR_RIGHT_PWM_PIO PA7_PIO
-#define MOTOR_RIGHT_PHASE_PIO PA6_PIO
-#define MOTOR_RIGHT_MODE_PIO PA28_PIO
-#define MOTOR_SLEEP_PIO PA5_PIO
 
 /* Radio  */
 #define RADIO_CS_PIO PA10_PIO
