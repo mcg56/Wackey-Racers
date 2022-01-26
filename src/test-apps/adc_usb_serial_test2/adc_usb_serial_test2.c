@@ -1,7 +1,7 @@
 /* File:   adc_usb_serial_test2.c
    Author: M. P. Hayes, UCECE
    Date:   3 May 2021
-   Descr:  This reads from ADC channels 2 and 4.
+   Descr:  This reads from joystick ADC channels.
            It triggers ADC conversions as each sample is read.
 */
 #include <stdio.h>
@@ -14,7 +14,7 @@
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
-    .channels = BIT (ADC_CHANNEL_2) | BIT (ADC_CHANNEL_4),
+    .channels = BIT (JOYSTICK_X_ADC_CHANNEL) | BIT (JOYSTICK_Y_ADC_CHANNEL),
     .trigger = ADC_TRIGGER_SW,
     .clock_speed_kHz = 1000
 };
