@@ -41,14 +41,12 @@ Each group member then clones the group project.
 \subsection{Project forking}
 \label{project-forking}
 
-The template software is hosted on the eng-git \program{Git} server at
-\href{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021}{\url{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021}}.
+The template software is hosted on the eng-git \program{Git} server.
 To fork the template:
 
 \begin{enumerate}
 \item
-  Go to
-  \href{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021}{\url{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers-2021}}.
+  Go to \url{https://eng-git.canterbury.ac.nz/wacky-racers/wacky-racers}.
 \item
   Click the `Fork' button. This will create a copy of the main repository
   for the project.
@@ -77,13 +75,13 @@ mind having to enter a username and password for every git pull and push
 operation use:
 %
 \begin{minted}[breaklines]{bash}
-$ git clone https://eng-git.canterbury.ac.nz/groupleader-userid/wacky-racers-2021.git wacky-racers
+$ git clone https://eng-git.canterbury.ac.nz/groupleader-userid/wacky-racers.git
 \end{minted}
 
 Otherwise, set up \program{ssh-keys} and use:
 %
 \begin{minted}[breaklines]{bash}
-$ git clone git@eng-git.canterbury.ac.nz:groupleader-userid/wacky-racers-2021.git wacky-racers
+$ git clone git@eng-git.canterbury.ac.nz:groupleader-userid/wacky-racers.git
 \end{minted}
 
 You can have several different cloned copies of your project in
@@ -92,7 +90,7 @@ and \program{git} in particular, is against you, clone a new copy,
 using:
 %
 \begin{minted}[breaklines]{bash}
-$ git clone https://eng-git.canterbury.ac.nz/groupleader-userid/wacky-racers-2021.git wacky-racers-new
+$ git clone https://eng-git.canterbury.ac.nz/groupleader-userid/wacky-racers.git wacky-racers-new
 \end{minted}
 
 
@@ -106,11 +104,10 @@ The toolchain is installed on computers in the ESL and CAE. It should
 run under both Linux and Windows.  If there is a problem ask the
 technical staff.
 
-The toolchain can be downloaded for Windows, Linux, and MacOS
-from \url{https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads}.
-
-To install parts of the toolchain separately, see the instructions in
-the following subsections.
+The toolchain can be downloaded for Windows, Linux, and macOS from
+\url{https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads}.
+For Linux and macOS, however, it is better to install the toolchain using your
+system's package manager: see the instructions in the following subsections.
 
 
 \subsection{Toolchain for Linux}
@@ -146,9 +143,9 @@ Install OpenOCD:
 $ sudo apt install openocd
 \end{minted}
 
-\subsection{Toolchain for MacOS}
+\subsection{Toolchain for macOS}
 
-For MacOS machines that have \href{https://brew.sh}{homebrew}
+For macOS machines that have \href{https://brew.sh}{homebrew}
 installed, you can use the following command:
 
 \begin{minted}{bash}
@@ -195,3 +192,36 @@ installation of two VS Code extensions:
 %
 VS Code should automatically prompt you to install these when you open
   the wacky-racers directory.
+
+
+\section{Using Windows in the ESL}
+
+On the Windows machines in the ESL, the toolchain is located at
+\file{C:\textbackslash{}ence461\textbackslash{}tool-chain}. This needs to be
+added to your session's \code{PATH} variable so toolchain commands can be run
+without needing to specify their full path. See
+\wikiref{ARM-GCC_in_the_DSL}{ARM-GCC in the DSL} on ECEWiki for more
+information.
+
+You can use Windows Command Prompt similarly to a Linux Shell. To open, press
+\code{Windows Key} + \code{R}, type \code{cmd}, and \code{Enter}. Then run
+\file{C:\textbackslash{}ence461\textbackslash{}tool-chain} inside the CMD window
+to source the toolchain. Although this guide is written for the Linux shell, the
+commands will also work in Command Prompt provided you observe the following
+differences:
+\begin{itemize}
+\item To change between drives (e.g. \file{C:} and \file{D:}), pass the
+\code{/d} switch to the \code{cd} command.
+\item Instead of \code{export VARIABLE=value}, use \code{set VARIABLE=value}.
+Also you cannot set an environment variable when you run a command, so
+\code{BOARD=hat make} won't work; run \code{set BOARD=hat} and \code{make} in
+separate commands instead.
+\item To run GDB, you must invoke the complete command name
+\code{arm-none-eabi-gdb}.
+\item In path names, \file{/} is replaced by \file{\textbackslash} (backslash).
+\end{itemize}
+
+If you are using Windows on the ESL machines and want to use VS Code, you can
+run \file{vscode.bat} located in the top level of the \file{wacky-racers}
+repository. This will open VS Code with the repository added to the workspace
+and the necessary toolchain added to \code{PATH}.
