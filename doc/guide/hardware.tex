@@ -172,7 +172,7 @@ power.  Instead of a resistor, a ferrite bead is better.
     \draw (2, 0) to[short] (4, 0);
     \draw (2, -2) to[short] (4, -2);
     \draw (6, 0.5) -- (4, 0.5) -- (4, -2.5) -- (6, -2.5);
-    \node[right=0.2] at (4, 0) {VCC};
+    \node[right=0.2] at (4, 0) {VDD};
     \node[right=0.2] at (4, -2) {GND};
     \node at (6, -1) {nRF24};
   \end{circuitikz}
@@ -242,10 +242,13 @@ orientations. The 461 Altium library has a component named
 
 \subsection{LED Tape}
 
-The LED tape is a daisy-chained string of WS2812 LEDs.  These LEDs use
-a clever mechanism to pass the RGB data down the string with different
-pulse lengths for 1 and 0.  They are connected as shown
-in \reffig{LED-chaining}.
+The LED tape is a daisy-chained string of WS2812 smart LEDs.  These
+LEDs use a clever mechanism to pass the RGB data down the
+string\footnote{Each element consists of red, green, and blue LEDs
+  with an 8-bit shift register to control the brightness for each
+  colour.  These shift registers are chained together.} with different
+pulse lengths for 1 and 0.  They are connected as shown in
+\reffig{LED-chaining}.
 
 \begin{figure}[h]
   \centering
@@ -263,15 +266,15 @@ in \reffig{LED-chaining}.
     \draw (8, -2) node[left] {DOUT} -- (9, -2) node[right] {DIN};
     \draw (12, -2) node[left] {DOUT} -- (13, -2);
 
-    \draw (2.5, 0) -- (2.5, -1) node[below] {VCC};
-    \draw (6.5, 0) -- (6.5, -1) node[below] {VCC};
-    \draw (10.5, 0) -- (10.5, -1) node[below] {VCC};
+    \draw (2.5, 0) -- (2.5, -1) node[below] {VDD};
+    \draw (6.5, 0) -- (6.5, -1) node[below] {VDD};
+    \draw (10.5, 0) -- (10.5, -1) node[below] {VDD};
 
     \draw (2.5, -4) -- (2.5, -3) node[above] {GND};
     \draw (6.5, -4) -- (6.5, -3) node[above] {GND};
     \draw (10.5, -4) -- (10.5, -3) node[above] {GND};
-
   \end{circuitikz}
+  \caption{Chaining of smart LEDs in the LED-tape.}
   \label{fig:LED-chaining}
 \end{figure}
 
