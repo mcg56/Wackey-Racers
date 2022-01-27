@@ -93,8 +93,8 @@ int main (void)
     usb_serial_stdio_init ();
 
     // Start up the radio subsystem
-#ifdef RADIO_PWR_EN
-    pio_config_set (RADIO_PWR_EN, PIO_OUTPUT_HIGH);
+#ifdef RADIO_POWER_ENABLE_PIO
+    pio_config_set (RADIO_POWER_ENABLE_PIO, PIO_OUTPUT_HIGH);
     delay_ms (10);
 #endif
 
