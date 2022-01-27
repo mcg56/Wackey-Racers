@@ -48,6 +48,53 @@ is forming a hypothesis based on previous observations\footnote{``Once
   improbable, must be the truth.'' --- Sherlock Homes.}.
 
 
+\section{Reporting software errors}
+\label{reporting-software-errors}
+
+A common source of issues is improperly configured software; it is
+helpful to catch these errors before getting out the oscilloscope and
+probing the hardware. It is good coding practice to check the return
+values of library functions for errors. For mmculib and mat91lib
+library functions, read the function's implementation to determine
+what value they return on failure. For standard library functions such
+as \code{printf}, for example, read the man pages by running \code{man
+3 printf} in the shell or Googling `man printf(3)'. Generally:
+\begin{itemize}
+\item Functions that return a pointer will return a \code{NULL}
+pointer on failure.
+\item Functions that return an integer will return 0 on success and a
+negative integer on failure.
+\end{itemize}
+
+You should add a dedicated error LED to your board that you can flash
+in an error state. For example, you could have a panic routine that
+flashes the error LED every 400\,ms in an infinite loop:
+\begin{minted}{C}
+static void panic (void)
+{
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+    while(1)
+    {
+        pio_output_toggle (LED_ERROR_PIO);
+        delay_ms (400);
+    }
+}
+\end{minted}
+Then, say you are initialising a PWM module, you should check to see
+if \code{pwm_init} returns a \code{NULL} pointer:
+\begin{minted}{C}
+pwm_t pwm1 = pwm_init (&pwm1_cfg);
+if (! pwm1)
+    panic ();
+\end{minted}
+You can also use the USB serial interface to report errors. However,
+try to keep your panic routine simple to minimise the risk of an error
+occurring during its execution!
+
+It is even better if you can spot software bugs before programming
+your board. Make sure you compile with the \code{-Wall} flag and
+resolve any compiler warnings before programming.
+
 \section{Oscilloscope}
 \label{oscilloscope}
 
@@ -334,8 +381,14 @@ If the PWM duty is wrong:
 
 \begin{enumerate}
 \item
-  Check your program. The duty is specified as an integer in parts per
-  thousand. (e.g., 1000 = 100\% duty cycle; 50 = 5\% duty cycle)
+  Check your program. There are two ways to set the duty cycle with
+  mat91lib's PWM module: (1) setting the \code{duty} field of the
+  \code{pwm_cfg_t} struct using the \code{PWM_DUTY_DIVISOR} macro and
+  passing the duty cycle as a percentage or (2) setting the
+  \code{duty_ppt} field of the \code{pwm_cfg_t} struct as an integer
+  in parts per thousand (e.g., 1000 = 100\% duty cycle; 50 = 5\% duty
+  cycle). Setting the latter field will override the former. See the
+  definition of \code{pwm_cfg_t} in \wfile{mat91lib/pwm/pwm.h}.
 \end{enumerate}
 
 \begin{figure}[!h]
@@ -369,6 +422,8 @@ For the IMU to work:
   starts working; you might have a dry joint.  Otherwise look under
   the microscope at the pins of the IMU and touch them up with a
   soldering iron if necessary.
+\item Check that you are using the correct I2C address corresponding
+the the state of the AD0 pin (see datasheet).
 \end{enumerate}
 
 

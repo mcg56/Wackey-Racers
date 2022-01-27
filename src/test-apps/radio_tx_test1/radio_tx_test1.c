@@ -11,6 +11,8 @@
 #define RADIO_CHANNEL 4
 #define RADIO_ADDRESS 0x0123456789LL
 
+#define RADIO_PAYLOAD_SIZE 32
+
 static void panic (void)
 {
     while (1)
@@ -26,7 +28,7 @@ int main (void)
         {
             .channel = RADIO_CHANNEL,
             .address = RADIO_ADDRESS,
-            .payload_size = 32,
+            .payload_size = RADIO_PAYLOAD_SIZE,
             .ce_pio = RADIO_CE_PIO,
             .irq_pio = RADIO_IRQ_PIO,
             .spi =
@@ -59,14 +61,14 @@ int main (void)
 
     while (1)
     {
-        char buffer[32];
+        char buffer[RADIO_PAYLOAD_SIZE + 1];
 
         pacer_wait ();
         pio_output_toggle (LED_STATUS_PIO);
 
-        sprintf (buffer, "Hello world %d\r\n", count++);
+        snprintf (buffer, sizeof (buffer), "Hello world %d\r\n", count++);
 
-        if (! nrf24_write (nrf, buffer, sizeof (buffer)))
+        if (! nrf24_write (nrf, buffer, RADIO_PAYLOAD_SIZE))
             pio_output_set (LED_ERROR_PIO, 0);
         else
             pio_output_set (LED_ERROR_PIO, 1);

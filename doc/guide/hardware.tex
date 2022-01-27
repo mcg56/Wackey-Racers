@@ -128,6 +128,9 @@ the SAM4S.
 
 \subsection{DRV8833 dual H-bridge}\label{drv8833-dual-h-bridge}
 
+The DRV8833's datasheet is available at
+\url{https://www.ti.com/product/DRV8833}.
+
 The H-bridge has four modes: forward, reverse, slow decay (brake), and
 fast decay (coast).  With slow decay mode, the motor is shorted so
 that it stops faster.  With fast decay mode, the motor is
@@ -149,13 +152,14 @@ The capacitor connected to the bootstrap pin must be rated for
 
 \subsection{NRF24L01+ radio}\label{nrf24l01-radio}
 
-The nRF24 module we provide is actually a tiny PCB with all of the
-high frequency analogue components populated for you. This module
-breaks out the SPI communication pins, the power supply pins, and two
-signal pins that you will need to connect to your microcontroller. The
-CE and IRQ pins can both go to general PIO pins while the SPI pins
-(MOSI, MISO, SCLK, CSN) need to be connected to the SAM4S SPI
-peripheral.
+The nRF24 module we provide is actually a tiny PCB with all of the high
+frequency analogue components populated for you. This module breaks out
+the SPI communication pins, the power supply pins, and two signal pins
+that you will need to connect to your microcontroller. The CE and IRQ
+pins can both go to general PIO pins while the SPI pins (MOSI, MISO,
+SCLK, CSN) need to be connected to the SAM4S SPI peripheral. The
+nRF24L01 datasheet and other documentation for the breakout board is
+available at \url{https://www.sparkfun.com/products/691}.
 
 As this radio is ultimately an analogue circuit and any noise on the
 power supply can affect the signal quality, we recommend using a
@@ -199,7 +203,8 @@ pin is driven low to indicate a packet has been received.
 This contains a three axis accelerometer, a three axis gyroscope, and a
 three axis magnetometer. It appears that the magnetometer has been
 bolted on to the accelerometers/gyroscopes and requires more hoop
-jumping in software to make it work.,
+jumping in software to make it work. Documentation is available at
+\url{https://invensense.tdk.com/products/motion-tracking/9-axis/mpu-9250/}.
 
 It has two different I2C addresses (0x68 and Ox69) depending on the
 state of the AD0 pin.
