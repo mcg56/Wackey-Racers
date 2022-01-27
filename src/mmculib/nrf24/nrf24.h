@@ -43,7 +43,7 @@ typedef struct
 
 typedef struct nrf24_t nrf24_t;
 
-nrf24_t *nrf24_init (nrf24_cfg_t *cfg);
+nrf24_t *nrf24_init (spi_t spi, nrf24_cfg_t *cfg);
 
 // Switch to receiver mode and listen on configured channel
 // and address.

@@ -17,7 +17,6 @@
 
 */
 
-
 #include <string.h>
 
 #include "nrf24.h"
@@ -237,12 +236,10 @@ static bool nrf24_set_rx0_addr (nrf24_t *nrf, uint8_t *address_bytes)
     return (memcmp(address_bytes, resp_addr, 5) == 0);
 }
 
-nrf24_t *nrf24_init (nrf24_cfg_t *cfg)
+nrf24_t *nrf24_init (spi_t spi, nrf24_cfg_t *cfg)
 {
     nrf24_t *nrf = &_static_nrf;
-    spi_t spi;
 
-    spi = spi_init (&cfg->spi);
     if (! spi)
         return 0;
 
