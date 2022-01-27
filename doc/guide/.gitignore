@@ -8,3 +8,5 @@
 *.aux
 *.log
 *.out
+*.toc
+_minted-guide/

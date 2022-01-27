@@ -20,7 +20,7 @@ static const pwm_cfg_t pwm1_cfg =
     .period = PWM_PERIOD_DIVISOR (PWM_FREQ_HZ),
     .duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 50),
     .align = PWM_ALIGN_LEFT,
-    .polarity = PWM_POLARITY_LOW,
+    .polarity = PWM_POLARITY_HIGH,
     .stop_state = PIO_OUTPUT_LOW
 };
 
