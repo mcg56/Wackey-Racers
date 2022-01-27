@@ -267,9 +267,9 @@ pulse lengths for 1 and 0.  They are connected as shown in
     \draw (9, -1) rectangle (12, -3);
 
     \draw (0, -2) node[left] {DIN} to[short, o-] (1, -2) node[right] {DIN};
-    \draw (4, -2) node[left] {DOUT} -- (5, -2) node[right] {DIN};
-    \draw (8, -2) node[left] {DOUT} -- (9, -2) node[right] {DIN};
-    \draw (12, -2) node[left] {DOUT} -- (13, -2);
+    \draw (4, -2) node[left] {DO} -- (5, -2) node[right] {DIN};
+    \draw (8, -2) node[left] {DO} -- (9, -2) node[right] {DIN};
+    \draw (12, -2) node[left] {DO} -- (13, -2);
 
     \draw (2.5, 0) -- (2.5, -1) node[below] {VDD};
     \draw (6.5, 0) -- (6.5, -1) node[below] {VDD};
@@ -289,6 +289,12 @@ ground. Each individual LED has a maximum supply current
 of \SI{60}{\milli\ampere} (\SI{20}{\milli\ampere} per red, green, blue
 channel). We will provide up to half a metre of LED tape to each car
 or hat, giving a maximum number of 30 LEDs to be driven.
+
+\begin{figure}[!h]
+  \centering \includegraphics[width=6in]{figs/led_tape.jpg}
+  \caption{Photo of a section of LED tape.}
+  \label{fig:led-tape}
+\end{figure}
 
 
 \subsection{Bumper}
