@@ -2,32 +2,6 @@
 \label{software}
 
 
-Do not underestimate the effort required to flash your first LED. You
-require:
-
-\begin{itemize}
-\item
-  A computer with \program{git} installed and a useful shell program such as
-  \program{bash}. UC has a \href{http://ucmirror.canterbury.ac.nz/}{mirror}
-  for a variety of Linux distributions; we recommend Ubuntu or Mint.
-
-\item A cloned copy of the Wacky Racers git repository, see \hyperref[project-cloning]{project cloning}.
-
-\item
-  A working ARM toolchain (arm-none-eabi-gcc/g++ version 4.9.3 or newer), see \hyperref[toolchain]{toolchain}.
-
-\item
-  An ST-link programmer and 10-wire ribbon cable for programming. You
-  can get the adaptor from Scott Lloyd in the SMT lab. You will need
-  to make your own cable (For a grey ribbon cable, align the red
-  stripe with the small arrow denoting pin 1 on the connector. For a
-  rainbow ribbon cable, connect the brown wire to pin 1.). There are
-  two variants of the ST-link programmer with \textbf{different
-  pinouts} so you may need to customise your programming cable.
-\item
-  Plenty of gumption.
-\end{itemize}
-
 
 \section{Git}
 
@@ -63,7 +37,7 @@ To fork the template:
 
 Once your project has been forked from the template project, each group
 member needs to clone it. This makes a local copy of your project on
-your computer. 
+your computer.
 
 If you are using an ECE computer, it is advised that you clone the
 project on to a removable USB flash drive. This will make git
@@ -127,13 +101,13 @@ $ sudo apt install gcc-arm-none-eabi
 
 Install the C and C++ libraries:
 %
-\begin{minted}{bash}    
+\begin{minted}{bash}
 $ sudo apt install libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
 \end{minted}
 
 Install the debugger, GDB:
 %
-\begin{minted}{bash}    
+\begin{minted}{bash}
 $ sudo apt install gdb-multiarch
 \end{minted}
 

@@ -5,14 +5,39 @@ Your first program to test your board should only flash an LED (the
 hello world equivalent for embedded systems). The key to testing new
 hardware is to have many programs that only do one simple task each.
 
-Before you run your first program, you need to:
+Do not underestimate the effort required to flash your first LED. You
+require:
 %
-\begin{enumerate}
-\item Install the \hyperref[toolchain]{toolchain}.
+\begin{itemize}
+\item
+  A computer with \program{git} installed and a useful shell program
+  such as \program{bash}. UC has a
+  \href{http://ucmirror.canterbury.ac.nz/}{mirror} for a variety of
+  Linux distributions; we recommend Ubuntu or Mint.
 
-\item Clone the Wacky Racers git repository, see
+\item A cloned copy of the Wacky Racers git repository, see
   \hyperref[project-cloning]{project cloning}.
 
+\item
+  A working ARM toolchain (arm-none-eabi-gcc/g++ version 4.9.3 or
+  newer), see \hyperref[toolchain]{toolchain}.
+
+\item
+  An ST-link programmer and 10-wire ribbon cable for programming. You
+  can get the adaptor from Scott Lloyd in the SMT lab. You will need
+  to make your own cable (For a grey ribbon cable, align the red
+  stripe with the small arrow denoting pin 1 on the connector. For a
+  rainbow ribbon cable, connect the brown wire to pin 1.). There are
+  two variants of the ST-link programmer with \textbf{different
+  pinouts} so you may need to customise your programming cable.
+\item
+  Plenty of gumption.
+\end{itemize}
+
+
+Once you have a working toolchain and the source code installed:
+%
+\begin{enumerate}
 \item Set up the PIO definitions for your board, see
   \hyperref[configuration]{configuration}.
 
@@ -36,6 +61,14 @@ Before you run your first program, you need to:
 
 \section{Connecting with OpenOCD}
 \label{openocd}
+
+\begin{figure}[!h]
+  \centering \includegraphics[width=6in]{figs/stlink.jpg}
+  \caption{A Chinese copy of a ST-link programmer.  Unfortunately, the
+    manufacturer is not consistent with the pinout!}
+  \label{fig:stlink}
+\end{figure}
+
 
 \program{OpenOCD} is used to program the SAM4S, see \reffig{openocd diagram}.
 
