@@ -59,15 +59,15 @@ int main(void)
 
     while(1)
     {
-        char buffer[33];
+        char buffer[RADIO_PAYLOAD_SIZE + 1];
         uint8_t bytes;
 
-        bytes = nrf24_read (nrf, buffer, sizeof (buffer));
+        bytes = nrf24_read (nrf, buffer, RADIO_PAYLOAD_SIZE);
         if (bytes != 0)
         {
             buffer[bytes] = 0;
             printf ("%s\n", buffer);
-            pio_output_toggle (LED_ERROR_PIO);
+            pio_output_toggle (LED_STATUS_PIO);
         }
     }
 }
