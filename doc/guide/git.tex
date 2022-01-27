@@ -163,12 +163,13 @@ commits there will be no merge conflicts or merge commit.
 
 For cases where you do have to write a merge commit, the choice of
 editor is controlled by an environment variable
-\code{EDITOR}. On the ECE computers this defaults to emacs\footnote{To
-exit emacs type Ctrl-x Ctrl-c, to exit vi or vim press Esc and type
+\code{GIT_EDITOR}. On the ECE computers this defaults to
+emacs\footnote{To exit emacs type Ctrl-x Ctrl-c, to exit vi or vim
+press Esc and type
 \code{:q!}.}  on Linux. You can changed this by adding a line such as
 the following to the \file{.bash\_profile} file in your home
 directory.
 
 \begin{minted}{bash}
-$ export EDITOR=geany
+$ export GIT_EDITOR=geany
 \end{minted}
