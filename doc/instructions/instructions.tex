@@ -1,7 +1,7 @@
 \documentclass[11pt, a4paper]{article}
-\title{Wacky Racers 2021 Instructions}
-\author{Michael Hayes, Ben Mitchell}
-\date{Version 4.2, \today}
+\title{Wacky Racers 2022 Instructions}
+\author{Michael Hayes}
+\date{Version 1.0, \today}
 
 \usepackage[margin=1in]{geometry}
 \usepackage{parskip}
@@ -71,9 +71,11 @@ marks.
 \item Have adequate battery fusing and reverse polarity protection.
 \item Have a sleep button.
 \item If the battery voltage drops below 5\,V, an LED should flash and high power draw devices should be disabled.
+\item Have an active-high red LED to indicate errors.
+\item Have an active-high green LED to indicate status.
 \item Interface to the Wacky Hat with a Nordic nRF24 SMD radio module.
 \item Have four jumper selectable radio channels.
-\item Have a mounted RFID card (supplied) that can be read by the Wacky ramps.
+%\item Have a mounted RFID card (supplied) that can be read by the Wacky ramps.
 \item Be humorous.
 \end{enumerate}
 
@@ -118,6 +120,8 @@ team's Wacky Racer.  However, you cannot:
 \item Have a joystick in case the IMU does not work.
 \item Have a sleep button.
 \item If the battery voltage drops below 5\,V, an LED should flash and high power draw devices should be disabled.
+\item Have an active-high red LED to indicate errors.
+\item Have an active-high green LED to indicate status.
 \item Play sound when the bumper is hit.
 \item Interface to the Wacky Racer with a Nordic nRF24 SMD radio module.
 \item Have four jumper selectable radio channels.
@@ -150,17 +154,17 @@ Lab (ESL) are:
     T1-4 & Altium tutorial 2 (PCB) &          \\
     T1-5 & Altium help      & PCB submission 1    \\
     T1-6 & Altium help      & PCB submission 2    \\
+    T1-7 & General          &                   \\
     \hline
     B-1  & (break)          &                   \\
     B-2  & (break)          &                   \\
     B-3  & (break)          &                   \\
     \hline
-    T2-1 & General          &                   \\
-    T2-2 & General          & Blinky            \\
-    T2-3 & General          & IMU/motors        \\
-    T2-4 & General          & Radio control     \\
-    T2-5 & General          & Functionality     \\
-    T2-6 & Competition      & Competition, critique  \\
+    T2-1 & General          & Blinky            \\
+    T2-2 & General          & IMU/motors        \\
+    T2-3 & General          & Radio control     \\
+    T2-4 & General          & Functionality     \\
+    T2-5 & Competition      & Competition, critique  \\
   \end{tabular}
 \end{flushleft}
 
@@ -175,7 +179,7 @@ Notes:
 
 \item Do not underestimate the blinky milestone.  It requires having a
   functional PCB with a microcontroller that turns on properly, a
-  functional toolchain and the ability to download code into the
+  functional toolchainm, and the ability to download code into the
   microcontroller's flash memory.
 \end{enumerate}
 
@@ -202,7 +206,7 @@ The marks breakdown (max. 0x64) is:
 
 There are five milestones.  To achieve the associated marks, they must
 be demonstrated to a T.A. by the end of the lab for your allotted
-stream.  If you need an exception to this, see Ben Mitchell with a
+stream.  If you need an exception to this, see Daniel Morris with a
 \emph{very} good reason.  The milestone requirements are:
 %
 \begin{description}
@@ -279,9 +283,10 @@ be awarded for extra functionality such as:
 
 The competition is a race around an obstacle course.  Marks will be
 awarded every time you pass over a Wacky Ramp in the correct order.
-These ramps have an RFID card reader that will detect your Racer if
-you have correctly fitted an RFID card.  The Wacky Ramps change colour
-when they detect a Wacky Racer.
+
+%These ramps have an RFID card reader that will detect your Racer if
+%you have correctly fitted an RFID card.  The Wacky Ramps change colour
+%when they detect a Wacky Racer.
 
 To be awarded any marks for the race:
 %
@@ -291,6 +296,8 @@ To be awarded any marks for the race:
 \item Your vehicle must be controlled by motions of the Wacky hat
   sitting on someone's head.
 \end{enumerate}
+
+Marks will also be awarded for wackiness, group costumes, etc.
 
 
 \subsection{PCB inspection}
@@ -312,61 +319,59 @@ This is assessed after the competition.  The categories are:
 
   \begin{itemize}
   \item Form a group of four and register your group on Learn.
-  %\item Read the \hyperref[requirements]{requirements section}.
-  \item Read the requirements section in the instructions document.
+  \item Read the Requirements section in this document.
+  \item Read the System Design section in the Wacky Racers Guide.
   \item Peruse the datasheets of the key components.
   \end{itemize}
-  
+
 \item [Week~2]\mbox{}\\
-  
+
   \begin{itemize}
   \item Attend Altium schematic tutorial.
   \item Start your schematic design.
-  \item Read suggestions in \hyperref[hardware]{hardware section}.
+  \item Sign-up for a SMT lab induction.
   \end{itemize}
-  
+
 \item [Week~3]\mbox{}\\
-  
+
   \begin{itemize}
   \item Submit you Altium schematic for review.
   \item Attend review feedback session.
   \end{itemize}
-  
+
 \item [Week~4]\mbox{}\\
-  
+
   \begin{itemize}
   \item Attend Altium PCB tutorial.
   \item Start your PCB layout.
   \end{itemize}
-  
-  
+
 \item [Week~5]\mbox{}\\
-  
+
   \begin{itemize}
   \item Attend SMT lab induction.
   \item Submit PCB design (early round).
   \end{itemize}
-  
-  
-\item [Week~6]\mbox{}\\  
-  
+
+\item [Week~6]\mbox{}\\
+
   \begin{itemize}
   \item Submit PCB design (late round).
   \end{itemize}
-  
-  
+
 \item [Week~7]\mbox{}\\
-  
-  
-\item [Week~8]\mbox{}\\  
-  
+
+
+\item [Week~8]\mbox{}\\
+
+
 \item [Week~9]\mbox{}\\
-  
+
   \begin{itemize}
   \item Populate and test PCB.
-  \end{itemize}  
-  
-  
+  \end{itemize}
+
+
 \item [Week~10]\mbox{}\\
 
   \begin{itemize}
@@ -374,41 +379,41 @@ This is assessed after the competition.  The categories are:
   \item Demonstrate blinky program.
   \end{itemize}
 
-\item [Week~11]\mbox{}\\  
+\item [Week~11]\mbox{}\\
 
   \begin{itemize}
   \item Demonstrate blinky program.
-  \end{itemize}  
- 
+  \end{itemize}
+
 \item [Week~12]\mbox{}\\
-  
+
   \begin{itemize}
   \item Demonstrate IMU/motors functionality.
   \end{itemize}
-  
-\item [Week~13]\mbox{}\\  
-  
+
+\item [Week~13]\mbox{}\\
+
   \begin{itemize}
   \item Demonstrate radio control.
-  \end{itemize}  
-  
+  \end{itemize}
+
 \item [Week~14]\mbox{}\\
-  
+
   \begin{itemize}
   \item Demonstrate full functionality.
   \item Plan your costumes!
   \end{itemize}
-  
+
 \item [Week~15]\mbox{}\\
-  
+
   \begin{itemize}
   \item Practice control of you wacky racer.
   \item Attend wacky race.
   \item Submit PCB for inspection (box in SMT lab).
-  \item Return chassis and batteries.
-  \item Submit individual critique to Learn.    
+  \item Return chassis, batteries, and SMT-programmer.
+  \item Submit individual critique to Learn.
   \end{itemize}
-  
+
 \end{description}
 
 
@@ -493,10 +498,10 @@ repository, you can get the updated stuff using:
   \textbf{Note, when debugging your PCBs, we will not help you until
     you show us your printed A3 schematic}.
 
-\item We bet that you will not have enough test points to clip an oscilloscope
+\item I bet that you will not have enough test points to clip an oscilloscope
   probe to.  Do not think you can hold the probe tip against an MCU pin.  Ensure
   you give a meaningful name to the test point in its comment field.  A ground
-  test point is essential for an oscilloscope earth clip. Keep this clear of
+  test point is essential for an oscilloscope earth clip.  Keep this clear of
   other test points since the clip may short against them.  You will probably
   require at least two ground points.
 
@@ -504,19 +509,22 @@ repository, you can get the updated stuff using:
   assignment.  If the schematic is wrong then your PCB will be wrong.
   So, schematics must be thoroughly checked by another person.
 
-\item Consider fall-back options if you have a problem with your PCB.
+%% \item Consider fall-back options if you have a problem with your PCB.
 
-  The IMU for the Wacky Hat is tiny and we \textbf{strongly recommend} that you
-  provide an alternative connector for connecting the following IMU module:
-  \href{https://www.aliexpress.com/item/SPI-IIC-MPU9250-MPU-9250-MPU-9250-9-Axis-Attitude-Gyro-Accelerator-Magnetometer-Sensor-Module-MPU9250/32216818498.html?spm=a2g0s.9042311.0.0.WKvtEm}{MPU-9250 on AliExpress}
+%%   The IMU for the Wacky Hat is tiny and we \textbf{strongly recommend} that you
+%%   provide an alternative connector for connecting the following IMU module:
+%%   \href{https://www.aliexpress.com/item/SPI-IIC-MPU9250-MPU-9250-MPU-9250-9-Axis-Attitude-Gyro-Accelerator-Magnetometer-Sensor-Module-MPU9250/32216818498.html?spm=a2g0s.9042311.0.0.WKvtEm}{MPU-9250 on AliExpress}
 
-  Similarly for the Wacky Racer, in case the H-bridge fails, provide two
-  three-pin servo connectors so that external Electronic Speed
-  Controllers (ESC) can be used to drive the motors.
+%%   Similarly for the Wacky Racer, in case the H-bridge fails, provide two
+%%   three-pin servo connectors so that external Electronic Speed
+%%   Controllers (ESC) can be used to drive the motors.
 
 \item It would be useful to have a jumper or two connected to a PIO
   pin so that you can configure your board.  For example, if a jumper
   is in, use the joystick, otherwise use the IMU.
+
+\item I suggest running some spare PIO pins from the MCU to some pads
+  or a connector.
 
 \end{enumerate}
 
@@ -593,7 +601,7 @@ final mark.
 \item Inspect MPH's sample code.
 
 \item If you are trying to program the SAM4S for the first time and
-  are feeling tired or impatient, then do something else.  
+  are feeling tired or impatient, then do something else.
 \end{enumerate}
 
 
@@ -653,8 +661,8 @@ have missed and let you fix it without asking for help.
   promptly answered.
 
 \item All decisions regarding legality of your dastardly devices are
-  at the whim of Ben Mitchell.  You can email Ben at
-  \href{mailto://ben.mitchell@pg.canterbury.ac.nz}{ben.mitchell@pg.canterbury.ac.nz}
+  at the whim of Daniel Morris.  You can email Daniel at
+  \href{mailto://daniel.morris@pg.canterbury.ac.nz}{daniel.morris@pg.canterbury.ac.nz}
   if you wish to keep your ideas secret.
 
 \item TAs will be available in the scheduled lab times.  Priority will
