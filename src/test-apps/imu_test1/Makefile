@@ -1,4 +1,4 @@
-DRIVERS = pacer usb_serial mpu9250
+DRIVERS = pacer usb_serial mpu9250 panic
 
 TARGET = imu_test1.bin
 

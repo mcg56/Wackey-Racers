@@ -1,5 +1,5 @@
 PERIPHERALS = spi
-DRIVERS = pacer usb_serial nrf24
+DRIVERS = pacer usb_serial nrf24 panic
 
 TARGET = radio_rx_test1.bin
 

@@ -1,4 +1,4 @@
-DRIVERS = pacer usb_serial nrf24
+DRIVERS = pacer usb_serial nrf24 panic
 
 TARGET = radio_tx_test1.bin
 

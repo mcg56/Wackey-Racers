@@ -5,11 +5,11 @@
 */
 #include "pio.h"
 #include "delay.h"
-#include <fcntl.h>
 #include "target.h"
 #include "pacer.h"
 #include "usb_serial.h"
 #include "mpu9250.h"
+#include "panic.h"
 
 static twi_cfg_t mpu_twi_cfg =
 {
@@ -17,16 +17,6 @@ static twi_cfg_t mpu_twi_cfg =
     .period = TWI_PERIOD_DIVISOR (100000), // 100 kHz
     .slave_addr = 0
 };
-
-
-static void panic (void)
-{
-    while(1)
-    {
-        pio_output_toggle (LED_ERROR_PIO);
-        delay_ms (400);
-    }
-}
 
 
 int
@@ -44,13 +34,13 @@ main (void)
     mpu_twi = twi_init (&mpu_twi_cfg);
 
     if (! mpu_twi)
-        panic ();
+        panic (LED_ERROR_PIO, 1);
 
     // Initialise the MPU9250 IMU
     mpu = mpu9250_init (mpu_twi, MPU_ADDRESS);
 
     if (! mpu)
-        panic ();
+        panic (LED_ERROR_PIO, 2);
 
     pacer_init (10);
 

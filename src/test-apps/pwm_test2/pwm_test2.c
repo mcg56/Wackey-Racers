@@ -6,13 +6,12 @@
 */
 #include "pwm.h"
 #include "pio.h"
-
+#include "panic.h"
 
 #define PWM1_PIO PA1_PIO
 #define PWM2_PIO PA2_PIO
 
 #define PWM_FREQ_HZ 100e3
-
 
 static const pwm_cfg_t pwm1_cfg =
 {
@@ -42,12 +41,17 @@ main (void)
     pwm_t pwm2;
 
     pwm1 = pwm_init (&pwm1_cfg);
+    if (! pwm1)
+        panic (LED_ERROR_PIO, 1);
+
     pwm2 = pwm_init (&pwm2_cfg);
+    if (! pwm2)
+        panic (LED_ERROR_PIO, 2);
 
     pwm_channels_start (pwm_channel_mask (pwm1) | pwm_channel_mask (pwm2));
 
     while (1)
         continue;
-    
+
     return 0;
 }

@@ -7,19 +7,11 @@
 #include "pacer.h"
 #include "stdio.h"
 #include "delay.h"
+#include "panic.h"
 
 #define RADIO_CHANNEL 4
 #define RADIO_ADDRESS 0x0123456789LL
 #define RADIO_PAYLOAD_SIZE 32
-
-static void panic (void)
-{
-    while (1)
-    {
-        pio_output_toggle (LED_ERROR_PIO);
-        delay_ms (400);
-    }
-}
 
 int main (void)
 {
@@ -57,11 +49,11 @@ int main (void)
 
     spi = spi_init ( &spi_cfg);
     if (! spi)
-        panic ();
+        panic (LED_ERROR_PIO, 1);
 
     nrf = nrf24_init (spi, &nrf24_cfg);
     if (! nrf)
-        panic ();
+        panic (LED_ERROR_PIO, 2);
 
     while (1)
     {
