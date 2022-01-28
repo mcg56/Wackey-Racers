@@ -6,6 +6,7 @@
 */
 #include "pwm.h"
 #include "pio.h"
+#include "delay.h"
 #include "panic.h"
 
 #define PWM1_PIO PA1_PIO
@@ -40,6 +41,8 @@ main (void)
     pwm_t pwm1;
     pwm_t pwm2;
 
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
+
     pwm1 = pwm_init (&pwm1_cfg);
     if (! pwm1)
         panic (LED_ERROR_PIO, 1);
@@ -51,7 +54,10 @@ main (void)
     pwm_channels_start (pwm_channel_mask (pwm1) | pwm_channel_mask (pwm2));
 
     while (1)
-        continue;
+    {
+        delay_ms (500);
+        pio_output_toggle (LED_STATUS_PIO);
+    }
 
     return 0;
 }

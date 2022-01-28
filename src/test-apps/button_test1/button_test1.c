@@ -13,7 +13,7 @@ int
 main (void)
 {
     /* Configure LED PIO as output.  */
-    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
 
     /* Configure button PIO as input with pullup.  */
     pio_config_set (BUTTON_PIO, PIO_INPUT_PULLUP);
