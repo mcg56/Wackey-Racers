@@ -12,7 +12,7 @@
 #define LOOP_POLL_RATE 200
 
 /* Define LED flash rate in Hz.  */
-#deifne LED_FLASH_RATE 2
+#define LED_FLASH_RATE 2
 
 #ifndef UDP_VBUS_PIO
 #define UDP_VBUS_PIO BUTTON_PIO

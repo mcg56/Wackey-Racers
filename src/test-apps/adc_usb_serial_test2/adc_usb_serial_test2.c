@@ -23,7 +23,6 @@ static const adc_cfg_t adc_cfg =
 
 int main (void)
 {
-    usb_cdc_t usb_cdc;
     adc_t adc;
     int count = 0;
 

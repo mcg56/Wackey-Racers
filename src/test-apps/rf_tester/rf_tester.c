@@ -9,6 +9,7 @@
 #include "adc.h"
 #include "pio.h"
 #include "pacer.h"
+#include "panic.h"
 #include "delay.h"
 #include "button.h"
 
@@ -23,16 +24,6 @@
 #define BATTERY_VOLTAGE_ADC ADC_CHANNEL_4
 
 static adc_t battery_sensor;
-
-static void panic (void)
-{
-    while (1) {
-        pio_output_toggle (TX_LED);
-        delay_ms (200);
-        pio_output_toggle (RX_LED);
-        delay_ms (200);
-    }
-}
 
 static int battery_sensor_init (void)
 {
@@ -63,7 +54,15 @@ static uint16_t battery_millivolts (void)
 
 int main (void)
 {
-    uint8_t tx_count = 0;
+    spi_cfg_t spi_cfg =
+        {
+            .channel = 0,
+            .clock_speed_kHz = 1000,
+            .cs = RADIO_CS_PIO,
+            .mode = SPI_MODE_0,
+            .cs_mode = SPI_CS_MODE_FRAME,
+            .bits = 8
+        };
     nrf24_cfg_t nrf24_cfg =
         {
             .channel = RADIO_CHANNEL,
@@ -71,17 +70,10 @@ int main (void)
             .payload_size = RADIO_PAYLOAD_SIZE,
             .ce_pio = RADIO_CE_PIO,
             .irq_pio = RADIO_IRQ_PIO,
-            .spi =
-            {
-                .channel = 0,
-                .clock_speed_kHz = 1000,
-                .cs = RADIO_CS_PIO,
-                .mode = SPI_MODE_0,
-                .cs_mode = SPI_CS_MODE_FRAME,
-                .bits = 8
-            }
         };
+    spi_t spi;
     nrf24_t *nrf;
+    uint8_t tx_count = 0;
     bool listening = false;
 
     /* Configure LED PIO as output.  */
@@ -98,13 +90,16 @@ int main (void)
     delay_ms (10);
 #endif
 
-    if (battery_sensor_init () < 0)
-        panic ();
+    spi = spi_init ( &spi_cfg);
+    if (! spi)
+        panic (LED_ERROR_PIO, 1);
 
-    // Start up the NRF24 radio
-    nrf = nrf24_init (&nrf24_cfg);
-    if (!nrf)
-        panic ();
+    nrf = nrf24_init (spi, &nrf24_cfg);
+    if (! nrf)
+        panic (LED_ERROR_PIO, 2);
+
+    if (battery_sensor_init () < 0)
+        panic (LED_ERROR_PIO, 3);
 
     // Set up the buttons
     button_cfg_t tx_cfg = {.pio = TX_BTN};
@@ -113,9 +108,9 @@ int main (void)
     button_t tx_btn = button_init (&tx_cfg);
     button_t rx_btn = button_init (&rx_cfg);
     if (!tx_btn)
-        panic ();
+        panic (LED_ERROR_PIO, 4);
     if (!rx_btn)
-        panic ();
+        panic (LED_ERROR_PIO, 5);
 
 #if 0 // LED/switch tester for confirming hardware is okay
     while (1)
@@ -178,7 +173,7 @@ int main (void)
         if (button_poll (rx_btn) == BUTTON_STATE_DOWN && !listening)
         {
             if (!nrf24_listen (nrf))
-                panic ();
+                panic (LED_ERROR_PIO, 6);
             pio_output_set (RX_LED, 1);
             listening = true;
         }

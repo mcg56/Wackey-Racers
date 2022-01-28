@@ -1,4 +1,4 @@
-DRIVERS = pacer usb_serial nrf24 button
+DRIVERS = pacer usb_serial nrf24 button panic
 PERIPHERALS = adc
 
 TARGET = rf_tester.bin

@@ -27,7 +27,7 @@ main (void)
     bool blue = false;
     int count = 0;
 
-    ledbuffer_t* leds = ledbuffer_init(LEDTAPE_PIO, NUM_LEDS);
+    ledbuffer_t* leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
 
     pacer_init(30);
 

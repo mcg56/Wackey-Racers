@@ -48,5 +48,7 @@
 #define RADIO_CE_PIO PA9_PIO
 #define RADIO_IRQ_PIO PA15_PIO
 
+/* LED tape  */
+#define LEDTAPE_PIO PA16_PIO
 
 #endif /* TARGET_H  */

@@ -22,7 +22,7 @@ int main (void)
             .cs = RADIO_CS_PIO,
             .mode = SPI_MODE_0,
             .cs_mode = SPI_CS_MODE_FRAME,
-        .bits = 8
+            .bits = 8
         };
     nrf24_cfg_t nrf24_cfg =
         {

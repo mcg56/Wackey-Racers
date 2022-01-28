@@ -16,7 +16,7 @@ main (void)
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
 
     /* Configure button PIO as input with pullup.  */
-    pio_config_set (BUTTON_PIO, PIO_INPUT_PULLUP);
+    pio_config_set (BUTTON_PIO, PIO_PULLUP);
 
     pacer_init (PACER_RATE);
 
