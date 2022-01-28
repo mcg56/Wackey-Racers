@@ -8,13 +8,14 @@
 #include "usb_serial.h"
 #include "adc.h"
 #include "pacer.h"
+#include "panic.h"
 
 #define PACER_RATE 2
 
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
-    .channels = BIT (ADC_CHANNEL_0),    
+    .channels = BIT (ADC_CHANNEL_0),
     .trigger = ADC_TRIGGER_SW,
     .clock_speed_kHz = 1000
 };
@@ -26,10 +27,12 @@ int main (void)
     adc_t adc;
     int count = 0;
 
-    // Redirect stdio to USB serial    
+    // Redirect stdio to USB serial
     usb_serial_stdio_init ();
-    
+
     adc = adc_init (&adc_cfg);
+    if (! adc)
+        panic (LED_ERROR_PIO, 1);
 
     pacer_init (PACER_RATE);
     while (1)

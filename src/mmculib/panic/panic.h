@@ -6,13 +6,15 @@
 #ifndef PANIC_H
 #define PANIC_H
 
+#include "pio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** Initialise panic:
     @param panic_rate rate in Hz.  */
-extern void panic (pio_t error_led_pio, unsigned int errcode);
+extern void panic (pio_t error_led_pio, unsigned int error_code);
 
 
 #ifdef __cplusplus

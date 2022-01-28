@@ -8,6 +8,7 @@
 #include "usb_serial.h"
 #include "adc.h"
 #include "pacer.h"
+#include "panic.h"
 
 #define PACER_RATE 2
 
@@ -30,6 +31,8 @@ int main (void)
     usb_serial_stdio_init ();
 
     adc = adc_init (&adc_cfg);
+    if (! adc)
+        panic (LED_ERROR_PIO, 1);
 
     pacer_init (PACER_RATE);
     while (1)

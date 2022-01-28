@@ -2,7 +2,7 @@
 #include "delay.h"
 
 void
-panic (pio_t led_error_pio, unsigned int errorcode)
+panic (pio_t led_error_pio, unsigned int error_code)
 {
     unsigned int i;
 
@@ -10,7 +10,7 @@ panic (pio_t led_error_pio, unsigned int errorcode)
 
     while (1)
     {
-        for (i = 0; i < errorcode; i++)
+        for (i = 0; i < error_code; i++)
         {
             pio_output_toggle (led_error_pio);
             delay_ms (200);
