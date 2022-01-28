@@ -26,6 +26,8 @@ int main (void)
     adc_t adc;
     int count = 0;
 
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
+
     // Redirect stdio to USB serial
     usb_serial_stdio_init ();
 
@@ -41,7 +43,7 @@ int main (void)
         pacer_wait ();
 
         adc_read (adc, data, sizeof (data));
-
-        printf ("%3d: %d\n", count, data[0]);
+        printf ("%3d: %d\n", count++, data[0]);
+        pio_output_toggle (LED_STATUS_PIO);
     }
 }
