@@ -50,9 +50,16 @@ You can now run a \wikiref{Serial_terminal_applications}{serial
 $ gtkterm -p /dev/ttyACM0
 \end{minted}
 
-All going well, this will repeatedly print 'Hello world'.
+On the Windows machines in the ESL you can use Tera Term. On opening the
+application, select the correct \code{COM} port from the \code{Serial}
+dropdown. If there are multiple \code{COM} ports listed and you can't
+tell which one belongs to the USB serial device, unplug the USB and
+observe which \code{COM} port number is added to the dropdown menu when
+you reinsert it.
 
-If run Linux and get an error 'device is busy', it is likely that the
+All going well, this will repeatedly print `Hello world'.
+
+If run Linux and get an error `device is busy', it is likely that the
 ModemManager program has automatically connected to your device on the
 sly. This program should be disabled on the ECE computers. For more
 about this and using other operating systems, see \wikiref{USB
