@@ -1,7 +1,7 @@
 \documentclass[11pt, a4paper]{article}
 \title{Wacky Racers 2022 Instructions}
 \author{Michael Hayes}
-\date{Version 1.0, \today}
+\date{Version 1.1, \today}
 
 \usepackage[margin=1in]{geometry}
 \usepackage{parskip}
@@ -79,7 +79,7 @@ marks.
 \item Use a USB interface for debugging.
 \item Use a serial wire debug interface for MCU programming/debugging.
 \item Have adequate battery fusing and reverse polarity protection.
-\item Have a sleep button.
+\item Have a sleep pushbutton to enter low-power mode.
 \item If the battery voltage drops below 5\,V, an LED should flash and high power draw devices should be disabled.
 \item Have an active-high red LED to indicate errors.
 \item Have an active-high green LED to indicate status.
@@ -89,12 +89,14 @@ marks.
 \item Be humorous.
 \end{enumerate}
 
+\hspace{120mm}\includegraphics[width=3cm]{../guide/figs/jumpers4.jpg}
+
 
 Each Wacky Racer can have a dastardly means of hindering another
 team's Wacky Racer.  However, you cannot:
 %
 \begin{itemize}
-\item Damage or destroy another Wacky racer
+\item Damage or destroy another Wacky racer (except in the battle royale)
 \item Damage the venue
 \item Injure a spectator
 \item Jam the radio signals
@@ -128,7 +130,7 @@ team's Wacky Racer.  However, you cannot:
 \item Use a USB interface for debugging.
 \item Use a serial wire debug interface for MCU programming/debugging.
 \item Have a joystick in case the IMU does not work.
-\item Have a sleep button.
+\item Have a sleep pushbutton to enter low-power mode.
 \item If the battery voltage drops below 5\,V, an LED should flash and high power draw devices should be disabled.
 \item Have an active-high red LED to indicate errors.
 \item Have an active-high green LED to indicate status.
@@ -147,7 +149,7 @@ team's Wacky Racer.  However, you cannot:
 \end{figure}
 
 
-\pagebreak
+\vfill\pagebreak
 
 \section{Assignment schedule}
 
@@ -183,7 +185,8 @@ Notes:
 %
 \begin{enumerate}
 \item There are two lab streams.  Your group will need to sign up to
-  one of the streams.
+  one of the streams.  Choose a group between 1--19 for the Tuesday
+  stream or group 20--39 for the Wednesday stream.
 
 \item There there may be a 6--10 day delay for the PCBs to be
   manufactured from the time of submission.  You will then need to
@@ -191,9 +194,8 @@ Notes:
   SMT lab induction.
 
 \item Do not underestimate the blinky milestone.  It requires having a
-  functional PCB with a microcontroller that turns on properly, a
-  functional toolchain, and the ability to download code into the
-  microcontroller's flash memory.
+  functional PCB, a functional toolchain, and the ability to download
+  code into the microcontroller's flash memory.
 
 \end{enumerate}
 
@@ -293,6 +295,9 @@ be awarded for extra functionality such as:
   \end{tabular}
 \end{flushleft}
 
+Sleep mode is where you shutdown the MCU to save energy and use a
+pushbutton to awake the MCU via an interrupt.  Is is easy to get wrong
+and hard to save every microamp.
 
 \subsection{Competition}
 
@@ -312,7 +317,13 @@ To be awarded any marks for the race:
   sitting on someone's head.
 \end{enumerate}
 
+After the races, there will be a battle royale where the last
+operational wacky racer wins.  Hitting the bumper of an opponents
+wacky racer removes them from the battle.
+
 Marks will also be awarded for wackiness, group costumes, etc.
+
+
 
 
 \subsection{PCB inspection}
@@ -327,44 +338,43 @@ This is assessed after the competition.  The categories are:
 \end{enumerate}
 
 
+\vfill\pagebreak
 \section{Schedule}
 
 \begin{description}
-\item [Week~1]\mbox{}\\
+\item [Week~1]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
-  \item Form a group of four and register your group on Learn.  Group
-    numbers below 20 are for the Tuesday lab session, group numbers
-    above 20 are for the Wednesday lab session.  If you cannot form a
-    group of 4, contact \daniel.
+  \item Form a group of four and register your group on Learn.  If you
+    cannot form a group of 4, contact \daniel.
 
   \item Read the Requirements section in this document.
 
   \item Read the System Design section in the \theguide.
 
-  \item Peruse the datasheets of the key components.
-
   \item Attend Altium schematic tutorial.
 
   \end{itemize}
 
-\item [Week~2]\mbox{}\\
+\item [Week~2]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Start your schematic design.
 
+  \item Peruse the datasheets of the key components.
+
 %  \item Sign-up for a SMT lab induction
   \end{itemize}
 
-\item [Week~3]\mbox{}\\
+\item [Week~3]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
-  \item Submit you Altium schematic for review.
+  \item Submit your Altium schematic for review.
 
   \item Attend review feedback session.
   \end{itemize}
 
-\item [Week~4]\mbox{}\\
+\item [Week~4]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Attend Altium PCB tutorial.
@@ -372,7 +382,7 @@ This is assessed after the competition.  The categories are:
   \item Start your PCB layout.
   \end{itemize}
 
-\item [Week~5]\mbox{}\\
+\item [Week~5]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Watch SMT lab induction video.
@@ -380,65 +390,67 @@ This is assessed after the competition.  The categories are:
   \item Submit PCB design (early round).
   \end{itemize}
 
-\item [Week~6]\mbox{}\\
+\item [Week~6]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Submit PCB design (late round).
   \end{itemize}
 
-\item [Week~7]\mbox{}\\
+%\item [Week~7]\mbox{}\\[-0.4cm]
 
 
-\item [Week~8]\mbox{}\\
+%\item [Week~8]\mbox{}\\[-0.4cm]
 
 
-\item [Week~9]\mbox{}\\
+\item [Week~9]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Populate and test PCB.
   \end{itemize}
 
 
-\item [Week~10]\mbox{}\\
+\item [Week~10]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Populate and test PCB.
   \item Demonstrate blinky program.
   \end{itemize}
 
-\item [Week~11]\mbox{}\\
+\item [Week~11]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Demonstrate blinky program.
   \end{itemize}
 
-\item [Week~12]\mbox{}\\
+\item [Week~12]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Demonstrate IMU/motors functionality.
   \end{itemize}
 
-\item [Week~13]\mbox{}\\
+\item [Week~13]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
   \item Demonstrate radio control.
-  \end{itemize}
-
-\item [Week~14]\mbox{}\\
-
-  \begin{itemize}
-  \item Demonstrate full functionality.
 
   \item Plan your costumes!
   \end{itemize}
 
-\item [Week~15]\mbox{}\\
+\item [Week~14]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
-  \item Practice control of you wacky racer.
+  \item Demonstrate full functionality.
+
+  \item Prepare your costumes and dastardly stuff!
+  \end{itemize}
+
+\item [Week~15]\mbox{}\\[-0.4cm]
+
+  \begin{itemize}
+  \item Practice control of your wacky racer.
   \item Attend wacky race.
   \item Submit PCB for inspection (box in SMT lab).
-  \item Return chassis, batteries, and SMT-programmer.
+  \item Return chassis, batteries, and ST-link programmers.
   \item Submit individual critique to Learn.
   \end{itemize}
 
@@ -448,13 +460,13 @@ This is assessed after the competition.  The categories are:
 
 \section{Technical stuff}
 
-Read this section carefully.  There are clues as to how we mark your PCBs at the
-end of the assignment.
+Read this section carefully.  There are clues as to how we mark your PCBs.
 
 \subsection{Version control}
 
-Use version control for everything, or else!  Learning git is frustrating but is
-a skill you will not regret.
+Use version control for everything, or else!  Learning git is
+frustrating but is a skill you will not regret, see \theguide\ for
+details.
 
 Your group leader should create a forked copy of the wacky-racers git project
 and then add the other group members to the project.  This can be done by:
@@ -518,22 +530,31 @@ repository, you can get the updated stuff using:
 \item Read the \theguide.
 
 \item Add you and your partner's name and your group number to the
-  title block on your schematic.
+  title block.
 
 \item Save PDF files of your schematics in your source repository.
   \textbf{Note, when debugging your PCBs, we will not help you until
     you show us your printed A3 schematic}.
 
-\item I bet that you will not have enough test points to clip an oscilloscope
-  probe to.  Do not think you can hold the probe tip against an MCU pin.  Ensure
-  you give a meaningful name to the test point in its comment field.  A ground
-  test point is essential for an oscilloscope earth clip.  Keep this clear of
-  other test points since the clip may short against them.  You will probably
-  require at least two ground points.
+\item I bet that you will not have enough test points to clip an
+  oscilloscope probe to.  Do not think you can hold the probe tip
+  against an MCU pin without shorting something.  Ensure you give a
+  meaningful name to the test point in its comment field.
+
+  \includegraphics[width=5cm]{../guide/figs/testpoints.jpg}  \includegraphics[width=5cm]{../guide/figs/micro_probe_zoom.jpg}
+
+\item Ground test points are essential for an oscilloscope earth clip.
+  A U-shaped piece of wire soldered into two holes is good for this.
+  Keep ground test points clear of other test points since the earth
+  clip may short between them.  You will probably require at least two
+  ground points on opposite sides of the PCB.
+
+\includegraphics[width=5cm]{../guide/figs/scope_probe_testpoints.jpg}
 
 \item Checking the schematic is the most crucial part of the
-  assignment.  If the schematic is wrong then your PCB will be wrong.
-  So, schematics must be thoroughly checked by another person.
+  assignment.  If the schematic is wrong then your PCB will be wrong
+  and you will need to do rework.  So, schematics must be thoroughly
+  checked by another person.
 
 %% \item Consider fall-back options if you have a problem with your PCB.
 
@@ -545,12 +566,14 @@ repository, you can get the updated stuff using:
 %%   three-pin servo connectors so that external Electronic Speed
 %%   Controllers (ESC) can be used to drive the motors.
 
-\item It would be useful to have a jumper or two connected to a PIO
-  pin so that you can configure your board.  For example, if a jumper
-  is in, use the joystick, otherwise use the IMU.
+\item It would be useful to have a jumpers connected to PIO pins so
+  that you can configure your board.  For example, if a jumper is in,
+  use the joystick, otherwise use the IMU.
 
-\item I suggest running some spare PIO pins from the MCU to some pads
-  or a connector.
+\includegraphics[width=2cm]{../guide/figs/jumpers.jpg}
+
+\item In case you forget something, I suggest running some spare PIO
+  pins from the MCU to some pads or a connector.
 
 \end{enumerate}
 
@@ -565,9 +588,9 @@ repository, you can get the updated stuff using:
   create.  We will impose a 10\% penalty for each rerun of a PCB, say
   due to a footprint mistake.  Get your partner to check.
 
-\item Turn of the test point designators and turn on comments
-  instead. This lets you give them human readable names to make your
-  lives easier.
+\item In Altium, turn off the test point designators and turn on
+  comments instead. This lets you give them human readable names to
+  make your lives easier.
 
 \item PCB layouts must be thoroughly checked by another person.
 
@@ -640,9 +663,10 @@ final mark.
 \item It is possible to use the GDB debugger but you need to know what
   you are doing, especially with optimised code.
 
-\item Drawing a diagram of what you think is happening is highly recommended. A
-simple circuit diagram or timing diagram will often help you realise what you
-have missed and let you fix it without asking for help.
+\item Drawing a diagram of what you think is happening is highly
+  recommended. A simple circuit diagram or timing diagram will often
+  help you realise what you have missed and let you fix it without
+  asking for help.
 
 \end{enumerate}
 
@@ -685,11 +709,12 @@ and a team of teaching assistants.
   quietly ignored.
 
 \item If you have a generic question, please use the ENCE461 Learn
-  discussion page; this will be promptly answered.
+  discussion page.  Note, under the advanced options you can send your
+  post without a 30\,minute delay.
 
 \item All decisions regarding legality of your dastardly devices are
   at the whim of \daniel.  Email \daniel\ if you wish to keep your
-    ideas secret.
+  ideas secret.
 
 \item TAs will be available in the scheduled lab times.  Priority will
   be given to groups assigned to the current lab session. \textbf{We
@@ -697,13 +722,13 @@ and a team of teaching assistants.
     schematic sheet in front of them and have already tried looking up
     the problem in the \theguide.}
 
-\item Questions pertaining to Altium and surface mount rework will be
-  answered by \scott\ (SMT Lab technician) and \diego\ (Electronics
-  Lab technician).
+\item For questions pertaining to Altium, surface mount assembly, and
+  surface mount rework, see \scott\ (SMT Lab technician) and
+  \diego\ (Electronics Lab technician).
 
 \item Michael Hayes is really busy pulling all the string behind the
-  scenes and so will only help with gnarly problems referred to by the
-  TAs!
+  scenes and so will only help with gnarly problems referred to by
+  \daniel!
 
 \end{itemize}
 
@@ -716,10 +741,11 @@ and a team of teaching assistants.
 
 \item The first term does not need lab access, however, you will need
   to be able to run Altium remotely or run the free student-edition of
-  Altium.
+  Altium.  The instructions and files can be found on the ENCE461
+  Learn page.
 
-\item If because of illness your group cannot meet a milestone, email
-  \daniel.
+\item If because of illness or isolation your group cannot meet a
+  milestone, email \daniel.
 
 \item Some of the milestones may need to be altered.
 
