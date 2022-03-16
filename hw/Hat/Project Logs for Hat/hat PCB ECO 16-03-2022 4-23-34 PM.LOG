@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=GND Pin=R10-1
+Removed Pin From Net: NetName=3V3D Pin=R28-2
+Removed Member From Class: ClassName=MCU Member=R10
+Removed Member From Class: ClassName=MCU Member=R28
+Added Pin To Net: NetName=GND Pin=DL1-1
+Added Pin To Net: NetName=3V3D Pin=P9-1
+Added Pin To Net: NetName=3V3D Pin=R21-2
