@@ -1,0 +1,2 @@
+Change Component Designator: OldDesignator=nRST NewDesignator=nRST_T
+Added Member To Class: ClassName=MCU Member=Component nRST_T TP
