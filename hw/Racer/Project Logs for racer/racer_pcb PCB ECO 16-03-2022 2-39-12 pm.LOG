@@ -1,0 +1,3 @@
+Removed Pin From Net: NetName=nRST Pin=nRST_T-1
+Removed Member From Class: ClassName=MCU Member=nRST_T
+Added Member To Class: ClassName=MCU Member=Component nRST EVQPNF05M

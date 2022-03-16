@@ -1,0 +1,2 @@
+Removed Pin From Net: NetName=3V3D Pin=3V3D-1
+Added Member To Class: ClassName=MCU Member=Component nRST EVQPNF05M

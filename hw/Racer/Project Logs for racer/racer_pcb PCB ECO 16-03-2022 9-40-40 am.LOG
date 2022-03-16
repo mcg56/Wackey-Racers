@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=RIGHT_MOTOR_R Pin=H6-1
+Removed Pin From Net: NetName=RIGHT_MOTOR_F Pin=H6-2
+Added Pin To Net: NetName=RIGHT_MOTOR_F Pin=H6-1
+Added Pin To Net: NetName=RIGHT_MOTOR_R Pin=H6-2

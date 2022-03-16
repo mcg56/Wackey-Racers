@@ -1,0 +1,13 @@
+Change Component Designator: OldDesignator=H4 NewDesignator=LED_CON
+Change Component Designator: OldDesignator=LEFT_F NewDesignator=L_F
+Change Component Designator: OldDesignator=LEFT_R NewDesignator=L_R
+Change Component Designator: OldDesignator=P1 NewDesignator=BUMP_SW
+Change Component Designator: OldDesignator=P3 NewDesignator=CH_1
+Change Component Designator: OldDesignator=P4 NewDesignator=CH_3
+Change Component Designator: OldDesignator=P5 NewDesignator=CH_2
+Change Component Designator: OldDesignator=P6 NewDesignator=CH_4
+Change Component Designator: OldDesignator=P8 NewDesignator=DAR_IN
+Change Component Designator: OldDesignator=RIGHT_F NewDesignator=R_F
+Change Component Designator: OldDesignator=RIGHT_R NewDesignator=R_R
+Change Component Designator: OldDesignator=S1 NewDesignator=nRST
+Change Component Designator: OldDesignator=S2 NewDesignator=SLEEP
