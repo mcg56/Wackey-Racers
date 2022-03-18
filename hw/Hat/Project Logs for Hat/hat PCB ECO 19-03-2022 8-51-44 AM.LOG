@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=SERVO_PWM Pin=U1-9
+Removed Pin From Net: NetName=LED_DATA_3V3 Pin=U1-32
+Added Pin To Net: NetName=SERVO_PWM Pin=U1-32
+Added Pin To Net: NetName=LED_DATA_3V3 Pin=U1-34
