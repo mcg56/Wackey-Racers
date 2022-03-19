@@ -1,0 +1,4 @@
+Change Component Designator: OldDesignator=STAT_0 NewDesignator=STAT_1
+Change Component Designator: OldDesignator=STAT_1 NewDesignator=STAT_2
+Added Pin To Net: NetName=STAT1 Pin=U1-42
+Added Pin To Net: NetName=STAT0 Pin=U1-52

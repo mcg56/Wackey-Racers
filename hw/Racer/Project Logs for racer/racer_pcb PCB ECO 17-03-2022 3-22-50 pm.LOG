@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=5V_USB Pin=D2-1
+Removed Pin From Net: NetName=5V_HP Pin=D2-2
+Added Pin To Net: NetName=5V_HP Pin=D2-1
+Added Pin To Net: NetName=5V_USB Pin=D2-2

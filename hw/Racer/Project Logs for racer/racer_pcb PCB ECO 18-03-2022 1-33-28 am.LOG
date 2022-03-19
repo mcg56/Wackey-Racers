@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=H_BRIDGE_STAT Pin=U1-26
+Removed Pin From Net: NetName=RADIO_IRQ Pin=U1-29
+Added Pin To Net: NetName=RADIO_IRQ Pin=U1-26
+Added Pin To Net: NetName=H_BRIDGE_STAT Pin=U1-29
+Added Member To Class: ClassName=MCU Member=Component BAT Battery_HEADER_3pin

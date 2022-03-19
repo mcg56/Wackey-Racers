@@ -1,0 +1,45 @@
+Removed Pin From Net: NetName=5V_HP Pin=D2-1
+Removed Pin From Net: NetName=5V_LP Pin=D2-3
+Change Component Footprint: Designator=D2 Old Footprint=ONSC-SOT-23-3-318-08_V New Footprint=DIOM4227X23N
+Change Component Footprint: Designator=F2 Old Footprint=RESC3216N New Footprint=DIOM4227X23N
+Change Component Comment : Designator=F2 Old Comment=0.25A New Comment=SS14-E3/5AT
+Change Component Comment : Designator=D2 Old Comment=BAV70LT3 New Comment=SS14-E3/5AT
+Change Component Designator: OldDesignator=F2 NewDesignator=D3
+Change component parameters: Designator = "D3"; Footprint = "DIOM4227X23N"; UniqueID = "\UGKKOBAW"
+Change component parameters. Clean all parameters for all variants
+Change component parameters (AddParameter): Name = "Diode Case Style"; Value = "DO-214"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Diode Type"; Value = "Schottky"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Current If(AV)"; Value = "1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "VISHAY GENERAL SEMICONDUCTOR"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer Part Number"; Value = "SS14-E3/5AT"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package / Case"; Value = "SMA"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Storage Location"; Value = "PCB Assembly WS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier 2"; Value = "Farnell"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier 3"; Value = "Mouser"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier Part Number 1"; Value = "SS14-E3/5ATGICT-ND"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier Part Number 2"; Value = "9551280"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier Part Number 3"; Value = "625-SS14-E3/11T"; VariantName = "[No Variations]"
+Change component parameters: Designator = "D2"; Footprint = "DIOM4227X23N"; UniqueID = "\OOBECQHP"
+Change component parameters. Clean all parameters for all variants
+Change component parameters (AddParameter): Name = "Diode Case Style"; Value = "DO-214"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Diode Type"; Value = "Schottky"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Current If(AV)"; Value = "1"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "VISHAY GENERAL SEMICONDUCTOR"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer Part Number"; Value = "SS14-E3/5AT"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package / Case"; Value = "SMA"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Storage Location"; Value = "PCB Assembly WS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier 2"; Value = "Farnell"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier 3"; Value = "Mouser"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier Part Number 1"; Value = "SS14-E3/5ATGICT-ND"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier Part Number 2"; Value = "9551280"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier Part Number 3"; Value = "625-SS14-E3/11T"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V_LP Pin=D2-1
+Added Pin To Net: NetName=5V_HP Pin=D2-2
+Added Pin To Net: NetName=5V_LP Pin=D3-1
+Added Pin To Net: NetName=VBUS Pin=R3-2
+Change Net Name : Old Net Name=5V_HP New Net Name=5V_REG
+Change Net Name : Old Net Name=VBUS New Net Name=5V_USB
