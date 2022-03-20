@@ -1,0 +1,77 @@
+Removed Pin From Net: NetName=5V Pin=GND-1
+Removed Member From Class: ClassName=MCU Member=GND
+Change Component Comment : Designator=3V3A Old Comment=TP New Comment=3V3A
+Change Component Comment : Designator=3V3D Old Comment=TP New Comment=3V3D
+Change Component Comment : Designator=5V Old Comment=TP New Comment=5V
+Change Component Comment : Designator=D_N Old Comment=TP New Comment=D_N
+Change Component Comment : Designator=D_P Old Comment=TP New Comment=D_P
+Change Component Comment : Designator=LED_3V3 Old Comment=TP New Comment=LED_3V3
+Change Component Comment : Designator=LED_5V Old Comment=TP New Comment=LED_5V
+Change Component Comment : Designator=MISO Old Comment=TP New Comment=MISO
+Change Component Comment : Designator=MOSI Old Comment=TP New Comment=MOSI
+Change Component Comment : Designator=nRST Old Comment=TP New Comment=nRST
+Change Component Comment : Designator=PGOOD Old Comment=TP New Comment=PGOOD
+Change Component Comment : Designator=RAD_CE Old Comment=TP New Comment=RAD_CE
+Change Component Comment : Designator=RAD_IRQ Old Comment=TP New Comment=RAD_IRQ
+Change Component Comment : Designator=SCL Old Comment=TP New Comment=SCL
+Change Component Comment : Designator=SDA Old Comment=TP New Comment=SDA
+Change Component Comment : Designator=SPCK Old Comment=TP New Comment=SPCK
+Change Component Comment : Designator=SPI_CS Old Comment=TP New Comment=SPI_CS
+Change Component Comment : Designator=SWCLK Old Comment=TP New Comment=SWCLK
+Change Component Comment : Designator=SWDIO Old Comment=TP New Comment=SWDIO
+Change Component Designator: OldDesignator=3V3A NewDesignator=TP13
+Change Component Designator: OldDesignator=3V3D NewDesignator=TP12
+Change Component Designator: OldDesignator=5V NewDesignator=TP11
+Change Component Designator: OldDesignator=D_N NewDesignator=TP4
+Change Component Designator: OldDesignator=D_P NewDesignator=TP5
+Change Component Designator: OldDesignator=LED_3V3 NewDesignator=TP14
+Change Component Designator: OldDesignator=LED_5V NewDesignator=TP15
+Change Component Designator: OldDesignator=MISO NewDesignator=TP23
+Change Component Designator: OldDesignator=MOSI NewDesignator=TP18
+Change Component Designator: OldDesignator=nRST NewDesignator=TP19
+Change Component Designator: OldDesignator=PGOOD NewDesignator=TP10
+Change Component Designator: OldDesignator=RAD_CE NewDesignator=TP22
+Change Component Designator: OldDesignator=RAD_IRQ NewDesignator=TP21
+Change Component Designator: OldDesignator=SCL NewDesignator=TP7
+Change Component Designator: OldDesignator=SDA NewDesignator=TP6
+Change Component Designator: OldDesignator=SPCK NewDesignator=TP17
+Change Component Designator: OldDesignator=SPI_CS NewDesignator=TP16
+Change Component Designator: OldDesignator=SWCLK NewDesignator=TP20
+Change Component Designator: OldDesignator=SWDIO NewDesignator=TP3
+Added Component: Designator=TP8(TP_1206)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Manufacturer"; Value = "Harwin Inc"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "S1751-46R"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mounting Type"; Value = "Surface Mount"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "ProtoPlace"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "952-1478-2-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = "1826282"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "PC Test Point"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "TP"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Verify"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=TP9(TP_1206)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Manufacturer"; Value = "Harwin Inc"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "S1751-46R"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mounting Type"; Value = "Surface Mount"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "ProtoPlace"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "952-1478-2-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = "1826282"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "PC Test Point"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "TP"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Verify"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V Pin=TP8-1
+Added Pin To Net: NetName=5V Pin=TP9-1
+Change Net Name : Old Net Name=NetPGOOD_1 New Net Name=NetR31_1
+Added Member To Class: ClassName=MCU Member=Component TP8 GND
+Added Member To Class: ClassName=MCU Member=Component TP9 GND

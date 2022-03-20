@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=PA27 Pin=P5-3
+Removed Pin From Net: NetName=PA28 Pin=P5-4
+Added Pin To Net: NetName=PA28 Pin=P5-3
+Added Pin To Net: NetName=PA27 Pin=P5-4
+Added Member To Class: ClassName=MCU Member=Component H2 Header 5X2 Vert
+Added Member To Class: ClassName=MCU Member=Component TP5 D_P
