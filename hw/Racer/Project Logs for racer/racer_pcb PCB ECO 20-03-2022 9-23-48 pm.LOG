@@ -1,0 +1,20 @@
+Removed Pin From Net: NetName=BUMPER_SWITCH Pin=BUMP_SW-1
+Removed Pin From Net: NetName=GND Pin=BUMP_SW-2
+Removed Pin From Net: NetName=BUMPER_SWITCH Pin=U1-31
+Removed Member From Class: ClassName=MCU Member=BUMP_SW
+Change Component Designator: OldDesignator=DI NewDesignator=H5
+Added Component: Designator=H6(MOLEX_KK_2_HDR)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Manufacturer"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "ECE Dept Store"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "1462926"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "2 Pin Molex KK HDR"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=BUMPER_SWITCH Pin=H6-1
+Added Pin To Net: NetName=GND Pin=H6-2
+Added Pin To Net: NetName=BUMPER_SWITCH Pin=U1-15
+Added Member To Class: ClassName=MCU Member=Component H6 2 Pin Molex KK HDR

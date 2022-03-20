@@ -1,0 +1,59 @@
+Removed Pin From Net: NetName=3V3D Pin=DAR_IN-1
+Removed Pin From Net: NetName=DARSTEDLY_IN_1 Pin=DAR_IN-2
+Removed Pin From Net: NetName=GND Pin=DAR_IN-3
+Removed Pin From Net: NetName=NetP1_1 Pin=P1-1
+Removed Pin From Net: NetName=5V_REG Pin=P1-2
+Removed Pin From Net: NetName=NetP2_1 Pin=P2-1
+Removed Pin From Net: NetName=5V_REG Pin=P2-2
+Removed Pin From Net: NetName=NetP1_1 Pin=T2-3
+Removed Member From Class: ClassName=MCU Member=DAR_IN
+Added Component: Designator=H3(MOLEX_KK_2_HDR)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Manufacturer"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "ECE Dept Store"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "1462926"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "2 Pin Molex KK HDR"; VariantName = "[No Variations]"
+Added Component: Designator=H4(MOLEX_KK_2_HDR)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Manufacturer"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "ECE Dept Store"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "1462926"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "2 Pin Molex KK HDR"; VariantName = "[No Variations]"
+Added Component: Designator=H5(MOLEX_KK_3_HDR)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Manufacturer"; Value = "Molex"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = "22-23-2031"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "ECE Dept Store"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "9731156"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "3 Pin Molex KK Hdr"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Verify"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V_REG Pin=H3-2
+Added Pin To Net: NetName=NetP2_1 Pin=H4-1
+Added Pin To Net: NetName=5V_REG Pin=H4-2
+Added Pin To Net: NetName=3V3D Pin=H5-1
+Added Pin To Net: NetName=DARSTEDLY_IN_1 Pin=H5-2
+Added Pin To Net: NetName=GND Pin=H5-3
+Added Pin To Net: NetName=NetP1_1 Pin=P1-2
+Added Pin To Net: NetName=NetP1_1 Pin=P2-1
+Change Net Name : Old Net Name=NetP1_1 New Net Name=NetP1_2
+Change Net Name : Old Net Name=NetP2_1 New Net Name=NetH4_1
+Added Pin To Net: NetName=NetH3_1 Pin=H3-1
+Added Pin To Net: NetName=NetH3_1 Pin=T2-3
+Added Net: Name=NetH3_1
+Added Member To Class: ClassName=MCU Member=Component H3 2 Pin Molex KK HDR
+Added Member To Class: ClassName=MCU Member=Component H4 2 Pin Molex KK HDR
+Added Member To Class: ClassName=MCU Member=Component H5 3 Pin Molex KK Hdr

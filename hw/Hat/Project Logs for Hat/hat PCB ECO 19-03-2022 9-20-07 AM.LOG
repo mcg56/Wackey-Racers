@@ -1,5 +1,0 @@
-Removed Pin From Net: NetName=5V_LP Pin=P11-1
-Removed Pin From Net: NetName=5V_LP Pin=P12-1
-Added Pin To Net: NetName=5V_HP Pin=P11-1
-Added Pin To Net: NetName=5V_HP Pin=P12-1
-Added Member To Class: ClassName=MCU Member=Component D1 VS-30BQ015-M3/9AT
