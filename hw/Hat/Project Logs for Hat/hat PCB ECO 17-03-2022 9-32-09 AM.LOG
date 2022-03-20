@@ -1,0 +1,78 @@
+Removed Pin From Net: NetName=5V Pin=C26-2
+Removed Pin From Net: NetName=5V Pin=C27-2
+Removed Pin From Net: NetName=5V Pin=C31-1
+Removed Pin From Net: NetName=5V Pin=H4-1
+Removed Pin From Net: NetName=5V Pin=L2-2
+Removed Pin From Net: NetName=VBUS Pin=R1-2
+Removed Pin From Net: NetName=5V Pin=U3-5
+Added Component: Designator=D2(SMC)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Average Rectified Current"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "https://datasheet.ciiva.com/36181/vs-30bq015-m3-9at-36181258.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://datasheet.ciiva.com/36181/vs-30bq015-m3-9at-36181258.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Forward Voltage"; Value = "350mV"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vishay Semiconductors"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "VS-30BQ015-M3/9AT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Forward Surge Current (Ifsm)"; Value = "650A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Reverse Voltage (DC)"; Value = "15V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Peak Reverse Current"; Value = "4mA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = "Element14"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number"; Value = "VS-30BQ015-M3/9AT-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "VS-30BQ015-M3/9ATGIDKR-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = "2628288"; VariantName = "[No Variations]"
+Added Component: Designator=D3(SMC)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Average Rectified Current"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "https://datasheet.ciiva.com/36181/vs-30bq015-m3-9at-36181258.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://datasheet.ciiva.com/36181/vs-30bq015-m3-9at-36181258.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Forward Voltage"; Value = "350mV"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vishay Semiconductors"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "VS-30BQ015-M3/9AT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Forward Surge Current (Ifsm)"; Value = "650A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Reverse Voltage (DC)"; Value = "15V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Peak Reverse Current"; Value = "4mA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 2"; Value = "Element14"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number"; Value = "VS-30BQ015-M3/9AT-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "VS-30BQ015-M3/9ATGIDKR-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 2"; Value = "2628288"; VariantName = "[No Variations]"
+Added Component: Designator=F2(RESC3216N)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Blow Characteristic"; Value = "Very Fast Acting"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Breaking Capacity"; Value = "50A @ 32V AC / 63"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Device Marking"; Value = "D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fuse Case Style"; Value = "1206"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fuse Current"; Value = "250"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fuse Type Blowing Characteristic"; Value = "Very Fast Acting"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "MULTICOMP"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part Number"; Value = "MC12CF.250"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer PN"; Value = "MC12CF.250"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Storage Location"; Value = "PCB Assembly WS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier 1"; Value = "Farnell"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part Number 1"; Value = "1841020"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "0.25A"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V Pin=D2-2
+Added Pin To Net: NetName=5V Pin=D3-2
+Added Pin To Net: NetName=VBUS Pin=F2-2
+Change Net Name : Old Net Name=5V New Net Name=5V_LP
+Added Pin To Net: NetName=5V_HP Pin=C26-2
+Added Pin To Net: NetName=5V_HP Pin=C27-2
+Added Pin To Net: NetName=5V_HP Pin=C31-1
+Added Pin To Net: NetName=5V_HP Pin=D3-1
+Added Pin To Net: NetName=5V_HP Pin=H4-1
+Added Pin To Net: NetName=5V_HP Pin=L2-2
+Added Pin To Net: NetName=5V_HP Pin=U3-5
+Added Net: Name=5V_HP
+Added Pin To Net: NetName=NetD2_1 Pin=D2-1
+Added Pin To Net: NetName=NetD2_1 Pin=F2-1
+Added Pin To Net: NetName=NetD2_1 Pin=R1-2
+Added Net: Name=NetD2_1
+Added Member To Class: ClassName=MCU Member=Component C10 100nF
+Added Member To Class: ClassName=MCU Member=Component C11 100nF
+Added Member To Class: ClassName=MCU Member=Component D2 VS-30BQ015-M3/9AT
+Added Member To Class: ClassName=MCU Member=Component D3 VS-30BQ015-M3/9AT
+Added Member To Class: ClassName=MCU Member=Component F2 0.25A
