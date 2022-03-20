@@ -1,0 +1,3 @@
+Change Component Footprint: Designator=R1 Old Footprint=RESC3216L New Footprint=RESC1608L
+Change Component Footprint: Designator=R2 Old Footprint=RESC3216L New Footprint=RESC1608L
+Change Component Designator: OldDesignator=BS NewDesignator=H6

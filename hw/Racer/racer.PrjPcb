@@ -52,7 +52,7 @@ ClassGenCCAutoRoomEnabled=0
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=RUKXCFXT
+DocumentUniqueId=OJMPWSOL
 
 [Document2]
 DocumentPath=racer_pcb.PcbDoc
@@ -70,6 +70,10 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SNNJIXHS
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for racer\Design Rule Check - racer_pcb.html
+DItemRevisionGUID=
 
 [Configuration1]
 Name=Sources
@@ -190,7 +194,7 @@ OutputDefault20=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=\\print.canterbury.ac.nz\FollowYou-Colour
+TargetPrinter=\\print.canterbury.ac.nz\FollowYou-BlackAndWhite
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 
 [OutputGroup3]
