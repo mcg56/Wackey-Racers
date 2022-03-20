@@ -1,0 +1,5 @@
+Change Component Comment : Designator=R10 Old Comment=24K New Comment=36K
+Change component parameters: Designator = "R10" ("R10"); Footprint = "RESC1608L"; UniqueID = "\CMTXFZZM" ("\CMTXFZZM")
+Change component parameters (AddParameter): Name = "Storage Location"; Value = "PCB Assembly WS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = "ECE Dept"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "36K"; VariantName = "[No Variations]"
