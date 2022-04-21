@@ -29,12 +29,12 @@
 #define USB_CURRENT_MA 500
 
 /* LEDs  */
-#define LED_ERROR_PIO PA20_PIO
-#define LED_STATUS_PIO PA23_PIO
+#define LED_ERROR_PIO PA29_PIO
+#define LED_STATUS_PIO PA30_PIO
 
 /* General  */
-#define APPENDAGE_PIO PA1_PIO
-#define SERVO_PWM_PIO PA2_PIO
+//#define APPENDAGE_PIO PA1_PIO
+//#define SERVO_PWM_PIO PA2_PIO
 
 /* Button  */
 #define BUTTON_PIO PA16_PIO
