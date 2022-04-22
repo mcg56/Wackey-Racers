@@ -9,8 +9,8 @@
 #include "delay.h"
 #include "panic.h"
 
-#define PWM1_PIO PA1_PIO
-#define PWM2_PIO PA2_PIO
+#define PWM1_PIO PA25_PIO //PWM1_PIO MOTOR_LEFT_FORWARD_PWM_PIO
+#define PWM2_PIO PA17_PIO //PWM2_PIO MOTOR_LEFT_BACKWARD_PWM_PIO
 
 #define PWM_FREQ_HZ 100e3
 
@@ -18,7 +18,7 @@ static const pwm_cfg_t pwm1_cfg =
 {
     .pio = PWM1_PIO,
     .period = PWM_PERIOD_DIVISOR (PWM_FREQ_HZ),
-    .duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 50),
+    .duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 20),
     .align = PWM_ALIGN_LEFT,
     .polarity = PWM_POLARITY_HIGH,
     .stop_state = PIO_OUTPUT_LOW
@@ -28,7 +28,7 @@ static const pwm_cfg_t pwm2_cfg =
 {
     .pio = PWM2_PIO,
     .period = PWM_PERIOD_DIVISOR (PWM_FREQ_HZ),
-    .duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 50),
+    .duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 20),
     .align = PWM_ALIGN_LEFT,
     .polarity = PWM_POLARITY_HIGH,
     .stop_state = PIO_OUTPUT_LOW
