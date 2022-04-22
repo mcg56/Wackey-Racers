@@ -40,12 +40,12 @@ main (void)
         pacer_wait ();
 
         /* Toggle LED.  */
-        pio_output_toggle (LED_ERROR_PIO);
+        pio_output_toggle (LED_STATUS_PIO);
         toggle += 1;
         if (toggle > 50) {
-            pio_output_high (LED_STATUS_PIO);
+            pio_output_high (LED_ERROR_PIO);
         } else {
-            pio_output_low (LED_STATUS_PIO);
+            pio_output_low (LED_ERROR_PIO);
         }
         if (toggle > 100) {
             toggle = 0;
