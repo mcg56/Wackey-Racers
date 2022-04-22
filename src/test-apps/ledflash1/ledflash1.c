@@ -8,7 +8,7 @@
 #include "pacer.h"
 
 /* Define LED flash rate in Hz.  */
-#define LED_FLASH_RATE 2
+#define LED_FLASH_RATE 10
 
 /*
     This test app is the faithful blinky program.  It works as follows:
@@ -29,8 +29,10 @@ main (void)
 {
     /* Configure STATUS LED PIO as output.  */
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
 
     pacer_init (LED_FLASH_RATE * 2);
+    int toggle = 0;
 
     while (1)
     {
@@ -39,5 +41,14 @@ main (void)
 
         /* Toggle LED.  */
         pio_output_toggle (LED_STATUS_PIO);
+        toggle += 1;
+        if (toggle > 50) {
+            pio_output_high (LED_ERROR_PIO);
+        } else {
+            pio_output_low (LED_ERROR_PIO);
+        }
+        if (toggle > 100) {
+            toggle = 0;
+        }
     }
 }
