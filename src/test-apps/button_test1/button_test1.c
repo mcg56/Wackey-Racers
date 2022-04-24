@@ -26,8 +26,8 @@ main (void)
         pacer_wait ();
 
         if (pio_input_get (BUTTON_PIO))
-            pio_output_high (LED_STATUS_PIO);
-        else
             pio_output_low (LED_STATUS_PIO);
+        else
+            pio_output_high (LED_STATUS_PIO);
     }
 }

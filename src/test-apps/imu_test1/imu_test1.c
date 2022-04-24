@@ -10,6 +10,7 @@
 #include "usb_serial.h"
 #include "mpu9250.h"
 #include "panic.h"
+#include "mcu.h"
 
 static twi_cfg_t mpu_twi_cfg =
 {
@@ -24,22 +25,24 @@ main (void)
 {
     twi_t mpu_twi;
     mpu_t *mpu;
-
+    mcu_jtag_disable();
     // Redirect stdio to USB serial
     usb_serial_stdio_init ();
 
     pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
-
+    pio_config_set (FSYNC, PIO_OUTPUT_LOW); 
     // Initialise the TWI (I2C) bus for the MPU
     mpu_twi = twi_init (&mpu_twi_cfg);
 
     if (! mpu_twi)
+        printf("Failed to Initialise the TWI (I2C) bus for the MPU");
         panic (LED_ERROR_PIO, 1);
 
     // Initialise the MPU9250 IMU
     mpu = mpu9250_init (mpu_twi, MPU_ADDRESS);
 
     if (! mpu)
+        printf("Failed to Initialise the MPU9250 IMU");
         panic (LED_ERROR_PIO, 2);
 
     pacer_init (10);

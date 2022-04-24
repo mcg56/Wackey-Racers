@@ -28,32 +28,48 @@
 /* USB  */
 //#define USB_VBUS_PIO PA5_PIO
 #define USB_CURRENT_MA 500
+#define USB_DETECT PA5_PIO
 
 /* ADC  */
-#define BATTERY_ADC_CHANNEL ADC_CHANNEL_7
-#define JOYSTICK_X_ADC_CHANNEL ADC_CHANNEL_6
-#define JOYSTICK_Y_ADC_CHANNEL ADC_CHANNEL_5
+#define BATTERY_ADC_CHANNEL    ADC_CHANNEL_1
+#define JOYSTICK_X_ADC_CHANNEL ADC_CHANNEL_2
+#define JOYSTICK_Y_ADC_CHANNEL ADC_CHANNEL_3
+
 
 /* IMU  */
-#define IMU_INT_PIO PA0_PIO
+#define IMU_INT_PIO PA16_PIO
 
 /* LEDs  */
 #define LED_ERROR_PIO PA0_PIO
 #define LED_STATUS_PIO PA1_PIO
 
 /* General  */
-#define APPENDAGE_PIO PA1_PIO
-#define SERVO_PWM_PIO PA2_PIO
+#define APPENDAGE_PIO           PA100_PIO
+#define SERVO_PWM_PIO           PA7_PIO
+#define LEVEL_SHIFTER_1_3V3     PA25_PIO
+#define LEVEL_SHIFTER_2_3V3     PA24_PIO
+#define BUZZER_PWM              PB0_PIO
+#define IMU_JOY_SEL             PB1_PIO
+#define CH1_SEL                 PB14_PIO
+#define CH2_SEL                 PB13_PIO
+#define CH3_SEL                 PB3_PIO
+#define CH4_SEL                 PB2_PIO
+#define GPIO_JUMPER             PA30_PIO
+#define FSYNC                   PA31_PIO
+#define JOYSTICK_BUTTON         PA21_PIO
+
 
 /* Button  */
-#define BUTTON_PIO PA16_PIO
+#define BUTTON_PIO PA2_PIO //sleep
 
 /* Radio  */
-#define RADIO_CS_PIO PA10_PIO
+#define RADIO_CS_PIO PA11_PIO //SPI_CSN
 #define RADIO_CE_PIO PA9_PIO
-#define RADIO_IRQ_PIO PA15_PIO
+#define RADIO_IRQ_PIO PA10_PIO 
 
 /* LED tape  */
-#define LEDTAPE_PIO PA16_PIO
+#define LEDTAPE_PIO PA6_PIO //LED_DATA_3V3
+
+
 
 #endif /* TARGET_H  */
