@@ -30,6 +30,7 @@ main (void)
     usb_serial_stdio_init ();
 
     pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_config_set (FSYNC, PIO_OUTPUT_LOW); 
     // Initialise the TWI (I2C) bus for the MPU
     mpu_twi = twi_init (&mpu_twi_cfg);
