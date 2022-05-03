@@ -17,6 +17,22 @@
             ]
         },
         {
+            "label": "Make debug",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "debug"
+            ],
+            "options": {
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}",
+                }
+            },
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Make clean",
             "type": "shell",
             "command": "make",
