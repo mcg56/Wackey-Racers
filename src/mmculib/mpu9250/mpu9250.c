@@ -264,7 +264,7 @@ static bool mpu9250_init_imu (mpu_t *mpu)
     /* The MPU9250 is supposed to return 0x71 but some devices return
        0x73.  Perhaps they are relabeled MPU9255 chips in
        disguise?  */
-    if (response != 0x71 || response != 0x73)
+    if (response != 0x71 && response != 0x73)
         return false;
 
     mpu9250_imu_write (mpu, MPU9250_IMU_PWR_MGMT_1, 0x00);
