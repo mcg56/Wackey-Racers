@@ -52,8 +52,6 @@ void pio_configuration(void)
     pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_config_set (FSYNC, PIO_OUTPUT_LOW);
-
-    //Untested, need to check if they are actually pullup
     pio_config_set (CH1_SEL, PIO_PULLUP);
     pio_config_set (CH2_SEL, PIO_PULLUP);
     pio_config_set (CH3_SEL, PIO_PULLUP);
@@ -88,7 +86,6 @@ void task_read_imu(mpu_t *mpu, int16_t *accel)
     }
 }
 
-//Untested
 int determine_radio_channel(void)
 {
     int radio_channel = -1;
