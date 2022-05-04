@@ -15,22 +15,17 @@
 #include "mpu9250.h"
 #include "panic.h"
 #include "mcu.h"
-
-/******************************************************************************
-* PRIVATE FUNCTION DEFINITIONS
-******************************************************************************/
-void pio_configuration(void);
-void flash_led(int led_pio, int num_flash);
-int determine_radio_channel(void);
+#include "app_radio.h"
+#include "app_imu.h"
+#include "hat.h"
+#include "app_adc.h"
+#include "app_pwm.h"
+#include "app_gpio.h"
 
 /******************************************************************************
 * CONSTANTS
 ******************************************************************************/
 #define PACER_RATE 10 //Hz
-
-
-#define RADIO_CHANNEL_SEL_ERROR     1
-#define INITIALISATION_ERROR        2
 
 /******************************************************************************
 * GLOBAL VARIABLES
@@ -41,91 +36,6 @@ static twi_cfg_t mpu_twi_cfg =
     .period = TWI_PERIOD_DIVISOR (100000), // 100 kHz
     .slave_addr = 0
 };
-
-
-/******************************************************************************
-* FUNCTIONS
-******************************************************************************/
-
-void pio_configuration(void)
-{
-    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
-    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
-    pio_config_set (FSYNC, PIO_OUTPUT_LOW);
-    pio_config_set (CH1_SEL, PIO_PULLUP);
-    pio_config_set (CH2_SEL, PIO_PULLUP);
-    pio_config_set (CH3_SEL, PIO_PULLUP);
-    pio_config_set (CH4_SEL, PIO_PULLUP);
-
-}
-
-void flash_led(int led_pio, int num_flash)
-{
-    for(int i = 0; i < num_flash; i++)
-    {
-        pio_output_high (led_pio);
-        delay_ms (250);
-        pio_output_low (led_pio);
-        delay_ms (250);
-    }
-}
-
-void task_read_imu(mpu_t *mpu, int16_t *accel)
-{
-    /* Read in the accelerometer data.  */
-    if (! mpu9250_is_imu_ready (mpu))
-    {
-        printf("Waiting for IMU to be ready...\n");
-    }
-    else
-    {
-        if (!mpu9250_read_accel (mpu, accel))
-        {
-            printf ("ERROR: failed to read acceleration\n");
-        }
-    }
-}
-
-int determine_radio_channel(void)
-{
-    int radio_channel = -1;
-    int num_channels_found = 0;
-
-    if (!pio_input_get (CH1_SEL)) 
-    {
-        radio_channel = 1;
-        num_channels_found++;
-    }
-    if (!pio_input_get (CH2_SEL)) 
-    {
-        radio_channel = 2;
-        num_channels_found++;
-    }
-    if (!pio_input_get (CH3_SEL)) 
-    {
-        radio_channel = 3;
-        num_channels_found++;
-    }
-    if (!pio_input_get (CH4_SEL)) 
-    {
-        radio_channel = 4;
-        num_channels_found++;
-    }
-
-    if (num_channels_found > 1) //More than 1 channel select is in, only have 1 
-    {
-        printf("Error: Too many radio channels selected!");
-        panic (LED_ERROR_PIO, RADIO_CHANNEL_SEL_ERROR);
-    }
-    
-    if(num_channels_found == 0) //No channel selected
-    {
-        printf("Error: No channel selected!");
-        panic (LED_ERROR_PIO, RADIO_CHANNEL_SEL_ERROR);
-    }
-
-    return radio_channel;
-}
 
 int main (void)
 {
