@@ -1,5 +1,5 @@
 PERIPHERALS = pit
-DRIVERS =
+DRIVERS = pacer usb_serial mpu9250 panic
 TARGET = hat.bin
 
 SRC = hat.c

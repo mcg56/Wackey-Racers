@@ -12,6 +12,9 @@
 #include "panic.h"
 #include "mcu.h"
 
+
+#define PACER_RATE 10 //Hz
+
 static twi_cfg_t mpu_twi_cfg =
 {
     .channel = TWI_CHANNEL_0,
@@ -50,7 +53,7 @@ main (void)
         panic (LED_ERROR_PIO, 2);
     }
 
-    pacer_init (10);
+    pacer_init (PACER_RATE);
 
     while (1)
     {
