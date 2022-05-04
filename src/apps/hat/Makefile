@@ -1,4 +1,4 @@
-PERIPHERALS = pit
+PERIPHERALS = pit adc
 DRIVERS = pacer usb_serial mpu9250 panic
 TARGET = hat.bin
 
