@@ -18,14 +18,16 @@
 #include "usb_serial.h"
 
 
-#define PWM_FREQ_HZ 100e3
+#define PWM_FREQ_HZ 50e3
 
 pwm_t pwmL1;
 pwm_t pwmL2;
 pwm_t pwmR1;
 pwm_t pwmR2;
 
+void init_pwm (void);
+void set_motor_vel (int8_t x_vel, int8_t y_vel);
+void set_pwm(uint8_t motor, uint32_t vel);
 
+#endif /* MOTORS_H */
 
-#endif    
-#endif
