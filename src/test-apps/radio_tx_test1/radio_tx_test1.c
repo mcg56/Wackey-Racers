@@ -26,7 +26,7 @@ int main (void)
         };
     nrf24_cfg_t nrf24_cfg =
         {
-            .channel = RADIO_CHANNEL,
+            //.channel = RADIO_CHANNEL,
             .address = RADIO_ADDRESS,
             .payload_size = RADIO_PAYLOAD_SIZE,
             .ce_pio = RADIO_CE_PIO,
@@ -48,12 +48,10 @@ int main (void)
 #endif
 
     spi = spi_init ( &spi_cfg);
-    if (! spi)
-        panic (LED_ERROR_PIO, 1);
+    if (! spi) panic (LED_ERROR_PIO, 1);
 
     nrf = nrf24_init (spi, &nrf24_cfg);
-    if (! nrf)
-        panic (LED_ERROR_PIO, 2);
+    if (! nrf) panic (LED_ERROR_PIO, 2);
 
     while (1)
     {

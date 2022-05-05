@@ -1,5 +1,5 @@
 PERIPHERALS = pit adc
-DRIVERS = pacer usb_serial mpu9250 panic
+DRIVERS = pacer usb_serial mpu9250 panic nrf24 
 TARGET = hat.bin
 
 SRC = hat.c app_imu.c app_radio.c app_gpio.c app_pwm.c app_adc.c

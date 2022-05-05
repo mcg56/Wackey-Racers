@@ -31,3 +31,35 @@ void task_read_imu(mpu_t *mpu, int16_t *accel)
         }
     }
 }
+
+void task_convert_imu(int16_t *x, int16_t *y, int *linear, int *angular)
+{
+    
+    int16_t adc_range = IMU_ADC_MAX - IMU_ADC_MIN;
+    int16_t linear_range = LINEAR_TRANFER_MAX - LINEAR_TRANFER_MIN;
+    // COnverts ADC Reading to a value from 0-255
+    int linear_size = -(((*x-IMU_ADC_MIN)*linear_range)/adc_range)+LINEAR_TRANFER_MIN;
+    int angular_size = -(((*y-IMU_ADC_MIN)*linear_range)/adc_range)+LINEAR_TRANFER_MIN;
+    if (linear_size < LINEAR_TRANFER_MIN)
+    {
+        linear_size = LINEAR_TRANFER_MIN;
+    }
+    if (angular_size < LINEAR_TRANFER_MIN)
+    {
+        angular_size = LINEAR_TRANFER_MIN;
+    }
+    if (linear_size > LINEAR_TRANFER_MAX)
+    {
+        linear_size = LINEAR_TRANFER_MAX;
+    }
+    if (angular_size > LINEAR_TRANFER_MAX)
+    {
+        angular_size = LINEAR_TRANFER_MAX;
+    }
+    
+    //sprintf(*linear,"%d",linear_size);
+    //sprintf(*angular,"%d",angular_size);
+    *linear = linear_size;
+    *angular = angular_size;
+
+}
