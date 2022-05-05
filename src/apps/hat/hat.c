@@ -131,7 +131,7 @@ int main (void)
     flash_led(LED_STATUS_PIO, 2);
 
     pacer_init (PACER_RATE);
-    
+
     while (1)
     {
         /* Wait until next clock tick.  */
@@ -163,6 +163,7 @@ int main (void)
         buffer[2] = 69 & 0xFF;
         printf("%i %i %i\n", buffer[0], buffer[1], buffer[2]);
 
+        // Untested
         if (! nrf24_write (nrf, buffer, RADIO_PAYLOAD_SIZE))
             pio_output_set (LED_ERROR_PIO, 1);
         else

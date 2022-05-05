@@ -57,8 +57,7 @@ void task_convert_imu(int16_t *x, int16_t *y, int *linear, int *angular)
         angular_size = LINEAR_TRANFER_MAX;
     }
     
-    //sprintf(*linear,"%d",linear_size);
-    //sprintf(*angular,"%d",angular_size);
+ 
     *linear = linear_size;
     *angular = angular_size;
 
