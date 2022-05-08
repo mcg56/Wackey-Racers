@@ -16,8 +16,17 @@
 #include "app_radio.h"
 
 /******************************************************************************
-* FUNCTIONS
+* CONFIGURATION STRUCTURES
 ******************************************************************************/
+nrf24_cfg_t nrf24_cfg =
+{
+    .channel = RADIO_CHANNEL_DEFAULT,
+    .address = RADIO_ADDRESS,
+    .payload_size = RADIO_PAYLOAD_SIZE,
+    .ce_pio = RADIO_CE_PIO,
+    .irq_pio = RADIO_IRQ_PIO,
+};
+
 spi_cfg_t spi_cfg =
 {
     .channel = 0,
@@ -28,30 +37,29 @@ spi_cfg_t spi_cfg =
     .bits = 8
 };
 
-nrf24_cfg_t nrf24_cfg =
-{
-    .channel = RADIO_CHANNEL,
-    .address = RADIO_ADDRESS,
-    .payload_size = RADIO_PAYLOAD_SIZE,
-    .ce_pio = RADIO_CE_PIO,
-    .irq_pio = RADIO_IRQ_PIO,
-};
+
+/******************************************************************************
+* FUNCTIONS
+******************************************************************************/
 
 nrf24_t *initialise_radio(void)
 {
     uint8_t count = 0; //Radio Variables
     spi_t spi;
     nrf24_t *nrf;
+
+    // Determine radio channel and setup cfg structure
     int radio_channel;
-    // Initialise Radio
+    radio_channel = determine_radio_channel();    
+    nrf24_cfg.channel = radio_channel;
+    printf("Radio channel: %d\n", nrf24_cfg.channel);
+
+    // Initialise spi
     spi = spi_init ( &spi_cfg);
     if (! spi) panic (LED_ERROR_PIO, 1);
-
+    // Initialise radio
     nrf = nrf24_init (spi, &nrf24_cfg);
     if (! nrf) panic (LED_ERROR_PIO, 2);
-
-    radio_channel = determine_radio_channel();
-    printf("Radio channel: %d\n", radio_channel);
 
     return nrf;
 }

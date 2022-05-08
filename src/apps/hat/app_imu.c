@@ -12,6 +12,7 @@
 #include "pio.h"
 #include "app_imu.h"
 #include "mpu9250.h"
+#include "panic.h"
 
 /******************************************************************************
 * FUNCTIONS
@@ -29,8 +30,6 @@ mpu_t *initialise_imu(void)
     mpu_t *mpu;
     // Disable jtag so we can use TWI1
     mcu_jtag_disable(); 
-    // Redirect stdio to USB serial
-    usb_serial_stdio_init ();
      // Initialise the TWI (I2C) bus for the MPU
     mpu_twi = twi_init (&mpu_twi_cfg);
     if (! mpu_twi) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
@@ -63,7 +62,7 @@ void task_convert_imu(int16_t *x, int16_t *y, int *linear, int *angular)
     
     int16_t adc_range = IMU_ADC_MAX - IMU_ADC_MIN;
     int16_t linear_range = LINEAR_TRANFER_MAX - LINEAR_TRANFER_MIN;
-    // COnverts ADC Reading to a value from 0-255
+    // COnverts ADC Reading to a value from LINEAR_TRANFER_MIN to LINEAR_TRANFER_MAX
     int linear_size = -(((*x-IMU_ADC_MIN)*linear_range)/adc_range)+LINEAR_TRANFER_MIN;
     int angular_size = -(((*y-IMU_ADC_MIN)*linear_range)/adc_range)+LINEAR_TRANFER_MIN;
     if (linear_size < LINEAR_TRANFER_MIN)

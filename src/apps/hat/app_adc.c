@@ -13,6 +13,7 @@
 #include "pio.h"
 #include "app_adc.h"
 #include "adc.h"
+#include "panic.h"
 
 /******************************************************************************
 * FUNCTIONS

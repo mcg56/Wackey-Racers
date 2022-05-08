@@ -50,6 +50,8 @@ int main (void)
     int16_t y;       //IMU raw data y
     
     //---------------------Peripheral setup---------------------
+    // Redirect stdio to USB serial
+    usb_serial_stdio_init ();
 
     pio_configuration();
     mpu = initialise_imu();
@@ -95,15 +97,15 @@ int main (void)
         printf("%i %i %i\n", buffer[0], buffer[1], buffer[2]);
 
         // Write to radio
-        if (! nrf24_write (nrf, buffer, RADIO_PAYLOAD_SIZE))
-            pio_output_set (LED_ERROR_PIO, 1);
-        else
-            pio_output_set (LED_ERROR_PIO, 0);
-    }
+        if (! nrf24_write (nrf, buffer, RADIO_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
+        else pio_output_set (LED_ERROR_PIO, 0);
         //if recieved from car to play buzzer, then play noise
 
         // Led tape? not sure if this is a task or we just start it and it runs...
 
         // Poll sleep button and if pressed then sleep...
+        printf("\n\n");
+    }
+
         
 }
