@@ -27,7 +27,6 @@
 #include "usb_serial.h"
 #include "delay.h"
 #include "string.h"
-#include "app_init.h"
 #include <stdio.h>
 
 /******************************************************************************

@@ -22,5 +22,6 @@
 * PUBLIC FUNCTION DEFINITIONS
 ******************************************************************************/
 void task_read_adc(adc_t adc, uint16_t *data, int size);
+adc_t initialise_adc(void);
 
 #endif //APP_ADC_H

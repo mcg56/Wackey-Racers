@@ -16,6 +16,32 @@
 /******************************************************************************
 * FUNCTIONS
 ******************************************************************************/
+static twi_cfg_t mpu_twi_cfg =
+{
+    .channel = TWI_CHANNEL_0,
+    .period = TWI_PERIOD_DIVISOR (100000), // 100 kHz
+    .slave_addr = 0
+};
+
+mpu_t *initialise_imu(void)
+{
+    twi_t mpu_twi;
+    mpu_t *mpu;
+    // Disable jtag so we can use TWI1
+    mcu_jtag_disable(); 
+    // Redirect stdio to USB serial
+    usb_serial_stdio_init ();
+     // Initialise the TWI (I2C) bus for the MPU
+    mpu_twi = twi_init (&mpu_twi_cfg);
+    if (! mpu_twi) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
+
+    // Initialise the MPU9250 IMU
+    mpu = mpu9250_init (mpu_twi, MPU_ADDRESS);
+    if (! mpu) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
+
+    return mpu;
+}
+
 void task_read_imu(mpu_t *mpu, int16_t *accel)
 {
     /* Read in the accelerometer data.  */

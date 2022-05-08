@@ -29,5 +29,6 @@
 ******************************************************************************/
 void task_read_imu(mpu_t *mpu, int16_t *accel);
 void task_convert_imu(int16_t *x, int16_t *y, int *linear, int *angular);
+mpu_t *initialise_imu(void);
 
 #endif //APP_IMU_H
