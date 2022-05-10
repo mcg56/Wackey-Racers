@@ -13,6 +13,7 @@
 - Potential radio authentication? could be difficult (something like parity)
 - Bumper clear send packet
 - Broadcast many packets when bumper hit to ensure hat recieves
+- Three point throttle curve
 */
 
 static usb_serial_cfg_t usb_serial_cfg =

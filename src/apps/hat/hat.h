@@ -11,7 +11,6 @@
 * CONSTANTS
 ******************************************************************************/
 #define RADIO_CHANNEL_SEL_ERROR     1
-#define RADIO_CHANNEL               1
 #define INITIALISATION_ERROR        2
 
 #endif //MY_HAT_H
