@@ -21,8 +21,8 @@
 ******************************************************************************/
 #define IMU_ADC_MAX 17000
 #define IMU_ADC_MIN -17000
-#define LINEAR_TRANFER_MAX 20
-#define LINEAR_TRANFER_MIN 0
+#define LINEAR_TRANFER_MAX 201
+#define LINEAR_TRANFER_MIN 1
 
 /******************************************************************************
 * PUBLIC FUNCTION DEFINITIONS

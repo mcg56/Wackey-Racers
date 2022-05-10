@@ -15,8 +15,9 @@
 /******************************************************************************
 * CONSTANTS
 ******************************************************************************/
-#define RADIO_ADDRESS           0x0123456789LL
-#define RADIO_PAYLOAD_SIZE      3
+#define RADIO_ADDRESS           0x0123456789FF
+#define RADIO_TX_PAYLOAD_SIZE   3
+#define RADIO_RX_PAYLOAD_SIZE   1
 #define RADIO_CHANNEL_DEFAULT   0
 /******************************************************************************
 * PUBLIC FUNCTION DEFINITIONS

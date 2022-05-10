@@ -22,7 +22,7 @@ nrf24_cfg_t nrf24_cfg =
 {
     .channel = RADIO_CHANNEL_DEFAULT,
     .address = RADIO_ADDRESS,
-    .payload_size = RADIO_PAYLOAD_SIZE,
+    .payload_size = RADIO_TX_PAYLOAD_SIZE,
     .ce_pio = RADIO_CE_PIO,
     .irq_pio = RADIO_IRQ_PIO,
 };
