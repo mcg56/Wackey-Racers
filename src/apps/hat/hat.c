@@ -27,6 +27,7 @@
 #include "usb_serial.h"
 #include "delay.h"
 #include "string.h"
+#include "mcu_sleep.h"
 #include <stdio.h>
 
 /******************************************************************************
@@ -48,6 +49,7 @@ int main (void)
     int angular;
     int16_t x;       //IMU raw data x
     int16_t y;       //IMU raw data y
+    int rx_bytes;
     
     //---------------------Peripheral setup---------------------
     // Redirect stdio to USB serial
@@ -61,6 +63,18 @@ int main (void)
     
     use_joy = !pio_input_get (IMU_JOY_SEL);
 
+    // Setting up sleep
+    const mcu_sleep_wakeup_cfg_t sleep_wake_cfg = {  
+        .pio = SLEEP_BUT_PIO,
+        .active_high = false
+    };
+    if(!mcu_sleep_wakeup_set(&sleep_wake_cfg)) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
+    
+
+    const mcu_sleep_cfg_t sleep_cfg = {  
+        .mode = MCU_SLEEP_MODE_SLEEP
+    };
+
     //Flash LED to show everything initialised
     flash_led(LED_STATUS_PIO, 2);
 
@@ -69,12 +83,13 @@ int main (void)
     while (1)
     {
         /* Wait until next clock tick.  */
-        char buffer[RADIO_PAYLOAD_SIZE + 1];
+        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         pacer_wait ();
 
         // Read IMU and print raw data
         task_read_imu(mpu, accel);
-        printf("x: %5d  y: %5d  z: %5d\n", accel[0], accel[1], accel[2]);
+        //printf("x: %5d  y: %5d  z: %5d\n", accel[0], accel[1], accel[2]);
         x = accel[0];
         y = accel[1];
         
@@ -82,29 +97,46 @@ int main (void)
         task_convert_imu(&x, &y, &linear,&angular);
         
         // Linear and Angular are converted for range of 0-20 so it cant be sent in a byte
-        printf("linear: %5d  angular: %5d\n", linear, angular);
+        //printf("linear: %5d  angular: %5d\n", linear, angular);
 
         // Read all ADC
         task_read_adc(adc, adc_data, sizeof(adc_data));
         //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
   
         // Radio, need to tx and rx somehow..
-        // Convert int values into bytes and place into buffer
-        buffer[0] = linear & 0xFF; 
-        buffer[1] = angular & 0xFF;
-        buffer[2] = 69 & 0xFF;
+        // Convert int values into bytes and place into tx_buffer
+        tx_buffer[0] = linear; 
+        tx_buffer[1] = angular;
+        tx_buffer[2] = 69 & 0xFF;
         
-        printf("%i %i %i\n", buffer[0], buffer[1], buffer[2]);
+        printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
 
         // Write to radio
-        if (! nrf24_write (nrf, buffer, RADIO_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
+        if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
         else pio_output_set (LED_ERROR_PIO, 0);
+
+        rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+        if (rx_bytes != 0)
+        {
+            rx_buffer[rx_bytes] = 0;
+            printf ("%s\n", rx_buffer);
+            pio_output_toggle (LED_STATUS_PIO);
+        }
         
         //if recieved from car to play buzzer, then play noise
 
         // Led tape? not sure if this is a task or we just start it and it runs...
 
         // Poll sleep button and if pressed then sleep...
+        if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
+        {
+            //pio_irq_enable(WAKE_BUTTON);
+            pio_output_set (LED_STATUS_PIO, 0);
+            pio_output_set (LED_ERROR_PIO, 0);
+            mcu_sleep(&sleep_cfg);
+            flash_led(LED_STATUS_PIO, 5);
+        }
+
         printf("\n\n");
     }
 

@@ -15,6 +15,8 @@
 #include "delay.h"
 
 
+
+
 /******************************************************************************
 * FUNCTIONS
 ******************************************************************************/
@@ -27,6 +29,9 @@ void pio_configuration(void)
     pio_config_set (CH2_SEL, PIO_PULLUP);
     pio_config_set (CH3_SEL, PIO_PULLUP);
     pio_config_set (CH4_SEL, PIO_PULLUP);
+    /* Configure sleep button as input with pullup.  */
+    pio_config_set (SLEEP_BUT_PIO, PIO_PULLUP);
+    pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_FALLING_EDGE);
 
 }
 

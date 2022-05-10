@@ -62,6 +62,7 @@ void task_convert_imu(int16_t *x, int16_t *y, int *linear, int *angular)
     
     int16_t adc_range = IMU_ADC_MAX - IMU_ADC_MIN;
     int16_t linear_range = LINEAR_TRANFER_MAX - LINEAR_TRANFER_MIN;
+    
     // COnverts ADC Reading to a value from LINEAR_TRANFER_MIN to LINEAR_TRANFER_MAX
     int linear_size = -(((*x-IMU_ADC_MIN)*linear_range)/adc_range)+LINEAR_TRANFER_MIN;
     int angular_size = -(((*y-IMU_ADC_MIN)*linear_range)/adc_range)+LINEAR_TRANFER_MIN;
