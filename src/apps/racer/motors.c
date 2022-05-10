@@ -2,7 +2,7 @@
     @author E. Twomey, M. Gardyne
     @date   4 May 2022
     @brief  Motor PWM Control
-    @note   Needs completed
+    @note   Needs completing
 */
 
 /* Take signed int from -10-10 for linear and same for angular

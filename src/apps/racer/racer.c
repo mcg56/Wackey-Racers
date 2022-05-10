@@ -1,6 +1,7 @@
 #include "target.h"
 #include "motors.h"
 #include "pacer.h"
+#include "radio.h"
 
 #define LED_FLASH_RATE 10
 #define PACER_RATE 1000
@@ -56,7 +57,7 @@ process_command (void)
 
     case 'b':
         usb_serial_puts (usb_serial, "Backward!\n");
-        set_motor_vel (0, -70);
+        set_motor_vel (0, -50);
         break;
     case 'l':
         usb_serial_puts (usb_serial, "Left!\n");
@@ -77,7 +78,7 @@ process_command (void)
        break;
     }
 
-    prompt_command ();
+    usb_serial_puts (usb_serial, "> ");
 }
 
 
@@ -117,14 +118,10 @@ main (void)
 
 	        pio_output_toggle (LED_STATUS_PIO);
 
-            process_command ();
-        }
-	}
+            //process_command ();
 
-        //pacer_wait ();
-        //set_motor_vel (0, 100);
-        //pio_output_toggle (LED_STATUS_PIO);
-        //pio_output_toggle (LED_ERROR_PIO);
-        //printf ("Hello world %d\n", i++);
-    
+            
+        }
+        
+	}
 }
