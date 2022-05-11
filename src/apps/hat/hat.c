@@ -49,7 +49,7 @@ int main (void)
     int angular;
     int16_t x;       //IMU raw data x
     int16_t y;       //IMU raw data y
-    int rx_bytes;
+    
     
     //---------------------Peripheral setup---------------------
     // Redirect stdio to USB serial

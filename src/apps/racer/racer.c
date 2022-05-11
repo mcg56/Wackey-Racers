@@ -6,6 +6,7 @@
 #define LED_FLASH_RATE 10
 #define PACER_RATE 1000
 
+
 /* TODO
 - Always specify size eg (uint8_t)
 - Typedef enum for motor states (DONE)
@@ -87,9 +88,12 @@ main (void)
 {
     //Milesetone 2 butchery
     usb_cdc_t usb_cdc;
+    nrf24_t *nrf;
+    int rx_bytes;
     int flash_ticks = 0;
     int i;
     usb_serial = usb_serial_init (&usb_serial_cfg, "");
+    usb_serial_stdio_init ();
 
     prompt_command ();
     
@@ -111,6 +115,10 @@ main (void)
     set_motor_vel (0, 0);
 
     while (1) {
+
+        /* Wait until next clock tick.  */
+        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         pacer_wait ();
         flash_ticks++;
         if (flash_ticks >= PACER_RATE / (LED_FLASH_RATE * 2)) {
@@ -122,6 +130,20 @@ main (void)
 
             
         }
-        
+        tx_buffer[0] = "H"; 
+        // if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) {
+        //     pio_output_set (LED_ERROR_PIO, 1);
+        // } else {
+        //     pio_output_set (LED_ERROR_PIO, 0);
+        // }
+        rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+        if (rx_bytes != 0)
+        {
+            rx_buffer[rx_bytes] = 0;
+            printf ("%s\n", rx_buffer);
+            pio_output_toggle (LED_ERROR_PIO);
+        }
+        printf("Radio channel: %d\n", nrf24_cfg.channel);
+        printf("Radio channel: %d\n", RADIO_ADDRESS);
 	}
 }
