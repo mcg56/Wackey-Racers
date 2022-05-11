@@ -2,6 +2,14 @@
     @author A. Musalov, A. Eason
     @date   4/05/2022
     @brief  Main code for the hat module
+
+    To DO:
+    -Sleep (needs to wakeup again - Angus)
+    -Joystick encoded to 1-201 range (same as imu, make function general angus)
+    -LED tape (anton)
+    -Buzzer somehthing small on hit (anton)
+    -buzzer play anthem unblocked (Plays interesting sounds - Anton)
+    -Read Bat voltage and have low voltage indication (Angus)
 */
 
 /******************************************************************************
@@ -109,7 +117,7 @@ int main (void)
         tx_buffer[1] = angular;
         tx_buffer[2] = 69 & 0xFF;
         
-        printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+        //printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
 
         // Write to radio
         if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
@@ -136,8 +144,8 @@ int main (void)
             mcu_sleep(&sleep_cfg);
             flash_led(LED_STATUS_PIO, 5);
         }
-
-        printf("\n\n");
+        printf("Radio channel: %d address: %d\n", nrf24_cfg.channel, nrf24_cfg.address);
+        //printf("\n\n");
     }
 
         
