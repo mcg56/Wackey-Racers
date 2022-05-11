@@ -36,12 +36,15 @@
 #include "delay.h"
 #include "string.h"
 #include "mcu_sleep.h"
+#include "pwm.h"
+#include "ledtape.h"
 #include <stdio.h>
 
 /******************************************************************************
 * CONSTANTS
 ******************************************************************************/
 #define PACER_RATE 10 //Hz
+
 
 
 int main (void)
@@ -52,6 +55,7 @@ int main (void)
     mpu_t *mpu;
     int16_t accel[3]; // For storing imu data
     uint16_t adc_data[3]; // For storing adc data
+    pwm_t pwm1;
     bool use_joy = false;
     int linear;
     int angular;
@@ -67,6 +71,7 @@ int main (void)
     mpu = initialise_imu();
     adc = initialise_adc();
     nrf = initialise_radio();
+    pwm1 = init_pwm();
     //---------------------Read configuration inputs---------------------
     
     use_joy = !pio_input_get (IMU_JOY_SEL);
@@ -86,6 +91,18 @@ int main (void)
     //Flash LED to show everything initialised
     flash_led(LED_STATUS_PIO, 2);
 
+    //Ledtape configure
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = 255;
+        leds[i * 3 + 1] = 0;
+        leds[i * 3 + 2] = 0;
+    }
+
     pacer_init (PACER_RATE);
 
     while (1)
@@ -93,8 +110,11 @@ int main (void)
         /* Wait until next clock tick.  */
         char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        uint8_t rx_bytes;
+
         pacer_wait ();
 
+        ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
         // Read IMU and print raw data
         task_read_imu(mpu, accel);
         //printf("x: %5d  y: %5d  z: %5d\n", accel[0], accel[1], accel[2]);
@@ -122,7 +142,7 @@ int main (void)
         // Write to radio
         if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
         else pio_output_set (LED_ERROR_PIO, 0);
-
+       
         rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
         if (rx_bytes != 0)
         {
@@ -139,6 +159,8 @@ int main (void)
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
         {
             //pio_irq_enable(WAKE_BUTTON);
+            play_card(pwm1);
+            play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
             mcu_sleep(&sleep_cfg);
