@@ -13,7 +13,7 @@
 
 #define PWM1_PIO BUZZER_PWM
 
-int melody[] = {
+int anthem_melody[] = {
   NOTE_G4, NOTE_C5, NOTE_G4, NOTE_A4, NOTE_B4, NOTE_E4, NOTE_E4, 
   NOTE_A4, NOTE_G4, NOTE_F4, NOTE_G4, NOTE_C4, NOTE_C4, 
   NOTE_D4, NOTE_D4, NOTE_E4, NOTE_F4, NOTE_F4, NOTE_G4, NOTE_A4, NOTE_B4, NOTE_C5, NOTE_D5, 
@@ -29,7 +29,10 @@ int melody[] = {
   NOTE_C5, NOTE_B4, NOTE_A4, NOTE_G4, NOTE_C4, NOTE_G4, NOTE_A4, NOTE_B4, NOTE_C5
 };
 
-int noteDurations[] = {
+int card_melody[] = {
+  NOTE_C6, NOTE_E5, NOTE_DS5, NOTE_D5, NOTE_C5
+};
+int anthem_note_Durations[] = {
   8, 4, 6, 16, 4, 8, 8, 
   4, 6, 16, 4, 8, 8, 
   4, 8, 8, 4, 8, 8, 4, 8, 8, 2,
@@ -44,6 +47,10 @@ int noteDurations[] = {
   2, 8, 8, 8, 8, 3, 8, 2,
   4, 6, 16, 4, 4, 2, 4, 4, 1
 };
+int card_note_Durations[] = {
+  6, 5, 5, 5, 1
+};
+
 
 #define PWM_FREQ_HZ 1000
 #define PWM_DUTY 50
@@ -77,11 +84,27 @@ main (void)
     while (1)
     {
         thisNote = 0;
-        for (thisNote; thisNote < sizeof(melody)/sizeof(int); thisNote++) 
+
+        for (thisNote; thisNote < sizeof(card_melody)/sizeof(int); thisNote++) 
         {
             //Play note
-            int noteDuration = 2300 / noteDurations[thisNote];
-            pwm_frequency_set (pwm1, melody[thisNote]);
+            int noteDuration = 800 / card_note_Durations[thisNote];
+            pwm_frequency_set (pwm1, card_melody[thisNote]);
+            pwm_channels_start (pwm_channel_mask (pwm1));
+            delay_ms (noteDuration);
+
+            //Delay between note
+            int pauseBetweenNotes = noteDuration * 1.05;
+            pwm_channels_stop(pwm_channel_mask (pwm1));
+            delay_ms(pauseBetweenNotes);
+        }
+        thisNote = 0;
+        
+        for (thisNote; thisNote < sizeof(anthem_melody)/sizeof(int); thisNote++) 
+        {
+            //Play note
+            int noteDuration = 2300 / anthem_note_Durations[thisNote];
+            pwm_frequency_set (pwm1, anthem_melody[thisNote]);
             pwm_channels_start (pwm_channel_mask (pwm1));
             delay_ms (noteDuration);
 
