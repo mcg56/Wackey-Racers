@@ -9,8 +9,8 @@
 #include "delay.h"
 #include "panic.h"
 
-#define RADIO_CHANNEL 1
-#define RADIO_ADDRESS 0x0123456789LL
+#define RADIO_CHANNEL 2
+#define RADIO_ADDRESS 0x2123456789LL
 #define RADIO_PAYLOAD_SIZE 32
 
 int main (void)

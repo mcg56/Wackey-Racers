@@ -15,7 +15,7 @@
 /******************************************************************************
 * CONSTANTS
 ******************************************************************************/
-#define RADIO_ADDRESS           0x0123456789FF
+#define RADIO_ADDRESS           0x2123456789
 #define RADIO_TX_PAYLOAD_SIZE   3
 #define RADIO_RX_PAYLOAD_SIZE   1
 #define RADIO_CHANNEL_DEFAULT   0
@@ -24,5 +24,5 @@
 ******************************************************************************/
 int determine_radio_channel(void);
 nrf24_t *initialise_radio(void);
-
+nrf24_cfg_t nrf24_cfg;
 #endif //APP_RADIO_H
