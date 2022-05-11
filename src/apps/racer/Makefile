@@ -1,5 +1,5 @@
 PERIPHERALS = pit pwm
-DRIVERS = led pacer usb_serial panic
+DRIVERS = led pacer usb_serial panic nrf24 
 TARGET = racer.bin
 
 SRC = racer.c motors.c motors.h
