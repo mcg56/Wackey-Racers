@@ -59,8 +59,9 @@
 #define JOYSTICK_BUTTON         PA21_PIO
 
 
+
 /* Button  */
-#define BUTTON_PIO PA2_PIO //sleep
+#define SLEEP_BUT_PIO PA2_PIO
 
 /* Radio  */
 #define RADIO_CS_PIO PA11_PIO //SPI_CSN

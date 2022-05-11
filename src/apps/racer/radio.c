@@ -1,19 +1,21 @@
-/** @file   app_radio.c
-    @author A. Musalov, A. Eason
-    @date   4/05/2022
-    @brief  Functions and structs relating to the nrf24 radio peripheral
+/* @file   radio.c
+    @author E. Twomey, M. Gardyne
+    @date   4 May 2022
+    @brief  Radio Recieve and Transmit
+    @note   Needs completed
 */
 
 /******************************************************************************
 * INCLUDES
 ******************************************************************************/
 #include "target.h"
-#include "hat.h"
+#include "racer.h"
 #include "pio.h"
 #include "panic.h"
 #include "nrf24.h"
 #include "spi.h"
-#include "app_radio.h"
+#include "radio.h"
+
 
 /******************************************************************************
 * CONFIGURATION STRUCTURES
@@ -38,6 +40,8 @@ spi_cfg_t spi_cfg =
 };
 
 
+
+
 /******************************************************************************
 * FUNCTIONS
 ******************************************************************************/
@@ -51,7 +55,8 @@ nrf24_t *initialise_radio(void)
     // Determine radio channel and setup cfg structure
     int radio_channel;
     radio_channel = determine_radio_channel();    
-    nrf24_cfg.channel = radio_channel;
+    //nrf24_cfg.channel = radio_channel;
+    nrf24_cfg.channel = 1;
     printf("Radio channel: %d\n", nrf24_cfg.channel);
 
     // Initialise spi
@@ -71,22 +76,22 @@ int determine_radio_channel(void)
     int radio_channel = -1;
     int num_channels_found = 0;
 
-    if (!pio_input_get (CH1_SEL)) 
+    if (!pio_input_get (RADIO_CH1_SEL_PIO)) 
     {
         radio_channel = 1;
         num_channels_found++;
     }
-    if (!pio_input_get (CH2_SEL)) 
+    if (!pio_input_get (RADIO_CH2_SEL_PIO)) 
     {
         radio_channel = 2;
         num_channels_found++;
     }
-    if (!pio_input_get (CH3_SEL)) 
+    if (!pio_input_get (RADIO_CH3_SEL_PIO)) 
     {
         radio_channel = 3;
         num_channels_found++;
     }
-    if (!pio_input_get (CH4_SEL)) 
+    if (!pio_input_get (RADIO_CH4_SEL_PIO)) 
     {
         radio_channel = 4;
         num_channels_found++;
@@ -106,5 +111,3 @@ int determine_radio_channel(void)
 
     return radio_channel;
 }
-
-
