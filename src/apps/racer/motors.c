@@ -6,10 +6,21 @@
 */
 
 /* Take signed int from -10-10 for linear and same for angular
-
 */
 
+
+
+/******************************************************************************
+* INCLUDES
+******************************************************************************/
+
 #include "motors.h"
+
+
+
+/******************************************************************************
+* GLOBAL VARIABLES
+******************************************************************************/
 
 #define LINEAR_GAIN 1
 #define ANGULAR_GAIN 1
@@ -19,6 +30,13 @@ typedef enum
     LEFT,
     RIGHT
 } motor;
+
+
+
+
+/******************************************************************************
+* PWM STRUCTURES
+******************************************************************************/
 
 static const pwm_cfg_t pwmL1_cfg =
 {
@@ -60,6 +78,12 @@ static const pwm_cfg_t pwmR2_cfg =
     .stop_state = PIO_OUTPUT_LOW
 };
 
+
+
+/******************************************************************************
+* INTIALISE PWM
+******************************************************************************/
+
 void init_pwm (void)
 {
     // Initialise PWM channels left hand and right hand sides
@@ -84,6 +108,11 @@ void init_pwm (void)
         panic (LED_ERROR_PIO, 4);
     
 }
+
+
+/******************************************************************************
+* SET PWM (from duty cycle)
+******************************************************************************/
 
 void set_pwm(uint8_t motor, uint32_t duty) {
     // Set PWM for desired motor based on velocity input
@@ -117,6 +146,12 @@ void set_pwm(uint8_t motor, uint32_t duty) {
     }
 }
 
+
+
+/******************************************************************************
+* SET MOTOR VELOCITY (from x & y velocity)
+******************************************************************************/
+
 void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     // Set motor velocities based on recieved radio commands. 
     uint32_t left_motor_duty = 0;
@@ -128,4 +163,57 @@ void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     set_pwm(RIGHT, right_motor_duty);
 
     
+}
+
+
+
+/******************************************************************************
+* USB CONTROL OF MOTORS
+******************************************************************************/
+
+void usb_to_motor (usb_serial_t *usb_serial)
+{
+    char buffer[80];
+    char *str;
+    
+    str = usb_serial_gets (usb_serial, buffer, sizeof (buffer));
+    if (! str)
+        return;
+
+    //usb_serial (usb_serial, "<<<%s>>>\n", str);
+    //usb_serial_puts (usb_serial, str);
+    //usb_serial_puts (usb_serial, str[1]);
+    
+
+    switch (str[0])
+    {
+    case 'f':
+        usb_serial_puts (usb_serial, "Forward!\n");
+        set_motor_vel (0, 70);
+        break;
+
+    case 'b':
+        usb_serial_puts (usb_serial, "Backward!\n");
+        set_motor_vel (0, -50);
+        break;
+    case 'l':
+        usb_serial_puts (usb_serial, "Left!\n");
+        set_motor_vel (20, 50);
+        break;
+        
+    case 'r':
+        usb_serial_puts (usb_serial, "Right!\n");
+        set_motor_vel (-20, 50);
+        break;
+
+    case 's':
+        usb_serial_puts (usb_serial, "Stop!\n");
+        set_motor_vel (0, 0);
+        break;
+
+    default:
+       break;
+    }
+
+    usb_serial_puts (usb_serial, "> ");
 }

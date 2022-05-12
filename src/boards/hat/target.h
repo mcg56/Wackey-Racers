@@ -59,7 +59,6 @@
 #define JOYSTICK_BUTTON         PA21_PIO
 
 
-
 /* Button  */
 #define SLEEP_BUT_PIO PA2_PIO
 

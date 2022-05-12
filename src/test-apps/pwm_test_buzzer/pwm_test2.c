@@ -48,7 +48,7 @@ int anthem_note_Durations[] = {
   4, 6, 16, 4, 4, 2, 4, 4, 1
 };
 int card_note_Durations[] = {
-  6, 5, 5, 5, 1
+  3, 5, 5, 5, 1
 };
 
 
@@ -88,7 +88,7 @@ main (void)
         for (thisNote; thisNote < sizeof(card_melody)/sizeof(int); thisNote++) 
         {
             //Play note
-            int noteDuration = 800 / card_note_Durations[thisNote];
+            int noteDuration = 700 / card_note_Durations[thisNote];
             pwm_frequency_set (pwm1, card_melody[thisNote]);
             pwm_channels_start (pwm_channel_mask (pwm1));
             delay_ms (noteDuration);

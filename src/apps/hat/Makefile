@@ -1,5 +1,5 @@
-PERIPHERALS = pit adc spi
-DRIVERS = pacer usb_serial mpu9250 panic nrf24 
+PERIPHERALS = pit adc spi pwm
+DRIVERS = pacer usb_serial mpu9250 panic nrf24 ledtape
 TARGET = hat.bin
 
 SRC = hat.c app_imu.c app_radio.c app_gpio.c app_pwm.c app_adc.c
