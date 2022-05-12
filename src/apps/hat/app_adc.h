@@ -20,7 +20,14 @@
 #define ADC_VREF            3.3
 #define ADC_BITS            12
 #define BAT_MIN_VOLTAGE     5
-#define V_DIV_FACTOR        4
+#define V_DIV_FACTOR        2.5
+
+#define JOY_LIMIT_BUFFER    200
+#define JOY_X_MIN           (200 + JOY_LIMIT_BUFFER)
+#define JOY_X_MAX           (4020 - JOY_LIMIT_BUFFER)
+#define JOY_Y_MIN           (380 + JOY_LIMIT_BUFFER)
+#define JOY_Y_MAX           (4015 - JOY_LIMIT_BUFFER)
+
 
 /******************************************************************************
 * GLOBALS

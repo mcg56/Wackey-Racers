@@ -14,6 +14,7 @@
 #include "app_adc.h"
 #include "adc.h"
 #include "panic.h"
+#include "math.h"
 
 /******************************************************************************
 * GLOBALS
@@ -26,7 +27,7 @@ bool low_bat_flag = false;
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
-    .channels = BIT (JOYSTICK_X_ADC_CHANNEL) | BIT (JOYSTICK_Y_ADC_CHANNEL) | BIT (BATTERY_ADC_CHANNEL),
+    .channels = BIT (BATTERY_ADC_CHANNEL) | BIT (JOYSTICK_X_ADC_CHANNEL) | BIT (JOYSTICK_Y_ADC_CHANNEL),
     .trigger = ADC_TRIGGER_SW,
     .clock_speed_kHz = 1000
 };
@@ -44,10 +45,15 @@ void task_read_adc(adc_t adc, uint16_t *data, int size)
 {
     // The lowest numbered channel is read first.
     adc_read (adc, data, size);
+
+    // "Invert" the x joystick reading to match the IMU
+    int x_inversion = data[1] - (pow(2, ADC_BITS)-1)/2;
+    data[1] = data[1] - 2*x_inversion;
+
     //TO DO:
     // Maybe process data...
     // Compare bat div reading to its nominal value to check if battery voltage is low, raise flag or something if so...
-    if (data[0] < BAT_MIN_VOLTAGE*(2^ADC_BITS-1)/ADC_VREF/V_DIV_FACTOR)
+    if (data[0] < BAT_MIN_VOLTAGE*(pow(2, ADC_BITS)-1)/ADC_VREF/V_DIV_FACTOR)
     {
         low_bat_flag = true;
     } else

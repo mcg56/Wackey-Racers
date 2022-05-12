@@ -32,13 +32,12 @@
 #include "adc.h"
 #include "nrf24.h"
 #include "spi.h"
-#include "usb_serial.h"
-#include "delay.h"
 #include "string.h"
 #include "mcu_sleep.h"
 #include "pwm.h"
 #include "ledtape.h"
 #include <stdio.h>
+#include "math.h"
 
 /******************************************************************************
 * CONSTANTS
@@ -62,8 +61,8 @@ int main (void)
     pwm_t pwm1;
     int linear;
     int angular;
-    int16_t x;       //IMU raw data x
-    int16_t y;       //IMU raw data y
+    int16_t x;       //Controll (imu or joy) raw data x
+    int16_t y;       //Controll (imu or joy) raw data y
     uint32_t ticks = 0;
     
     
@@ -80,7 +79,7 @@ int main (void)
     
     use_joy = !pio_input_get (IMU_JOY_SEL);
 
-    // Setting up sleep
+    // ---------------------Setting up sleep----------------------------
     const mcu_sleep_wakeup_cfg_t sleep_wake_cfg = {  
         .pio = SLEEP_BUT_PIO,
         .active_high = false
@@ -107,7 +106,7 @@ int main (void)
         leds[i * 3 + 2] = 0;
     }
 
-    pacer_init (PACER_RATE);
+    pacer_init (PACER_RATE); 
 
     while (1)
     {
@@ -120,24 +119,32 @@ int main (void)
         char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         uint8_t rx_bytes;
 
-        pacer_wait ();
-
         ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
         // Read IMU and print raw data
-        task_read_imu(mpu, accel);
-        //printf("x: %5d  y: %5d  z: %5d\n", accel[0], accel[1], accel[2]);
-        x = accel[0];
-        y = accel[1];
-        
-        //Convert IMU reading to scale 0-255 for x and y
-        task_convert_imu(&x, &y, &linear,&angular);
-        
-        // Linear and Angular are converted for range of 1-201 so it can be sent in a byte
-        //printf("linear: %5d  angular: %5d\n", linear, angular);
 
-        // Read all ADC
+        //Read imu
+        task_read_imu(mpu, accel);
+        // Read all ADC (joystick and battery)
         task_read_adc(adc, adc_data, sizeof(adc_data));
+
+        // Set the x-y control values based on if we are using joystick or imu
+        if (use_joy)
+        {
+            x = adc_data[1];
+            y = adc_data[2];
+        }else
+        {
+            x = accel[0];
+            y = accel[1];
+        }
+
+        
+        //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
+
         //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
+
+        //Convert IMU or joystick reading to scale 1-201 for x and y
+        task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
   
         // Radio, need to tx and rx somehow..
         // Convert int values into bytes and place into tx_buffer
@@ -145,11 +152,11 @@ int main (void)
         tx_buffer[1] = angular;
         tx_buffer[2] = 69 & 0xFF;
         
-        //printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+        printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
 
         // Write to radio
-        if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
-        else pio_output_set (LED_ERROR_PIO, 0);
+        //if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
+        //else pio_output_set (LED_ERROR_PIO, 0);
        
         rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
         if (rx_bytes != 0)
@@ -158,10 +165,20 @@ int main (void)
             printf ("%s\n", rx_buffer);
             pio_output_toggle (LED_STATUS_PIO);
         }
-        
         //if recieved from car to play buzzer, then play noise
 
-        // Led tape? not sure if this is a task or we just start it and it runs...
+        if(low_bat_flag)
+        {
+            //disable LED tape...
+            static int led_error_ticks = PACER_RATE/LOW_BAT_LED_RATE/2; // /2 as on for half period, off for half
+            led_error_ticks--;
+            if (led_error_ticks == 0)
+            {
+                pio_output_toggle (LED_ERROR_PIO);
+                led_error_ticks = PACER_RATE/LOW_BAT_LED_RATE/2; // /2 as on for half period, off for half
+            }
+        } else pio_output_set (LED_ERROR_PIO, 0);
+        
 
         // Poll sleep button and if pressed then sleep...
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
@@ -174,8 +191,7 @@ int main (void)
             mcu_sleep(&sleep_cfg);
             flash_led(LED_STATUS_PIO, 5);
         }
-        printf("Radio channel: %d address: %d\n", nrf24_cfg.channel, nrf24_cfg.address);
-        //printf("\n\n");
+        //printf("Radio channel: %d address: %d\n", nrf24_cfg.channel, nrf24_cfg.address);
     }
 
         

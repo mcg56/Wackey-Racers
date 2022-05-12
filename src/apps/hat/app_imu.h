@@ -29,7 +29,7 @@
 * PUBLIC FUNCTION DEFINITIONS
 ******************************************************************************/
 void task_read_imu(mpu_t *mpu, int16_t *accel);
-void task_convert_imu(int16_t *x, int16_t *y, int *linear, int *angular);
+void task_convert_imu_or_joy(int16_t *x, int16_t *y, int *linear, int *angular, bool use_joy);
 mpu_t *initialise_imu(void);
 
 #endif //APP_IMU_H
