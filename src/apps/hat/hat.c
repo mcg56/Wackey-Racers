@@ -44,19 +44,25 @@
 #define PACER_RATE 10 //Hz
 
 
+/******************************************************************************
+* Globals
+******************************************************************************/
+
 int main (void)
 {
     //---------------------Variables---------------------
     nrf24_t *nrf;
     adc_t adc;
     mpu_t *mpu;
-    int16_t accel[3]; // For storing imu data
-    uint16_t adc_data[3]; // For storing adc data
+    int16_t accel[NUM_ACCEL_VALUES]; // For storing imu data
+    uint16_t adc_data[NUM_ADC_CHANNELS]; // For storing adc data
     bool use_joy = false;
     int linear;
     int angular;
     int16_t x;       //IMU raw data x
     int16_t y;       //IMU raw data y
+    int rx_bytes = 0;
+    uint32_t ticks = 0;
     
     
     //---------------------Peripheral setup---------------------
@@ -90,10 +96,13 @@ int main (void)
 
     while (1)
     {
+        
         /* Wait until next clock tick.  */
+        pacer_wait ();
+        ticks++;
+
         char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
-        pacer_wait ();
 
         // Read IMU and print raw data
         task_read_imu(mpu, accel);
@@ -104,7 +113,7 @@ int main (void)
         //Convert IMU reading to scale 0-255 for x and y
         task_convert_imu(&x, &y, &linear,&angular);
         
-        // Linear and Angular are converted for range of 0-20 so it cant be sent in a byte
+        // Linear and Angular are converted for range of 1-201 so it can be sent in a byte
         //printf("linear: %5d  angular: %5d\n", linear, angular);
 
         // Read all ADC

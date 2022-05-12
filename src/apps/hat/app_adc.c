@@ -16,6 +16,11 @@
 #include "panic.h"
 
 /******************************************************************************
+* GLOBALS
+******************************************************************************/
+bool low_bat_flag = false;
+
+/******************************************************************************
 * FUNCTIONS
 ******************************************************************************/
 static const adc_cfg_t adc_cfg =
@@ -42,5 +47,11 @@ void task_read_adc(adc_t adc, uint16_t *data, int size)
     //TO DO:
     // Maybe process data...
     // Compare bat div reading to its nominal value to check if battery voltage is low, raise flag or something if so...
-
+    if (data[0] < BAT_MIN_VOLTAGE*(2^ADC_BITS-1)/ADC_VREF/V_DIV_FACTOR)
+    {
+        low_bat_flag = true;
+    } else
+    {
+        low_bat_flag = false;
+    }
 }
