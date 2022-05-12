@@ -5,11 +5,10 @@
 
     To DO:
     -Sleep (needs to wakeup again - Angus)
-    -Joystick encoded to 1-201 range (same as imu, make function general angus)
     -LED tape (anton)
     -Buzzer somehthing small on hit (anton)
     -buzzer play anthem unblocked (Plays interesting sounds - Anton)
-    -Read Bat voltage and have low voltage indication (Angus)
+    -disable LED tape when low power
 */
 
 /******************************************************************************
