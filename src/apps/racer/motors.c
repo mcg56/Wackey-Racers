@@ -15,6 +15,7 @@
 ******************************************************************************/
 
 #include "motors.h"
+#include <math.h>
 
 
 
@@ -24,6 +25,9 @@
 
 #define LINEAR_GAIN 1
 #define ANGULAR_GAIN 1
+#define Y_GAIN_V2 0.0001
+#define X_GAIN_V2 0.0001
+#define ZONE 20
 
 typedef enum
 {
@@ -114,7 +118,7 @@ void init_pwm (void)
 * SET PWM (from duty cycle)
 ******************************************************************************/
 
-void set_pwm(uint8_t motor, uint32_t duty) {
+void set_pwm(uint8_t motor, int32_t duty) {
     // Set PWM for desired motor based on velocity input
     switch (motor)
     {
@@ -126,7 +130,7 @@ void set_pwm(uint8_t motor, uint32_t duty) {
         } else {
             pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
             //pwm_duty_set (pwmL2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, -vel));
-            pwm_duty_set (pwmL2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, duty));
+            pwm_duty_set (pwmL2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, -duty));
             pwm_stop (pwmL1);
             pwm_start (pwmL2); 
         }
@@ -138,7 +142,7 @@ void set_pwm(uint8_t motor, uint32_t duty) {
             pwm_stop (pwmR2);
             pwm_start (pwmR1);   
         } else {
-            pwm_duty_set (pwmR2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, duty));
+            pwm_duty_set (pwmR2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, -duty));
             pwm_stop (pwmR1);
             pwm_start (pwmR2);
         }
@@ -154,15 +158,57 @@ void set_pwm(uint8_t motor, uint32_t duty) {
 
 void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     // Set motor velocities based on recieved radio commands. 
-    uint32_t left_motor_duty = 0;
-    uint32_t right_motor_duty = 0;
+    int32_t left_motor_duty = 0;
+    int32_t right_motor_duty = 0;
+
+
+    // VERSION ONE: No deadzone
     
     left_motor_duty = LINEAR_GAIN*y_vel + ANGULAR_GAIN*x_vel;
     right_motor_duty = LINEAR_GAIN*y_vel - ANGULAR_GAIN*x_vel;
+
+
+    // VERSION TWO: Approximate deadzone using non-linear gain. (WORKING)
+
+    //left_motor_duty = Y_GAIN_V2*pow(y_vel,3) + X_GAIN_V2*pow(x_vel,3);
+    //right_motor_duty = Y_GAIN_V2*pow(y_vel,3) - X_GAIN_V2*pow(x_vel,3);
+
+
+    left_motor_duty = set_deadzone (left_motor_duty);
+    right_motor_duty = set_deadzone (right_motor_duty);
+
     set_pwm(LEFT, left_motor_duty);
     set_pwm(RIGHT, right_motor_duty);
 
     
+}
+
+
+
+
+/******************************************************************************
+* SET DEADZONE AND MAXIMUMS TO DUTY CYCLE
+******************************************************************************/
+
+int32_t set_deadzone (int32_t duty_cycle) {
+
+    // VERSION THREE: Hard coded deadzone (run with version 1).
+
+    if (duty_cycle < -ZONE/2) {
+        duty_cycle = duty_cycle + ZONE/2;
+    } else if (duty_cycle > ZONE/2) {
+        duty_cycle = duty_cycle - ZONE/2;
+    } else {
+        duty_cycle =0;
+    }
+
+    if (duty_cycle > 100) {
+        duty_cycle = 100;
+    } else if (duty_cycle < -100) {
+        duty_cycle = -100;
+    }
+
+   return duty_cycle;
 }
 
 
@@ -209,6 +255,16 @@ void usb_to_motor (usb_serial_t *usb_serial)
     case 's':
         usb_serial_puts (usb_serial, "Stop!\n");
         set_motor_vel (0, 0);
+        break;
+
+    case 'e':
+        usb_serial_puts (usb_serial, "EXTREME!\n");
+        set_motor_vel (100, 100);
+        break;
+
+    case 'd':
+        usb_serial_puts (usb_serial, "Deadzone!\n");
+        set_motor_vel (5, -5);
         break;
 
     default:
