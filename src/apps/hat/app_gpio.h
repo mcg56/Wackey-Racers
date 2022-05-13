@@ -18,5 +18,8 @@
 ******************************************************************************/
 void pio_configuration(void);
 void flash_led(int led_pio, int num_flash);
+void green_strip(void);
+void red_strip(void);
+void blue_strip(void);
 
 #endif //APP_GPIO_H

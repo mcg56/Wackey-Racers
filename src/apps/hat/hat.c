@@ -93,18 +93,6 @@ int main (void)
     //Flash LED to show everything initialised
     flash_led(LED_STATUS_PIO, 2);
 
-    //Ledtape configure
-    uint8_t leds[NUM_LEDS * 3];
-    int i;
-
-    for (i = 0; i < NUM_LEDS; i++)
-    {
-        // Set full green  GRB order
-        leds[i * 3] = 255;
-        leds[i * 3 + 1] = 0;
-        leds[i * 3 + 2] = 0;
-    }
-
     pacer_init (PACER_RATE); 
 
     while (1)
@@ -114,11 +102,17 @@ int main (void)
         pacer_wait ();
         ticks++;
 
+        if (!pio_input_get (GPIO_JUMPER))
+        {
+            play_anthem(pwm1);
+        }
+
         char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         uint8_t rx_bytes;
 
-        ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+        
+        
         // Read IMU and print raw data
 
         //Read imu
@@ -178,11 +172,12 @@ int main (void)
             }
         } else pio_output_set (LED_ERROR_PIO, 0);
         
-
+        green_strip();
         // Poll sleep button and if pressed then sleep...
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
         {
             //pio_irq_enable(WAKE_BUTTON);
+            red_strip();
             play_card(pwm1);
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);

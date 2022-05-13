@@ -87,7 +87,7 @@ void play_shutdown (pwm_t pwm1)
     int thisNote = 0;
     int count = 0;
     thisNote = 0;
-
+    
     for (thisNote; thisNote < sizeof(shutdown_melody)/sizeof(int); thisNote++) 
     {
         //Play note
@@ -100,7 +100,9 @@ void play_shutdown (pwm_t pwm1)
         int pauseBetweenNotes = noteDuration * 0.8;
         pwm_channels_stop(pwm_channel_mask (pwm1));
         delay_ms(pauseBetweenNotes);
+        
     }
+    
     
 }
 
@@ -140,7 +142,7 @@ void play_anthem(pwm_t pwm1)
 
     int thisNote = 0;
     int count = 0;
-    while (1)
+    while (!pio_input_get (GPIO_JUMPER))
     {
         thisNote = 0;
         
@@ -156,6 +158,11 @@ void play_anthem(pwm_t pwm1)
             int pauseBetweenNotes = noteDuration * 1.05;
             pwm_channels_stop(pwm_channel_mask (pwm1));
             delay_ms(pauseBetweenNotes);
+            if (pio_input_get (GPIO_JUMPER))
+            {
+                break;
+            }
+
         }
     }
 }
