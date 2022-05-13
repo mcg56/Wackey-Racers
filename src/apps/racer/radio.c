@@ -9,12 +9,12 @@
 * INCLUDES
 ******************************************************************************/
 #include "target.h"
-#include "racer.h"
 #include "pio.h"
 #include "panic.h"
 #include "nrf24.h"
 #include "spi.h"
 #include "radio.h"
+
 
 
 /******************************************************************************
