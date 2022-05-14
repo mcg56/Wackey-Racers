@@ -55,8 +55,7 @@ nrf24_t *initialise_radio(void)
     // Determine radio channel and setup cfg structure
     int radio_channel;
     radio_channel = determine_radio_channel();    
-    //nrf24_cfg.channel = radio_channel;
-    nrf24_cfg.channel = 1;
+    nrf24_cfg.channel = radio_channel;
     printf("Radio channel: %d\n", nrf24_cfg.channel);
 
     // Initialise spi
@@ -100,13 +99,13 @@ int determine_radio_channel(void)
     if (num_channels_found > 1) //More than 1 channel select is in, only have 1 
     {
         printf("Error: Too many radio channels selected!");
-        panic (LED_ERROR_PIO, RADIO_CHANNEL_SEL_ERROR);
+        //panic (LED_ERROR_PIO, RADIO_CHANNEL_SEL_ERROR);
     }
     
     if(num_channels_found == 0) //No channel selected
     {
         printf("Error: No channel selected!");
-        panic (LED_ERROR_PIO, RADIO_CHANNEL_SEL_ERROR);
+        //panic (LED_ERROR_PIO, RADIO_CHANNEL_SEL_ERROR);
     }
 
     return radio_channel;

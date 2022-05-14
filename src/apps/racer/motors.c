@@ -178,9 +178,7 @@ void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     right_motor_duty = set_deadzone (right_motor_duty);
 
     set_pwm(LEFT, left_motor_duty);
-    set_pwm(RIGHT, right_motor_duty);
-
-    
+    set_pwm(RIGHT, right_motor_duty); 
 }
 
 

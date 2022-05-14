@@ -35,8 +35,7 @@ prompt_command (usb_serial_t *usb_serial)
 * INITIALISE USB
 ******************************************************************************/
 
-usb_serial_t *
-init_usb (void) {
+usb_serial_t *init_usb (void) {
     usb_serial_t *usb_serial = usb_serial_init (&usb_serial_cfg, "");
     usb_serial_stdio_init ();
 

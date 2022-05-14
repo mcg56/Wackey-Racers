@@ -9,21 +9,17 @@
 /******************************************************************************
 * INCLUDES
 ******************************************************************************/
-
 #include "target.h"
 #include "motors.h"
 #include "pacer.h"
 #include "radio.h"
 #include "usb_racer.h"
-
-
+#include "racer_pio.h"
 
 /******************************************************************************
 * GLOBAL VARIABLES
 ******************************************************************************/
-
-#define LED_FLASH_RATE 10
-#define PACER_RATE 1000
+#define PACER_RATE 10
 
 
 
@@ -39,87 +35,63 @@
 - Bumper clear send packet
 - Broadcast many packets when bumper hit to ensure hat recieves
 - Three point throttle curve
+- Sleep
 */
-
-
 
 /******************************************************************************
 * KERNEL
 ******************************************************************************/
 
-int
-main (void)
+int main (void)
 {
-    // Status LED on
-    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
-
-    // Set pacer period
-    pacer_init (LED_FLASH_RATE * 2);
-
-
-    // Milesetone 2 variables
+    //---------------------Variables---------------------
     nrf24_t *nrf;
-    int rx_bytes;
-    int flash_ticks = 0;
 
 
-    //---------------------Peripheral setup---------------------
+    //---------------------Initialise Modules ---------------------
     init_pwm (); // Initalise PWM outputs
+    init_pio (); // Initalise PIO
+    nrf = initialise_radio (); // Initalise Radio
     usb_serial_t *usb_serial_1 = init_usb ();  // Initialise USB serial connection
 
 
-    // Redirect stdio to USB serial
-    //usb_serial_stdio_init ();
+    // Status LED on
+    //pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
 
-    set_motor_vel (0, 0); // Start with motor off
+    
+    // Set Motor values to zero
+    //set_motor_vel (0, 0); // Start with motor off
 
-
+    pacer_init (PACER_RATE); 
 
     while (1) {
-
-        /* Radio  */
-        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
-        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
 
         /* Wait until next clock tick.  */
         pacer_wait ();
 
-        /* Flash the status LED.  */
-        flash_ticks++;
-        if (flash_ticks >= PACER_RATE / (LED_FLASH_RATE * 2)) {
-            flash_ticks = 0;
-
-	        pio_output_toggle (LED_STATUS_PIO);
-
-            /* Run motor.  */
-            usb_to_motor (usb_serial_1);   
-        }
-
-
-
-
+        /* Radio  */
+        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        uint8_t rx_bytes;
+        
+        /* Run motor.  */ 
+        //usb_to_motor (usb_serial_1);
+        
+        // Radio debug
+        printf("%d\n", nrf24_cfg.channel);
 
 
         /******************************************************************************
         * TODO - Get the radio working.
         ******************************************************************************/
 
-        /*
-        tx_buffer[0] = "H"; 
-        // if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) {
-        //     pio_output_set (LED_ERROR_PIO, 1);
-        // } else {
-        //     pio_output_set (LED_ERROR_PIO, 0);
-        // }
         rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
         if (rx_bytes != 0)
         {
             rx_buffer[rx_bytes] = 0;
-            printf ("%s\n", rx_buffer);
-            pio_output_toggle (LED_ERROR_PIO);
+            printf("%i %i %i\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
+            pio_output_toggle (LED_STATUS_PIO);
         }
-        printf("Radio channel: %d\n", nrf24_cfg.channel);
-        printf("Radio channel: %d\n", RADIO_ADDRESS);
-        */
+       
 	}
 }
