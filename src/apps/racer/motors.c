@@ -28,6 +28,8 @@
 #define Y_GAIN_V2 0.0001
 #define X_GAIN_V2 0.0001
 #define ZONE 20
+#define MAX_DUTY 100
+#define MIN_DUTY -100
 
 typedef enum
 {
@@ -164,8 +166,9 @@ void set_motor_vel (int8_t x_vel, int8_t y_vel) {
 
     // VERSION ONE: No deadzone
     
-    left_motor_duty = LINEAR_GAIN*y_vel + ANGULAR_GAIN*x_vel;
-    right_motor_duty = LINEAR_GAIN*y_vel - ANGULAR_GAIN*x_vel;
+    left_motor_duty = LINEAR_GAIN*(y_vel-101) + ANGULAR_GAIN*(x_vel-101);
+    right_motor_duty = LINEAR_GAIN*(y_vel-101) - ANGULAR_GAIN*(x_vel-101);
+
 
 
     // VERSION TWO: Approximate deadzone using non-linear gain. (WORKING)
@@ -174,8 +177,13 @@ void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     //right_motor_duty = Y_GAIN_V2*pow(y_vel,3) - X_GAIN_V2*pow(x_vel,3);
 
 
-    left_motor_duty = set_deadzone (left_motor_duty);
-    right_motor_duty = set_deadzone (right_motor_duty);
+    //left_motor_duty = set_deadzone (left_motor_duty);
+    //right_motor_duty = set_deadzone (right_motor_duty);
+    left_motor_duty = limit_val (left_motor_duty);
+    right_motor_duty = limit_val (right_motor_duty);
+    printf("%d\n", left_motor_duty);
+    printf("%d\n", right_motor_duty);
+
 
     set_pwm(LEFT, left_motor_duty);
     set_pwm(RIGHT, right_motor_duty); 
@@ -209,6 +217,18 @@ int32_t set_deadzone (int32_t duty_cycle) {
    return duty_cycle;
 }
 
+int32_t limit_val (int32_t duty_cycle) {
+
+    // VERSION THREE: Hard coded deadzone (run with version 1).
+
+    if (duty_cycle >= MAX_DUTY) {
+        duty_cycle = MAX_DUTY;
+    } else if (duty_cycle <= MIN_DUTY) {
+        duty_cycle = MIN_DUTY;
+    }
+
+   return duty_cycle;
+}
 
 
 /******************************************************************************

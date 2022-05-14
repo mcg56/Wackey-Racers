@@ -36,6 +36,7 @@
 - Broadcast many packets when bumper hit to ensure hat recieves
 - Three point throttle curve
 - Sleep
+- Bat adc
 */
 
 /******************************************************************************
@@ -63,9 +64,11 @@ int main (void)
     //set_motor_vel (0, 0); // Start with motor off
 
     pacer_init (PACER_RATE); 
+    int32_t ticks = 0;
 
     while (1) {
 
+        ticks++;
         /* Wait until next clock tick.  */
         pacer_wait ();
 
@@ -92,14 +95,20 @@ int main (void)
             nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
             pio_output_toggle (LED_ERROR_PIO);
         } else {
-            rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-            if (rx_bytes != 0)
+            if (ticks > 20) 
             {
-                rx_buffer[rx_bytes] = 0;
-                //printf ("%s\n", rx_buffer);
-                printf("%i %i %i\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
-                pio_output_toggle (LED_STATUS_PIO);
+                ticks = 0;   
+                rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+                if (rx_bytes != 0)
+                {
+                    rx_buffer[rx_bytes] = 0;
+                    
+                    printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
+                    set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
+                    pio_output_toggle (LED_STATUS_PIO);
+                }
             }
+            
         }
 	}
 }

@@ -156,8 +156,8 @@ int main (void)
             {
                 pio_output_set (LED_ERROR_PIO, 0);
             }
-            if (! nrf24_write (nrf, temp_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
-            else pio_output_set (LED_ERROR_PIO, 0);
+            //if (! nrf24_write (nrf, temp_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
+            //else pio_output_set (LED_ERROR_PIO, 0);
             ticks = 0;
             //pio_output_toggle (LED_ERROR_PIO);
          
