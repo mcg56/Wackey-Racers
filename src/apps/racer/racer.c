@@ -19,7 +19,7 @@
 /******************************************************************************
 * GLOBAL VARIABLES
 ******************************************************************************/
-#define PACER_RATE 10
+#define PACER_RATE 100 //Hz
 
 
 
@@ -78,20 +78,28 @@ int main (void)
         //usb_to_motor (usb_serial_1);
         
         // Radio debug
-        printf("%d\n", nrf24_cfg.channel);
+        //printf("%d\n", nrf24_cfg.channel);
 
 
         /******************************************************************************
-        * TODO - Get the radio working.
+        * Radio
         ******************************************************************************/
-
-        rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-        if (rx_bytes != 0)
+        
+        
+        if (!pio_input_get (BUMPER_SWITCH_PIO)) 
         {
-            rx_buffer[rx_bytes] = 0;
-            printf("%i %i %i\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
-            pio_output_toggle (LED_STATUS_PIO);
+            tx_buffer[0] = 1 & 0xFF;
+            nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
+            pio_output_toggle (LED_ERROR_PIO);
+        } else {
+            rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+            if (rx_bytes != 0)
+            {
+                rx_buffer[rx_bytes] = 0;
+                //printf ("%s\n", rx_buffer);
+                printf("%i %i %i\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
+                pio_output_toggle (LED_STATUS_PIO);
+            }
         }
-       
 	}
 }
