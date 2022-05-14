@@ -9,7 +9,7 @@
 #include "delay.h"
 #include "panic.h"
 
-#define RADIO_CHANNEL 2
+#define RADIO_CHANNEL 4
 #define RADIO_ADDRESS 0x0123456789LL
 #define RADIO_PAYLOAD_SIZE 32
 
@@ -26,7 +26,7 @@ int main (void)
         };
     nrf24_cfg_t nrf24_cfg =
         {
-            //.channel = RADIO_CHANNEL,
+            .channel = RADIO_CHANNEL,
             .address = RADIO_ADDRESS,
             .payload_size = RADIO_PAYLOAD_SIZE,
             .ce_pio = RADIO_CE_PIO,
@@ -48,10 +48,12 @@ int main (void)
 #endif
 
     spi = spi_init ( &spi_cfg);
-    if (! spi) panic (LED_ERROR_PIO, 1);
+    if (! spi)
+        panic (LED_ERROR_PIO, 1);
 
     nrf = nrf24_init (spi, &nrf24_cfg);
-    if (! nrf) panic (LED_ERROR_PIO, 2);
+    if (! nrf)
+        panic (LED_ERROR_PIO, 2);
 
     while (1)
     {
@@ -60,7 +62,7 @@ int main (void)
         pacer_wait ();
         pio_output_toggle (LED_STATUS_PIO);
 
-        snprintf (buffer, sizeof (buffer), "EAT MY HAIRY ASS\r\n");
+        snprintf (buffer, sizeof (buffer), "Hello world %d\r\n", count++);
 
         if (! nrf24_write (nrf, buffer, RADIO_PAYLOAD_SIZE))
             pio_output_set (LED_ERROR_PIO, 0);
