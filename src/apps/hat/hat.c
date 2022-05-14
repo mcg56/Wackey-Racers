@@ -94,7 +94,7 @@ int main (void)
     flash_led(LED_STATUS_PIO, 2);
 
     pacer_init (PACER_RATE); 
-
+    uint8_t count = 0;
     while (1)
     {
         
@@ -106,12 +106,10 @@ int main (void)
         {
             play_anthem(pwm1);
         }
-
+        char temp_buffer[RADIO_TX_PAYLOAD_SIZE + 1];
         char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
         uint8_t rx_bytes;
-
-        
         
         // Read IMU and print raw data
 
@@ -131,7 +129,6 @@ int main (void)
             y = accel[1];
         }
 
-        
         //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
 
         //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
@@ -141,23 +138,25 @@ int main (void)
   
         // Radio, need to tx and rx somehow..
         // Convert int values into bytes and place into tx_buffer
-        tx_buffer[0] = linear; 
-        tx_buffer[1] = angular;
+        tx_buffer[0] = linear & 0xFF; 
+        tx_buffer[1] = angular & 0xFF;
         tx_buffer[2] = 69 & 0xFF;
-        
-        printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+        //snprintf (temp_buffer, sizeof ( temp_buffer), "Hello world %d\r\n", count++);
+        //printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
 
         // Write to radio
-        //if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
-        //else pio_output_set (LED_ERROR_PIO, 0);
-       
-        rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-        if (rx_bytes != 0)
-        {
-            rx_buffer[rx_bytes] = 0;
-            printf ("%s\n", rx_buffer);
-            pio_output_toggle (LED_STATUS_PIO);
-        }
+        if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
+        else pio_output_set (LED_ERROR_PIO, 0);
+        // if (! nrf24_write (nrf, temp_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
+        // else pio_output_set (LED_ERROR_PIO, 0);
+        
+        // rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+        // if (rx_bytes != 0)
+        // {
+        //     rx_buffer[rx_bytes] = 0;
+        //     printf ("%s\n", rx_buffer);
+        //     pio_output_toggle (LED_STATUS_PIO);
+        // }
         //if recieved from car to play buzzer, then play noise
 
         if(low_bat_flag)
