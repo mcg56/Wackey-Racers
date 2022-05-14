@@ -113,7 +113,7 @@ int main (void)
         
 
         //Write to radio
-        if (ticks >= 5)
+        if (ticks >= 10)
         {
             // Read IMU and print raw data
 
@@ -126,6 +126,7 @@ int main (void)
             // Set the x-y control values based on if we are using joystick or imu
             if (use_joy)
             {
+                printf("Joyyyy");
                 x = adc_data[1];
                 y = adc_data[2];
             }else
@@ -147,7 +148,7 @@ int main (void)
             tx_buffer[1] = angular & 0xFF;
             tx_buffer[2] = 69 & 0xFF;
             //snprintf (temp_buffer, sizeof ( temp_buffer), "Hello world %d\r\n", count++);
-            //printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+            printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
             if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
             {
                 pio_output_set (LED_ERROR_PIO, 1);
@@ -166,9 +167,11 @@ int main (void)
             rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
             if (rx_bytes != 0)
             {
+                
                 rx_buffer[rx_bytes] = 0;
                 printf ("%i\n", rx_buffer[0]);
                 pio_output_toggle (LED_STATUS_PIO);
+                play_card(pwm1);
             }
         }
 

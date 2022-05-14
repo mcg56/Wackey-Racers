@@ -80,6 +80,35 @@ void task_convert_imu_or_joy(int16_t *x, int16_t *y, int *linear, int *angular, 
         angular_size = -(((*y-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
     }
 
+    if (linear_size < DEADBAND_UPPER && linear_size > DEADBAND_LOWER)
+    {
+        linear_size = DEADBAND_CENTRE;
+    } else
+    {
+        if (linear_size >= DEADBAND_UPPER) 
+        {
+            linear_size = linear_size - DEADBAND_CHANGE;
+        }
+        if (linear_size <= DEADBAND_LOWER) 
+        {
+            linear_size = linear_size + DEADBAND_CHANGE;
+        }
+    }
+
+    if (angular_size < DEADBAND_UPPER && angular_size > DEADBAND_LOWER)
+    {
+        angular_size = DEADBAND_CENTRE;
+    } else
+    {
+        if (angular_size >= DEADBAND_UPPER) 
+        {
+            angular_size = angular_size - DEADBAND_CHANGE;
+        }
+        if (angular_size <= DEADBAND_LOWER) 
+        {
+            angular_size = angular_size + DEADBAND_CHANGE;
+        }
+    }
     
     if (linear_size < LINEAR_TRANFER_MIN)
     {

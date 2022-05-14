@@ -21,6 +21,12 @@
 ******************************************************************************/
 #define IMU_ADC_MAX         17000
 #define IMU_ADC_MIN         -17000
+
+#define DEADBAND_UPPER      121
+#define DEADBAND_LOWER      81
+#define DEADBAND_CENTRE     101
+#define DEADBAND_CHANGE     20
+
 #define LINEAR_TRANFER_MAX  201
 #define LINEAR_TRANFER_MIN  1
 #define NUM_ACCEL_VALUES    3
