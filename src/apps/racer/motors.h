@@ -26,7 +26,7 @@ pwm_t pwmR1;
 pwm_t pwmR2;
 
 void init_pwm (void);
-void set_motor_vel (int8_t x_vel, int8_t y_vel);
+void set_motor_vel (int16_t x_vel, int16_t y_vel);
 void set_pwm(uint8_t motor, int32_t duty);
 void usb_to_motor (usb_serial_t *usb_serial);
 int32_t set_deadzone (int32_t duty_cycle);

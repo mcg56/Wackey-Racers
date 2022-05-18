@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #define LINEAR_GAIN 1
-#define ANGULAR_GAIN 1
+#define ANGULAR_GAIN 0.5
 #define Y_GAIN_V2 0.0001
 #define X_GAIN_V2 0.0001
 #define ZONE 20
@@ -130,7 +130,7 @@ void set_pwm(uint8_t motor, int32_t duty) {
             pwm_stop (pwmL2);
             pwm_start (pwmL1);   
         } else {
-            pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
+            //pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
             //pwm_duty_set (pwmL2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, -vel));
             pwm_duty_set (pwmL2, PWM_DUTY_DIVISOR (PWM_FREQ_HZ, -duty));
             pwm_stop (pwmL1);
@@ -158,7 +158,7 @@ void set_pwm(uint8_t motor, int32_t duty) {
 * SET MOTOR VELOCITY (from x & y velocity)
 ******************************************************************************/
 
-void set_motor_vel (int8_t x_vel, int8_t y_vel) {
+void set_motor_vel (int16_t x_vel, int16_t y_vel) {
     // Set motor velocities based on recieved radio commands. 
     int32_t left_motor_duty = 0;
     int32_t right_motor_duty = 0;
@@ -168,8 +168,6 @@ void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     
     left_motor_duty = LINEAR_GAIN*(y_vel-101) + ANGULAR_GAIN*(x_vel-101);
     right_motor_duty = LINEAR_GAIN*(y_vel-101) - ANGULAR_GAIN*(x_vel-101);
-
-
 
     // VERSION TWO: Approximate deadzone using non-linear gain. (WORKING)
 
@@ -181,8 +179,8 @@ void set_motor_vel (int8_t x_vel, int8_t y_vel) {
     //right_motor_duty = set_deadzone (right_motor_duty);
     left_motor_duty = limit_val (left_motor_duty);
     right_motor_duty = limit_val (right_motor_duty);
-    printf("%d\n", left_motor_duty);
-    printf("%d\n", right_motor_duty);
+    //printf("%d\n", left_motor_duty);
+    //printf("%d\n", right_motor_duty);
 
 
     set_pwm(LEFT, left_motor_duty);

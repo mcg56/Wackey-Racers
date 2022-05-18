@@ -19,7 +19,7 @@
 /******************************************************************************
 * GLOBAL VARIABLES
 ******************************************************************************/
-#define PACER_RATE 100 //Hz
+#define PACER_RATE 50 //Hz
 
 
 
@@ -65,6 +65,7 @@ int main (void)
 
     pacer_init (PACER_RATE); 
     int32_t ticks = 0;
+    int32_t ticks_1 = 0;
 
     while (1) {
 
@@ -87,15 +88,23 @@ int main (void)
         /******************************************************************************
         * Radio
         ******************************************************************************/
-        
+        pio_output_toggle (LED_STATUS_PIO);
         
         if (!pio_input_get (BUMPER_SWITCH_PIO)) 
         {
             tx_buffer[0] = 1 & 0xFF;
-            nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
-            pio_output_toggle (LED_ERROR_PIO);
+            ticks_1 = 0;
+            while (ticks_1 <= 5) 
+            {
+                nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
+                ticks_1++;
+            }
+            set_motor_vel (101, 101);
+            delay_ms(5000);
+            
+            
         } else {
-            if (ticks > 20) 
+            if (ticks > 5) 
             {
                 ticks = 0;   
                 rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
@@ -103,9 +112,8 @@ int main (void)
                 {
                     rx_buffer[rx_bytes] = 0;
                     
-                    printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
+                    //printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
                     set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
-                    pio_output_toggle (LED_STATUS_PIO);
                 }
             }
             
