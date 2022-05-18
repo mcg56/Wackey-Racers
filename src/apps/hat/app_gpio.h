@@ -7,6 +7,7 @@
 
 #ifndef APP_GPIO_H
 #define APP_GPIO_H
+#define NUM_LEDS 23
 
 /******************************************************************************
 * CONSTANTS
@@ -21,5 +22,6 @@ void flash_led(int led_pio, int num_flash);
 void green_strip(void);
 void red_strip(void);
 void blue_strip(void);
+void empty_strip(void);
 
 #endif //APP_GPIO_H

@@ -35,6 +35,7 @@
 #include "mcu_sleep.h"
 #include "pwm.h"
 #include "ledtape.h"
+#include "ledbuffer.h"
 #include <stdio.h>
 #include "math.h"
 
@@ -65,6 +66,8 @@ int main (void)
     int16_t x;       //Controll (imu or joy) raw data x
     int16_t y;       //Controll (imu or joy) raw data y
     int ticks = 0;
+    bool blue = false;
+    int count = 0;
     
     
     //---------------------Peripheral setup---------------------
@@ -76,6 +79,7 @@ int main (void)
     adc = initialise_adc();
     nrf = initialise_radio();
     pwm1 = init_pwm();
+    ledbuffer_t* leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
     //---------------------Read configuration inputs---------------------
     
     use_joy = !pio_input_get (IMU_JOY_SEL);
@@ -99,37 +103,52 @@ int main (void)
     uint8_t count = 0;
     while (1)
     {
-        
+        char temp_buffer[RADIO_TX_PAYLOAD_SIZE + 1];
+        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+        uint8_t rx_bytes;
         /* Wait until next clock tick.  */
         pacer_wait ();
         ticks++;
+    
+        // Checks if the buffer is at its end, otherwise advance the led buffer
+        if (count++ == NUM_LEDS)
+        {
+            // wait for a revolution
+            ledbuffer_clear(leds);
+            if (blue)
+            {
+                ledbuffer_set(leds, 0, 0, 0, 255);
+                ledbuffer_set(leds, NUM_LEDS / 2, 0, 0, 255);
+            }
+            else
+            {
+                ledbuffer_set(leds, 0, 255, 0, 255);
+                ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 255);
+            }
+            blue = !blue;
+            count = 0;
+        }
+        ledbuffer_write (leds);
+        ledbuffer_advance (leds, 1);
+
 
         if (!pio_input_get (GPIO_JUMPER))
         {
             play_anthem(pwm1);
         }
-        char temp_buffer[RADIO_TX_PAYLOAD_SIZE + 1];
-        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
-        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
-        uint8_t rx_bytes;
         
-
         //Write to radio
         if (ticks >= 2)
         {
-            // nrf24_power_down(nrf);
-            // Read IMU and print raw data
-
-            //Read imu
+            // Read IMU
             task_read_imu(mpu, accel);
             // Read all ADC (joystick and battery)
             task_read_adc(adc, adc_data, sizeof(adc_data));
-            //printf("fuck\n");
             //printf("%i\n",ticks);
             // Set the x-y control values based on if we are using joystick or imu
             if (use_joy)
             {
-                printf("Joyyyy");
                 x = adc_data[1];
                 y = adc_data[2];
             }else
@@ -138,14 +157,12 @@ int main (void)
                 y = accel[1];
             }
 
-            //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
-
+            //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2])
             //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
 
             //Convert IMU or joystick reading to scale 1-201 for x and y
             task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
 
-            // Radio, need to tx and rx somehow..
             // Convert int values into bytes and place into tx_buffer
             tx_buffer[0] = angular & 0xFF; 
             tx_buffer[1] = linear & 0xFF;
@@ -169,8 +186,17 @@ int main (void)
             rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
             if ((rx_bytes != 0) && (rx_buffer[0] == 1))
             {
+                int flash_times = 0;
                 printf ("%i\n", rx_buffer[0]);
                 pio_output_toggle (LED_STATUS_PIO);
+                while(flash_times < 5)
+                {
+                    red_strip();
+                    pacer_wait(500);
+                    empty_strip();
+                    pacer_wait(500);
+                    flash_times++
+                }
                 play_card(pwm1);
                 nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
                 nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
@@ -180,19 +206,18 @@ int main (void)
             }
         }
 
-        // if(low_bat_flag)
-        // {
-        //     //disable LED tape...
-        //     static int led_error_ticks = PACER_RATE/LOW_BAT_LED_RATE/2; // /2 as on for half period, off for half
-        //     led_error_ticks--;
-        //     if (led_error_ticks == 0)
-        //     {
-        //         pio_output_toggle (LED_ERROR_PIO);
-        //         led_error_ticks = PACER_RATE/LOW_BAT_LED_RATE/2; // /2 as on for half period, off for half
-        //     }
-        // } else pio_output_set (LED_ERROR_PIO, 0);
+        if(low_bat_flag)
+        {
+            //disable LED tape...
+            static int led_error_ticks = PACER_RATE/LOW_BAT_LED_RATE/2; // /2 as on for half period, off for half
+            led_error_ticks--;
+            if (led_error_ticks == 0)
+            {
+                pio_output_toggle (LED_ERROR_PIO);
+                led_error_ticks = PACER_RATE/LOW_BAT_LED_RATE/2; // /2 as on for half period, off for half
+            }
+        } else pio_output_set (LED_ERROR_PIO, 0);
         
-        //green_strip();
         // Poll sleep button and if pressed then sleep...
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
         {

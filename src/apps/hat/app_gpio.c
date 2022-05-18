@@ -99,3 +99,21 @@ void blue_strip(void)
 
     ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
 }
+
+void empty_strip(void)
+{
+    {
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = 0;
+        leds[i * 3 + 1] = 0;
+        leds[i * 3 + 2] = 0;
+    }
+
+    ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+    }
+}

@@ -12,6 +12,6 @@
 ******************************************************************************/
 #define RADIO_CHANNEL_SEL_ERROR     1
 #define INITIALISATION_ERROR        2
-#define NUM_LEDS 23
+
 
 #endif //MY_HAT_H
