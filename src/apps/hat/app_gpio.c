@@ -16,7 +16,10 @@
 #include "ledbuffer.h"
 #include "ledtape.h"
 
-
+void wake_isr()
+{
+    flash_led(LED_STATUS_PIO, 5);
+}
 
 
 /******************************************************************************
@@ -35,6 +38,7 @@ void pio_configuration(void)
     /* Configure sleep button as input with pullup.  */
     pio_config_set (SLEEP_BUT_PIO, PIO_PULLUP);
     pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_FALLING_EDGE);
+    //irq_config(PIO_ID(SLEEP_BUT_PIO), wake_isr);
 
 }
 

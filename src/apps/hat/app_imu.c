@@ -61,35 +61,40 @@ void task_read_imu(mpu_t *mpu, int16_t *accel)
 void task_convert_imu_or_joy(int16_t *x, int16_t *y, int *linear, int *angular, bool use_joy)
 {
     
-    int16_t imu_range = IMU_ADC_MAX - IMU_ADC_MIN;
-    int16_t y_joy_range = JOY_Y_MAX - JOY_Y_MIN;
-    int16_t x_joy_range = JOY_X_MAX - JOY_X_MIN;
-    int16_t linear_range = LINEAR_TRANFER_MAX - LINEAR_TRANFER_MIN;
+    int imu_range = IMU_ADC_MAX - IMU_ADC_MIN;
+    int y_joy_range = JOY_Y_MAX - JOY_Y_MIN;
+    int x_joy_range = JOY_X_MAX - JOY_X_MIN;
+    int linear_range = LINEAR_TRANFER_MAX - LINEAR_TRANFER_MIN;
 
     int linear_size;
     int angular_size;
-    
+   
     // COnverts ADC Reading to a value from LINEAR_TRANFER_MIN to LINEAR_TRANFER_MAX
     if(use_joy)
     {
         linear_size = (((*x-JOY_X_MIN)*linear_range)/x_joy_range)+LINEAR_TRANFER_MIN;
+        linear_size = linear_size - 2*(linear_size-DEADBAND_CENTRE);
         angular_size = (((*y-JOY_Y_MIN)*linear_range)/y_joy_range)+LINEAR_TRANFER_MIN;
+        angular_size = angular_size - 2*(angular_size-DEADBAND_CENTRE);
+
     } else
     {
-        linear_size = -(((*x-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
-        angular_size = -(((*y-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
+        linear_size = (((*x-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
+        linear_size = linear_size - 2*(linear_size-DEADBAND_CENTRE);
+        angular_size = (((*y-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
+        angular_size = angular_size - 2*(angular_size-DEADBAND_CENTRE);
     }
 
-    if (linear_size < DEADBAND_UPPER && linear_size > DEADBAND_LOWER)
+    if ((DEADBAND_LOWER <= linear_size) && (linear_size <= DEADBAND_UPPER))
     {
         linear_size = DEADBAND_CENTRE;
     } else
     {
-        if (linear_size >= DEADBAND_UPPER) 
+        if (linear_size > DEADBAND_UPPER) 
         {
             linear_size = linear_size - DEADBAND_CHANGE;
         }
-        if (linear_size <= DEADBAND_LOWER) 
+        if (linear_size < DEADBAND_LOWER) 
         {
             linear_size = linear_size + DEADBAND_CHANGE;
         }

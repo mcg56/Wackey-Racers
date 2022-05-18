@@ -48,6 +48,8 @@
 * Globals
 ******************************************************************************/
 
+
+
 int main (void)
 {
     //---------------------Variables---------------------
@@ -87,7 +89,7 @@ int main (void)
     
 
     const mcu_sleep_cfg_t sleep_cfg = {  
-        .mode = MCU_SLEEP_MODE_SLEEP
+        .mode = MCU_SLEEP_MODE_WAIT//MCU_SLEEP_MODE_SLEEP
     };
 
     //Flash LED to show everything initialised
@@ -113,8 +115,9 @@ int main (void)
         
 
         //Write to radio
-        if (ticks >= 10)
+        if (ticks >= 2)
         {
+            // nrf24_power_down(nrf);
             // Read IMU and print raw data
 
             //Read imu
@@ -144,11 +147,11 @@ int main (void)
 
             // Radio, need to tx and rx somehow..
             // Convert int values into bytes and place into tx_buffer
-            tx_buffer[0] = linear & 0xFF; 
-            tx_buffer[1] = angular & 0xFF;
+            tx_buffer[0] = angular & 0xFF; 
+            tx_buffer[1] = linear & 0xFF;
             tx_buffer[2] = 69 & 0xFF;
             //snprintf (temp_buffer, sizeof ( temp_buffer), "Hello world %d\r\n", count++);
-            printf("%i %i %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+            //printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
             if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
             {
                 pio_output_set (LED_ERROR_PIO, 1);
@@ -156,8 +159,7 @@ int main (void)
             {
                 pio_output_set (LED_ERROR_PIO, 0);
             }
-            //if (! nrf24_write (nrf, temp_buffer, RADIO_TX_PAYLOAD_SIZE)) pio_output_set (LED_ERROR_PIO, 1);
-            //else pio_output_set (LED_ERROR_PIO, 0);
+
             ticks = 0;
             //pio_output_toggle (LED_ERROR_PIO);
          
@@ -165,25 +167,18 @@ int main (void)
         
         else{
             rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-            if (rx_bytes != 0)
+            if ((rx_bytes != 0) && (rx_buffer[0] == 1))
             {
-                
-                rx_buffer[rx_bytes] = 0;
                 printf ("%i\n", rx_buffer[0]);
                 pio_output_toggle (LED_STATUS_PIO);
                 play_card(pwm1);
+                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+                rx_buffer[0] = 0;
             }
         }
-
-        // rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-        // if (rx_bytes != 0)
-        // {
-        //     rx_buffer[rx_bytes] = 0;
-        //     printf ("%i\n", rx_buffer[0]);
-        //     pio_output_toggle (LED_STATUS_PIO);
-        // }
-            
-        //if recieved from car to play buzzer, then play noise
 
         // if(low_bat_flag)
         // {
@@ -207,6 +202,8 @@ int main (void)
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
+            //pio_irq_enable(SLEEP_BUT_PIO);
+            //irq_enable(PIO_ID(SLEEP_BUT_PIO));
             mcu_sleep(&sleep_cfg);
             flash_led(LED_STATUS_PIO, 5);
         }
