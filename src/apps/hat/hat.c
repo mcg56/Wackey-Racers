@@ -67,7 +67,7 @@ int main (void)
     int16_t y;       //Controll (imu or joy) raw data y
     int ticks = 0;
     bool blue = false;
-    int count = 0;
+    int count_led = 0;
     
     
     //---------------------Peripheral setup---------------------
@@ -110,9 +110,8 @@ int main (void)
         /* Wait until next clock tick.  */
         pacer_wait ();
         ticks++;
-    
-        // Checks if the buffer is at its end, otherwise advance the led buffer
-        if (count++ == NUM_LEDS)
+        
+        if (count_led++ == NUM_LEDS)
         {
             // wait for a revolution
             ledbuffer_clear(leds);
@@ -123,14 +122,16 @@ int main (void)
             }
             else
             {
-                ledbuffer_set(leds, 0, 255, 0, 255);
-                ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 255);
+                ledbuffer_set(leds, 0, 255, 0, 0);
+                ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 0);
             }
             blue = !blue;
-            count = 0;
+            count_led = 0;
         }
         ledbuffer_write (leds);
         ledbuffer_advance (leds, 1);
+        
+        
 
 
         if (!pio_input_get (GPIO_JUMPER))
@@ -191,11 +192,11 @@ int main (void)
                 pio_output_toggle (LED_STATUS_PIO);
                 while(flash_times < 5)
                 {
-                    red_strip();
-                    pacer_wait(500);
                     empty_strip();
-                    pacer_wait(500);
-                    flash_times++
+                    delay_ms(50);
+                    red_strip();
+                    delay_ms(50);
+                    flash_times++;
                 }
                 play_card(pwm1);
                 nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
