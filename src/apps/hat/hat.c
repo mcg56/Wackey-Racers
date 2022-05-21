@@ -38,6 +38,7 @@
 #include "ledbuffer.h"
 #include <stdio.h>
 #include "math.h"
+#include "irq.h"
 
 /******************************************************************************
 * CONSTANTS
@@ -93,7 +94,7 @@ int main (void)
     
 
     const mcu_sleep_cfg_t sleep_cfg = {  
-        .mode = MCU_SLEEP_MODE_WAIT//MCU_SLEEP_MODE_SLEEP
+        .mode = MCU_SLEEP_MODE_SLEEP //MCU_SLEEP_MODE_WAIT
     };
 
     //Flash LED to show everything initialised
@@ -222,18 +223,23 @@ int main (void)
         // Poll sleep button and if pressed then sleep...
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
         {
-            //pio_irq_enable(WAKE_BUTTON);
+            // Do stuff to show we recieved the button press
             red_strip();
             play_card(pwm1);
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
-            //pio_irq_enable(SLEEP_BUT_PIO);
-            //irq_enable(PIO_ID(SLEEP_BUT_PIO));
+
+            // Try enable the interrupt
+            pio_irq_enable(SLEEP_BUT_PIO);
+            irq_enable(PIO_ID(SLEEP_BUT_PIO));
+
+            //Sleep mcu
             mcu_sleep(&sleep_cfg);
+
+            //Flash LED to show we wokeup
             flash_led(LED_STATUS_PIO, 5);
         }
-        //printf("Radio channel: %d address: %d\n", nrf24_cfg.channel, nrf24_cfg.address);
     }
 
         
