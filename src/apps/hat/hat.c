@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include "math.h"
 #include "irq.h"
+#include <stdlib.h>
 
 /******************************************************************************
 * CONSTANTS
@@ -49,7 +50,8 @@
 /******************************************************************************
 * Globals
 ******************************************************************************/
-
+// yellow, cyan, green, magenta, pink, blue, orange, white, violet
+int my_colours[TOTAL_COLOURS][3] = {{255, 128, 0}, {0, 200, 70}, {50, 255, 0}, {255, 0, 255}, {255, 0, 100}, {0, 0, 255}, {255, 30, 0}, {255, 255, 255}, {70, 0, 255}};
 
 
 int main (void)
@@ -67,7 +69,7 @@ int main (void)
     int16_t x;       //Controll (imu or joy) raw data x
     int16_t y;       //Controll (imu or joy) raw data y
     int ticks = 0;
-    bool blue = false;
+    bool blue = true;
     int count_led = 0;
     
     
@@ -112,25 +114,39 @@ int main (void)
         pacer_wait ();
         ticks++;
         
-        if (count_led++ == NUM_LEDS)
+        //LED tape task
+        if (low_bat_flag)
         {
-            // wait for a revolution
-            ledbuffer_clear(leds);
-            if (blue)
+            empty_strip();
+        } else
+        {
+            if (count_led++ == NUM_LEDS)
             {
-                ledbuffer_set(leds, 0, 0, 0, 255);
-                ledbuffer_set(leds, NUM_LEDS / 2, 0, 0, 255);
+                // wait for a revolution
+                ledbuffer_clear(leds);
+                int colour_index = rand() % (TOTAL_COLOURS - 0 + 1);
+                //int r = rand() % (COLOUR_MAX - COLOUR_MIN + 1) + COLOUR_MIN;
+                //int g = rand() % (COLOUR_MAX - COLOUR_MIN + 1) + COLOUR_MIN;
+                //int b = rand() % (COLOUR_MAX - COLOUR_MIN + 1) + COLOUR_MIN;
+                int r = my_colours[colour_index][0];
+                int g = my_colours[colour_index][1];
+                int b = my_colours[colour_index][2];
+                if (blue)
+                {
+                    ledbuffer_set(leds, 0, r, g, b);
+                    ledbuffer_set(leds, NUM_LEDS / 2, r, g, b);
+                }
+                else
+                {
+                    ledbuffer_set(leds, 0, 255, 0, 0);
+                    ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 0);
+                }
+                //blue = !blue;
+                count_led = 0;
             }
-            else
-            {
-                ledbuffer_set(leds, 0, 255, 0, 0);
-                ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 0);
-            }
-            blue = !blue;
-            count_led = 0;
+            ledbuffer_write (leds);
+            ledbuffer_advance (leds, 1);
         }
-        ledbuffer_write (leds);
-        ledbuffer_advance (leds, 1);
         
         
 
@@ -159,7 +175,7 @@ int main (void)
                 y = accel[1];
             }
 
-            //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2])
+            //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
             //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
 
             //Convert IMU or joystick reading to scale 1-201 for x and y
@@ -173,10 +189,10 @@ int main (void)
             //printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
             if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
             {
-                pio_output_set (LED_ERROR_PIO, 1);
+                //pio_output_set (LED_ERROR_PIO, 1);
             } else 
             {
-                pio_output_set (LED_ERROR_PIO, 0);
+                //pio_output_set (LED_ERROR_PIO, 0);
             }
 
             ticks = 0;
@@ -224,20 +240,24 @@ int main (void)
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
         {
             // Do stuff to show we recieved the button press
-            red_strip();
+            empty_strip();
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
 
-            // Try enable the interrupt
+            //Shutdown peripherals
+            nrf24_power_down (nrf);
+            spi_shutdown(spi);            
+
+            // Clear, then enable the interrupt
+            pio_irq_clear (SLEEP_BUT_PIO);
             pio_irq_enable(SLEEP_BUT_PIO);
             irq_enable(PIO_ID(SLEEP_BUT_PIO));
 
             //Sleep mcu
+            mcu_select_slowclock();
             mcu_sleep(&sleep_cfg);
-
             //Flash LED to show we wokeup
-            flash_led(LED_STATUS_PIO, 5);
         }
     }
 

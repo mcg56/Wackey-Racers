@@ -61,7 +61,8 @@ void task_read_imu(mpu_t *mpu, int16_t *accel)
 void task_convert_imu_or_joy(int16_t *x, int16_t *y, int *linear, int *angular, bool use_joy)
 {
     
-    int imu_range = IMU_ADC_MAX - IMU_ADC_MIN;
+    int imu_lin_range = IMU_ADC_LIN_MAX - IMU_ADC_LIN_MIN;
+    int imu_ang_range = IMU_ADC_ANG_MAX - IMU_ADC_ANG_MIN;
     int y_joy_range = JOY_Y_MAX - JOY_Y_MIN;
     int x_joy_range = JOY_X_MAX - JOY_X_MIN;
     int linear_range = LINEAR_TRANFER_MAX - LINEAR_TRANFER_MIN;
@@ -79,9 +80,9 @@ void task_convert_imu_or_joy(int16_t *x, int16_t *y, int *linear, int *angular, 
 
     } else
     {
-        linear_size = (((*x-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
+        linear_size = (((*x-IMU_ADC_LIN_MIN)*linear_range)/imu_lin_range)+LINEAR_TRANFER_MIN;
         linear_size = linear_size - 2*(linear_size-DEADBAND_CENTRE);
-        angular_size = (((*y-IMU_ADC_MIN)*linear_range)/imu_range)+LINEAR_TRANFER_MIN;
+        angular_size = (((*y-IMU_ADC_ANG_MIN)*linear_range)/imu_ang_range)+LINEAR_TRANFER_MIN;
         angular_size = angular_size - 2*(angular_size-DEADBAND_CENTRE);
     }
 

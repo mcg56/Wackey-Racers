@@ -8,6 +8,9 @@
 #ifndef APP_GPIO_H
 #define APP_GPIO_H
 #define NUM_LEDS 23
+#define COLOUR_MIN 0
+#define COLOUR_MAX 255
+#define TOTAL_COLOURS 9
 
 /******************************************************************************
 * CONSTANTS
@@ -23,5 +26,6 @@ void green_strip(void);
 void red_strip(void);
 void blue_strip(void);
 void empty_strip(void);
+void any_strip(int r, int g, int b);
 
 #endif //APP_GPIO_H

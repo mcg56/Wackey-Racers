@@ -42,11 +42,12 @@ spi_cfg_t spi_cfg =
 * FUNCTIONS
 ******************************************************************************/
 
+spi_t spi;
+nrf24_t *nrf;
+
 nrf24_t *initialise_radio(void)
 {
     uint8_t count = 0; //Radio Variables
-    spi_t spi;
-    nrf24_t *nrf;
 
     // Determine radio channel and setup cfg structure
     int radio_channel;

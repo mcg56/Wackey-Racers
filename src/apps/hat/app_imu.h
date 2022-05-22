@@ -20,8 +20,11 @@
 * CONSTANTS
 ******************************************************************************/
 #define TRUE_CENTRE         600
-#define IMU_ADC_MAX         (10000 + TRUE_CENTRE)
-#define IMU_ADC_MIN         (-10000 + TRUE_CENTRE)
+#define IMU_ADC_LIN_MAX         (6500 + TRUE_CENTRE)
+#define IMU_ADC_LIN_MIN         (-11000 + TRUE_CENTRE)
+
+#define IMU_ADC_ANG_MAX         (15000 + TRUE_CENTRE)
+#define IMU_ADC_ANG_MIN         (-15000 + TRUE_CENTRE)
 
 #define DEADBAND_UPPER      121
 #define DEADBAND_LOWER      81

@@ -25,5 +25,8 @@
 int determine_radio_channel(void);
 nrf24_t *initialise_radio(void);
 nrf24_cfg_t nrf24_cfg;
-//spi_cfg_t spi_cfg;
+
+extern spi_t spi;
+extern nrf24_t *nrf;
+extern spi_cfg_t spi_cfg;
 #endif //APP_RADIO_H

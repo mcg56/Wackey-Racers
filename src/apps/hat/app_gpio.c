@@ -16,11 +16,24 @@
 #include "ledbuffer.h"
 #include "ledtape.h"
 #include "irq.h"
+#include "app_radio.h"
+#include "spi.h"
+
 
 void wake_isr(void)
 {
-    flash_led(LED_ERROR_PIO, 5);
+    mcu_power_mode_normal();
     pio_irq_clear (SLEEP_BUT_PIO);
+    //flash_led(LED_ERROR_PIO, 5);
+    // Disable IRQ so that we can sleep again
+    pio_irq_disable(SLEEP_BUT_PIO);
+    irq_disable(PIO_ID(SLEEP_BUT_PIO));
+
+    //Wake everything back up
+    spi = spi_init (&spi_cfg);
+    nrf24_power_up (nrf);
+
+    delay_ms(500); // Delay to debounce button
 }
 
 
@@ -65,6 +78,22 @@ void green_strip(void)
         leds[i * 3] = 255;
         leds[i * 3 + 1] = 0;
         leds[i * 3 + 2] = 0;
+    }
+
+    ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+}
+
+void any_strip(int r, int g, int b)
+{
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = g;
+        leds[i * 3 + 1] = r;
+        leds[i * 3 + 2] = b;
     }
 
     ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
