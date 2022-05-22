@@ -15,6 +15,9 @@
 #include "radio.h"
 #include "usb_racer.h"
 #include "racer_pio.h"
+#include "racer_adc.h"
+#include "ledtape.h"
+#include "ledbuffer.h"
 
 /******************************************************************************
 * GLOBAL VARIABLES
@@ -46,14 +49,38 @@
 int main (void)
 {
     //---------------------Variables---------------------
-    nrf24_t *nrf;
+    //nrf24_t *nrf;
+    adc_t adc;
+    uint16_t adc_data[NUM_ADC_CHANNELS]; // For storing adc data
 
 
     //---------------------Initialise Modules ---------------------
     init_pwm (); // Initalise PWM outputs
     init_pio (); // Initalise PIO
-    nrf = initialise_radio (); // Initalise Radio
+    adc = initialise_adc ();
+    //nrf = initialise_radio (); // Initalise Radio
+    initialise_radio (); // Initalise Radio
     usb_serial_t *usb_serial_1 = init_usb ();  // Initialise USB serial connection
+
+
+    ledbuffer_t* leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
+
+
+
+
+    // ---------------------Setting up sleep----------------------------
+    const mcu_sleep_wakeup_cfg_t sleep_wake_cfg = {  
+        .pio = SLEEP_BUT_PIO,
+        .active_high = false
+    };
+    if(!mcu_sleep_wakeup_set(&sleep_wake_cfg)) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
+    
+
+    const mcu_sleep_cfg_t sleep_cfg = {  
+        .mode = MCU_SLEEP_MODE_SLEEP //MCU_SLEEP_MODE_WAIT
+    };
+
+
 
 
     // Status LED on
@@ -65,7 +92,7 @@ int main (void)
 
     pacer_init (PACER_RATE); 
     int32_t ticks = 0;
-    int32_t ticks_1 = 0;
+    int count_led = 0;
 
     while (1) {
 
@@ -73,11 +100,6 @@ int main (void)
         /* Wait until next clock tick.  */
         pacer_wait ();
 
-        /* Radio  */
-        char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
-        char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
-        uint8_t rx_bytes;
-        
         /* Run motor.  */ 
         //usb_to_motor (usb_serial_1);
         
@@ -85,36 +107,53 @@ int main (void)
         //printf("%d\n", nrf24_cfg.channel);
 
 
-        /******************************************************************************
-        * Radio
-        ******************************************************************************/
+        if (count_led++ == NUM_LEDS)
+        {
+            // wait for a revolution
+            ledbuffer_clear(leds);
+            if (blue)
+            {
+                ledbuffer_set(leds, 0, 0, 0, 255);
+                ledbuffer_set(leds, NUM_LEDS / 2, 0, 0, 255);
+            }
+            else
+            {
+                ledbuffer_set(leds, 0, 255, 0, 0);
+                ledbuffer_set(leds, NUM_LEDS / 2, 255, 0, 0);
+            }
+            blue = !blue;
+            count_led = 0;
+        }
+        ledbuffer_write (leds);
+        ledbuffer_advance (leds, 1);
+
+
+
+
+
+
         pio_output_toggle (LED_STATUS_PIO);
+        read_adc(adc, adc_data, sizeof(adc_data));
+
+        if (low_bat_flag)
+        { 
+            pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_HIGH);
+        } else 
+        {
+            pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+        }
         
         if (!pio_input_get (BUMPER_SWITCH_PIO)) 
         {
-            tx_buffer[0] = 1 & 0xFF;
-            ticks_1 = 0;
-            while (ticks_1 <= 5) 
-            {
-                nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
-                ticks_1++;
-            }
+            radio_transmit();
             set_motor_vel (101, 101);
-            delay_ms(5000);
-            
+            delay_ms(5000); 
             
         } else {
             if (ticks > 5) 
             {
                 ticks = 0;   
-                rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-                if (rx_bytes != 0)
-                {
-                    rx_buffer[rx_bytes] = 0;
-                    
-                    //printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
-                    set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
-                }
+                radio_recieve();
             }
             
         }

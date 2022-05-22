@@ -40,7 +40,7 @@ spi_cfg_t spi_cfg =
 };
 
 
-
+nrf24_t *nrf;
 
 /******************************************************************************
 * FUNCTIONS
@@ -50,7 +50,7 @@ nrf24_t *initialise_radio(void)
 {
     uint8_t count = 0; //Radio Variables
     spi_t spi;
-    nrf24_t *nrf;
+    //nrf24_t *nrf;
 
     // Determine radio channel and setup cfg structure
     int radio_channel;
@@ -65,7 +65,7 @@ nrf24_t *initialise_radio(void)
     nrf = nrf24_init (spi, &nrf24_cfg);
     if (! nrf) panic (LED_ERROR_PIO, 2);
 
-    return nrf;
+    //return nrf;
 }
 
 
@@ -109,4 +109,29 @@ int determine_radio_channel(void)
     }
 
     return radio_channel;
+}
+
+void radio_transmit (void)
+{
+    char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+    int ticks_1 = 0;
+    tx_buffer[0] = 1 & 0xFF;
+    while (ticks_1 <= 5) 
+    {
+        nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
+        ticks_1++;
+    }
+}
+
+void radio_recieve (void)
+{
+    uint8_t rx_bytes;
+    char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
+    rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+    if (rx_bytes != 0)
+    {
+        rx_buffer[rx_bytes] = 0;           
+        //printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
+        set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
+    }
 }

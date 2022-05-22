@@ -28,6 +28,9 @@
 //#define USB_VBUS_PIO PA5_PIO
 #define USB_CURRENT_MA 500
 
+/* ADC   */
+#define BATTERY_ADC_CHANNEL ADC_CHANNEL_1
+
 /* LEDs  */
 #define LED_ERROR_PIO PA29_PIO   //RED
 #define LED_STATUS_PIO PA30_PIO  //GREEN
