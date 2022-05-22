@@ -9,7 +9,7 @@
 #include "pacer.h"
 #include "ledtape.h"
 
-#define NUM_LEDS 23
+#define NUM_LEDS 24
 
 /*
     This test app shows how to program the WS2318B LED tape.
