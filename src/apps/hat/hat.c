@@ -225,7 +225,6 @@ int main (void)
         {
             // Do stuff to show we recieved the button press
             red_strip();
-            play_card(pwm1);
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
