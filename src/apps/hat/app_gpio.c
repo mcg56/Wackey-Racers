@@ -19,7 +19,7 @@
 
 void wake_isr(void)
 {
-    flash_led(LED_STATUS_PIO, 5);
+    flash_led(LED_ERROR_PIO, 5);
     pio_irq_clear (SLEEP_BUT_PIO);
 }
 
@@ -39,7 +39,7 @@ void pio_configuration(void)
     pio_config_set (GPIO_JUMPER, PIO_PULLUP);
     /* Configure sleep button as input with pullup.  */
     pio_config_set (SLEEP_BUT_PIO, PIO_PULLUP);
-    pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_LOW_LEVEL);
+    //pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_LOW_LEVEL);
     irq_config(PIO_ID(SLEEP_BUT_PIO), 1, wake_isr);
 }
 
