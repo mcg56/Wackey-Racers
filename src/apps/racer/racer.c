@@ -150,11 +150,6 @@ int main (void)
             }
         }
 
-
-
-
-
-
         pio_output_toggle (LED_STATUS_PIO);
         read_adc(adc, adc_data, sizeof(adc_data));
 
@@ -180,7 +175,8 @@ int main (void)
                     delay_ms(500);
                     flash_times++;
                 }
-            //delay_ms(5000); 
+            set_motor_vel (101, 1);
+            delay_ms(1000); 
             
         } else {
             if (ticks > 5) 
