@@ -22,16 +22,21 @@
 
 void wake_isr(void)
 {
+    //Set clk back to normal and clear interrupt
     mcu_power_mode_normal();
     pio_irq_clear (SLEEP_BUT_PIO);
-    //flash_led(LED_ERROR_PIO, 5);
+
     // Disable IRQ so that we can sleep again
     pio_irq_disable(SLEEP_BUT_PIO);
     irq_disable(PIO_ID(SLEEP_BUT_PIO));
 
     //Wake everything back up
+    //SPI and radio
     spi = spi_init (&spi_cfg);
     nrf24_power_up (nrf);
+
+    //TWI imu
+    initialise_imu();
 
     delay_ms(500); // Delay to debounce button
 }

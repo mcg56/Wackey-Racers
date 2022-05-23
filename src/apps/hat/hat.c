@@ -185,8 +185,7 @@ int main (void)
             tx_buffer[0] = angular & 0xFF; 
             tx_buffer[1] = linear & 0xFF;
             tx_buffer[2] = 69 & 0xFF;
-            //snprintf (temp_buffer, sizeof ( temp_buffer), "Hello world %d\r\n", count++);
-            //printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+            printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
             if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
             {
                 //pio_output_set (LED_ERROR_PIO, 1);
@@ -241,13 +240,16 @@ int main (void)
         {
             // Do stuff to show we recieved the button press
             empty_strip();
-            play_shutdown(pwm1);
+            delay_ms(500); // debounce button, not needed if playing sound       
+            //play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
 
             //Shutdown peripherals
             nrf24_power_down (nrf);
-            spi_shutdown(spi);            
+            spi_shutdown(spi);
+            //imu shutdown?
+            twi_shutdown (mpu_twi);         
 
             // Clear, then enable the interrupt
             pio_irq_clear (SLEEP_BUT_PIO);

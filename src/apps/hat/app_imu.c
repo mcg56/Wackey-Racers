@@ -16,9 +16,14 @@
 #include "app_adc.h"
 
 /******************************************************************************
+* GLOBALS
+******************************************************************************/
+twi_t mpu_twi;
+
+/******************************************************************************
 * FUNCTIONS
 ******************************************************************************/
-static twi_cfg_t mpu_twi_cfg =
+twi_cfg_t mpu_twi_cfg =
 {
     .channel = TWI_CHANNEL_0,
     .period = TWI_PERIOD_DIVISOR (100000), // 100 kHz
@@ -27,7 +32,6 @@ static twi_cfg_t mpu_twi_cfg =
 
 mpu_t *initialise_imu(void)
 {
-    twi_t mpu_twi;
     mpu_t *mpu;
     // Disable jtag so we can use TWI1
     mcu_jtag_disable(); 
