@@ -14,9 +14,17 @@
 #include "delay.h"
 #include "ledbuffer.h"
 #include "ledtape.h"
+#include "irq.h"
 
 
-
+void wake_isr(void)
+{
+    flash_led(LED_ERROR_PIO, 5);
+    pio_irq_clear(SLEEP_BUTTON_PIO);
+    pio_irq_disable(SLEEP_BUTTON_PIO);
+    irq_disable(PIO_ID(SLEEP_BUTTON_PIO));
+    delay_ms(500);
+}
 
 /******************************************************************************
 * FUNCTIONS
@@ -34,6 +42,9 @@ void init_pio(void)
     /* Configure sleep button as input with pullup.  */
     pio_config_set (SLEEP_BUTTON_PIO, PIO_PULLUP);
     pio_irq_config_set (SLEEP_BUTTON_PIO, PIO_IRQ_FALLING_EDGE);
+
+    //pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_LOW_LEVEL);
+    irq_config(PIO_ID(SLEEP_BUTTON_PIO), 1, wake_isr);
 
 }
 
@@ -93,4 +104,23 @@ void blue_strip(void)
     }
 
     ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+}
+
+
+void empty_strip(void)
+{
+    {
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = 0;
+        leds[i * 3 + 1] = 0;
+        leds[i * 3 + 2] = 0;
+    }
+
+    ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+    }
 }
