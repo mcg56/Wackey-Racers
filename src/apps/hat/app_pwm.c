@@ -64,11 +64,13 @@ void play_card (pwm_t pwm1)
         int noteDuration = 700 / card_note_Durations[thisNote];
         pwm_frequency_set (pwm1, card_melody[thisNote]);
         pwm_channels_start (pwm_channel_mask (pwm1));
+        red_strip();
         delay_ms (noteDuration);
 
         //Delay between note
         int pauseBetweenNotes = noteDuration * 0.9;
         pwm_channels_stop(pwm_channel_mask (pwm1));
+        empty_strip();
         delay_ms(pauseBetweenNotes);
     }
     

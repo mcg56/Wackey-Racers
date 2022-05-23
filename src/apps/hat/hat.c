@@ -75,7 +75,7 @@ int main (void)
     
     //---------------------Peripheral setup---------------------
     // Redirect stdio to USB serial
-    usb_serial_stdio_init ();
+    usb_serial_stdio_init (); // TO DO: disable this for assesment so it saves power in sleep
 
     pio_configuration();
     mpu = initialise_imu();
@@ -125,9 +125,6 @@ int main (void)
                 // wait for a revolution
                 ledbuffer_clear(leds);
                 int colour_index = rand() % (TOTAL_COLOURS - 0 + 1);
-                //int r = rand() % (COLOUR_MAX - COLOUR_MIN + 1) + COLOUR_MIN;
-                //int g = rand() % (COLOUR_MAX - COLOUR_MIN + 1) + COLOUR_MIN;
-                //int b = rand() % (COLOUR_MAX - COLOUR_MIN + 1) + COLOUR_MIN;
                 int r = my_colours[colour_index][0];
                 int g = my_colours[colour_index][1];
                 int b = my_colours[colour_index][2];
@@ -206,14 +203,14 @@ int main (void)
                 int flash_times = 0;
                 printf ("%i\n", rx_buffer[0]);
                 pio_output_toggle (LED_STATUS_PIO);
-                while(flash_times < 5)
+                /*while(flash_times < 5)
                 {
                     empty_strip();
                     delay_ms(50);
                     red_strip();
                     delay_ms(50);
                     flash_times++;
-                }
+                }*/
                 play_card(pwm1);
                 nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
                 nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
@@ -248,8 +245,12 @@ int main (void)
             //Shutdown peripherals
             nrf24_power_down (nrf);
             spi_shutdown(spi);
+
             //imu shutdown?
-            twi_shutdown (mpu_twi);         
+            twi_shutdown (mpu_twi);
+
+            //Reconfigure all PIO as output low
+            pio_sleep_mode();   
 
             // Clear, then enable the interrupt
             pio_irq_clear (SLEEP_BUT_PIO);

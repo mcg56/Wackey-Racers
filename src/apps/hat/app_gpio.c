@@ -38,6 +38,9 @@ void wake_isr(void)
     //TWI imu
     initialise_imu();
 
+    // PIO
+    pio_configuration();
+
     delay_ms(500); // Delay to debounce button
 }
 
@@ -59,6 +62,19 @@ void pio_configuration(void)
     pio_config_set (SLEEP_BUT_PIO, PIO_PULLUP);
     //pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_LOW_LEVEL);
     irq_config(PIO_ID(SLEEP_BUT_PIO), 1, wake_isr);
+}
+
+//Set all PIO other than sleep button to output low
+void pio_sleep_mode(void)
+{
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (FSYNC, PIO_OUTPUT_LOW);
+    pio_config_set (CH1_SEL, PIO_OUTPUT_LOW);
+    pio_config_set (CH2_SEL, PIO_OUTPUT_LOW);
+    pio_config_set (CH3_SEL, PIO_OUTPUT_LOW);
+    pio_config_set (CH4_SEL, PIO_OUTPUT_LOW);
+    pio_config_set (GPIO_JUMPER, PIO_OUTPUT_LOW);
 }
 
 void flash_led(int led_pio, int num_flash)
