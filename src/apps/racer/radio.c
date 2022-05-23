@@ -40,6 +40,7 @@ spi_cfg_t spi_cfg =
 };
 
 
+
 nrf24_t *nrf;
 
 /******************************************************************************
@@ -116,14 +117,14 @@ void radio_transmit (void)
     char tx_buffer[RADIO_TX_PAYLOAD_SIZE + 1]; // +1 for null terminator
     int ticks_1 = 0;
     tx_buffer[0] = 1 & 0xFF;
-    while (ticks_1 <= 5) 
+    while (ticks_1 <= 15) 
     {
         nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE);
         ticks_1++;
     }
 }
 
-void radio_recieve (void)
+void radio_recieve (int* x_val, int* y_val)
 {
     uint8_t rx_bytes;
     char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
@@ -134,4 +135,7 @@ void radio_recieve (void)
         //printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
         set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
     }
+
+    *x_val = (int)rx_buffer[0];
+    *y_val = (int)rx_buffer[1];
 }
