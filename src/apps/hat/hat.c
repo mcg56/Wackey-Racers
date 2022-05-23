@@ -96,7 +96,7 @@ int main (void)
     
 
     const mcu_sleep_cfg_t sleep_cfg = {  
-        .mode = MCU_SLEEP_MODE_SLEEP //MCU_SLEEP_MODE_WAIT
+        .mode = MCU_SLEEP_MODE_BACKUP //MCU_SLEEP_MODE_WAIT
     };
 
     //Flash LED to show everything initialised
@@ -115,7 +115,7 @@ int main (void)
         radio_ticks++;
         led_ticks++;
         
-        if (led_ticks >= PACER_RATE*2)
+        if (led_ticks >= PACER_RATE*20)
         {
             pio_output_toggle(LED_STATUS_PIO);
         }
@@ -150,9 +150,7 @@ int main (void)
             ledbuffer_advance (leds, 1);
         }
         
-        
-
-
+        // Play anthem if switch in
         if (!pio_input_get (GPIO_JUMPER))
         {
             play_anthem(pwm1);
@@ -181,6 +179,9 @@ int main (void)
         //Convert IMU or joystick reading to scale 1-201 for x and y
         task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
 
+        //pwm_frequency_set (pwm1, 392 + 10*linear);
+        //pwm_channels_start (pwm_channel_mask (pwm1));
+
         // Convert int values into bytes and place into tx_buffer
         tx_buffer[0] = angular & 0xFF; 
         tx_buffer[1] = linear & 0xFF;
@@ -197,23 +198,13 @@ int main (void)
         radio_ticks = 0;
         //pio_output_toggle (LED_ERROR_PIO);
          
-        
-        
-        
         rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
         if ((rx_bytes != 0) && (rx_buffer[0] == 1))
         {
             int flash_times = 0;
             printf ("%i\n", rx_buffer[0]);
             pio_output_toggle (LED_STATUS_PIO);
-            /*while(flash_times < 5)
-            {
-                empty_strip();
-                delay_ms(50);
-                red_strip();
-                delay_ms(50);
-                flash_times++;
-            }*/
+
             play_card(pwm1);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
