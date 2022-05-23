@@ -155,11 +155,13 @@ void play_anthem(pwm_t pwm1)
             int noteDuration = 2300 / anthem_note_Durations[thisNote];
             pwm_frequency_set (pwm1, anthem_melody[thisNote]);
             pwm_channels_start (pwm_channel_mask (pwm1));
+            red_strip();
             delay_ms (noteDuration);
 
             //Delay between note
             int pauseBetweenNotes = noteDuration * 1.05;
             pwm_channels_stop(pwm_channel_mask (pwm1));
+            blue_strip();
             delay_ms(pauseBetweenNotes);
             if (pio_input_get (GPIO_JUMPER))
             {

@@ -67,7 +67,8 @@ int main (void)
     int angular;
     int16_t x;       //Controll (imu or joy) raw data x
     int16_t y;       //Controll (imu or joy) raw data y
-    int ticks = 0;
+    int radio_ticks = 0;
+    int led_ticks = 0;
     bool blue = true;
     int count_led = 0;
     
@@ -95,7 +96,7 @@ int main (void)
     
 
     const mcu_sleep_cfg_t sleep_cfg = {  
-        .mode = MCU_SLEEP_MODE_SLEEP //MCU_SLEEP_MODE_WAIT
+        .mode = MCU_SLEEP_MODE_BACKUP //MCU_SLEEP_MODE_WAIT
     };
 
     //Flash LED to show everything initialised
@@ -111,8 +112,13 @@ int main (void)
         uint8_t rx_bytes;
         /* Wait until next clock tick.  */
         pacer_wait ();
-        ticks++;
+        radio_ticks++;
+        led_ticks++;
         
+        if (led_ticks >= PACER_RATE*20)
+        {
+            pio_output_toggle(LED_STATUS_PIO);
+        }
         //LED tape task
         if (low_bat_flag)
         {
@@ -144,80 +150,69 @@ int main (void)
             ledbuffer_advance (leds, 1);
         }
         
-        
-
-
+        // Play anthem if switch in
         if (!pio_input_get (GPIO_JUMPER))
         {
             play_anthem(pwm1);
         }
         
-        //Write to radio
-        if (ticks >= 2)
+        
+        // Read IMU
+        task_read_imu(mpu, accel);
+        // Read all ADC (joystick and battery)
+        task_read_adc(adc, adc_data, sizeof(adc_data));
+        //printf("%i\n",ticks);
+        // Set the x-y control values based on if we are using joystick or imu
+        if (use_joy)
         {
-            // Read IMU
-            task_read_imu(mpu, accel);
-            // Read all ADC (joystick and battery)
-            task_read_adc(adc, adc_data, sizeof(adc_data));
-            //printf("%i\n",ticks);
-            // Set the x-y control values based on if we are using joystick or imu
-            if (use_joy)
-            {
-                x = adc_data[1];
-                y = adc_data[2];
-            }else
-            {
-                x = accel[0];
-                y = accel[1];
-            }
+            x = adc_data[1];
+            y = adc_data[2];
+        }else
+        {
+            x = accel[0];
+            y = accel[1];
+        }
 
-            //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
-            //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
+        //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
+        //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
 
-            //Convert IMU or joystick reading to scale 1-201 for x and y
-            task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
+        //Convert IMU or joystick reading to scale 1-201 for x and y
+        task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
 
-            // Convert int values into bytes and place into tx_buffer
-            tx_buffer[0] = angular & 0xFF; 
-            tx_buffer[1] = linear & 0xFF;
-            tx_buffer[2] = 69 & 0xFF;
-            printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
-            if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
-            {
-                //pio_output_set (LED_ERROR_PIO, 1);
-            } else 
-            {
-                //pio_output_set (LED_ERROR_PIO, 0);
-            }
+        //pwm_frequency_set (pwm1, 392 + 10*linear);
+        //pwm_channels_start (pwm_channel_mask (pwm1));
 
-            ticks = 0;
-            //pio_output_toggle (LED_ERROR_PIO);
+        // Convert int values into bytes and place into tx_buffer
+        tx_buffer[0] = angular & 0xFF; 
+        tx_buffer[1] = linear & 0xFF;
+        tx_buffer[2] = 69 & 0xFF;
+        //printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
+        if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
+        {
+            //pio_output_set (LED_ERROR_PIO, 1);
+        } else 
+        {
+            //pio_output_set (LED_ERROR_PIO, 0);
+        }
+
+        radio_ticks = 0;
+        //pio_output_toggle (LED_ERROR_PIO);
          
+        rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
+        if ((rx_bytes != 0) && (rx_buffer[0] == 1))
+        {
+            int flash_times = 0;
+            printf ("%i\n", rx_buffer[0]);
+            pio_output_toggle (LED_STATUS_PIO);
+
+            play_card(pwm1);
+            nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+            nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+            nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+            nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
+            rx_buffer[0] = 0;
         }
         
-        else{
-            rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
-            if ((rx_bytes != 0) && (rx_buffer[0] == 1))
-            {
-                int flash_times = 0;
-                printf ("%i\n", rx_buffer[0]);
-                pio_output_toggle (LED_STATUS_PIO);
-                /*while(flash_times < 5)
-                {
-                    empty_strip();
-                    delay_ms(50);
-                    red_strip();
-                    delay_ms(50);
-                    flash_times++;
-                }*/
-                play_card(pwm1);
-                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
-                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
-                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
-                nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
-                rx_buffer[0] = 0;
-            }
-        }
 
         if(low_bat_flag)
         {
