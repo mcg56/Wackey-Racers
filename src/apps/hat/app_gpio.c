@@ -18,6 +18,7 @@
 #include "irq.h"
 #include "app_radio.h"
 #include "spi.h"
+#include "app_imu.h"
 
 
 void wake_isr(void)
@@ -75,6 +76,15 @@ void pio_sleep_mode(void)
     pio_config_set (CH3_SEL, PIO_OUTPUT_LOW);
     pio_config_set (CH4_SEL, PIO_OUTPUT_LOW);
     pio_config_set (GPIO_JUMPER, PIO_OUTPUT_LOW);
+
+    //radio
+    pio_config_set(RADIO_CS_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(RADIO_CE_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(RADIO_IRQ_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(RADIO_CE_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(PA12_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(PA13_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(PA14_PIO, PIO_OUTPUT_LOW);
 }
 
 void flash_led(int led_pio, int num_flash)
