@@ -20,6 +20,7 @@
 * GLOBALS
 ******************************************************************************/
 bool low_bat_flag = false;
+adc_t adc;
 
 /******************************************************************************
 * FUNCTIONS
@@ -32,13 +33,11 @@ static const adc_cfg_t adc_cfg =
     .clock_speed_kHz = 1000
 };
 
-adc_t initialise_adc(void)
+void initialise_adc(void)
 {
-    adc_t adc;
     // Initialise the ADC
     adc = adc_init (&adc_cfg);
     if (! adc) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
-    return adc;
 };
 
 void task_read_adc(adc_t adc, uint16_t *data, int size)

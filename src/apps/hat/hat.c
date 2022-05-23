@@ -58,7 +58,6 @@ int main (void)
 {
     //---------------------Variables---------------------
     nrf24_t *nrf;
-    adc_t adc;
     mpu_t *mpu;
     int16_t accel[NUM_ACCEL_VALUES]; // For storing imu data
     uint16_t adc_data[NUM_ADC_CHANNELS]; // For storing adc data
@@ -79,7 +78,7 @@ int main (void)
 
     pio_configuration();
     mpu = initialise_imu();
-    adc = initialise_adc();
+    initialise_adc();
     nrf = initialise_radio();
     pwm1 = init_pwm();
     ledbuffer_t* leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
@@ -237,8 +236,8 @@ int main (void)
         {
             // Do stuff to show we recieved the button press
             empty_strip();
-            delay_ms(500); // debounce button, not needed if playing sound       
-            //play_shutdown(pwm1);
+            //delay_ms(500); // debounce button, not needed if playing sound       
+            play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
 
@@ -251,6 +250,12 @@ int main (void)
 
             //Reconfigure all PIO as output low
             pio_sleep_mode();   
+
+            //ADC shutdown
+            //adc_shutdown(adc);
+
+            // PWM
+            pwm_shutdown();
 
             // Clear, then enable the interrupt
             pio_irq_clear (SLEEP_BUT_PIO);

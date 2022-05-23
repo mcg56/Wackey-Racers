@@ -19,6 +19,8 @@
 #include "app_radio.h"
 #include "spi.h"
 #include "app_imu.h"
+#include "app_adc.h"
+#include "app_pwm.h"
 
 
 void wake_isr(void)
@@ -41,6 +43,12 @@ void wake_isr(void)
 
     // PIO
     pio_configuration();
+
+    // PWM
+    init_pwm();
+
+    //ADC
+    //initialise_adc();
 
     delay_ms(500); // Delay to debounce button
 }

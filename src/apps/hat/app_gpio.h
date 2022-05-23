@@ -27,5 +27,6 @@ void red_strip(void);
 void blue_strip(void);
 void empty_strip(void);
 void any_strip(int r, int g, int b);
+void pio_sleep_mode(void);
 
 #endif //APP_GPIO_H
