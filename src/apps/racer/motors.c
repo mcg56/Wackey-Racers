@@ -24,7 +24,8 @@
 ******************************************************************************/
 
 #define LINEAR_GAIN 1
-#define ANGULAR_GAIN 0.5
+#define REVERSE_GAIN 2
+#define ANGULAR_GAIN 1
 #define Y_GAIN_V2 0.0001
 #define X_GAIN_V2 0.0001
 #define ZONE 20
@@ -165,9 +166,20 @@ void set_motor_vel (int16_t x_vel, int16_t y_vel) {
 
 
     // VERSION ONE: No deadzone
+    y_vel = y_vel - 101;
+    x_vel = x_vel - 101;
+
+    if ((x_vel < 50) || (x_vel > -50)) {
+        x_vel = x_vel*ANGULAR_GAIN;
+    }
+    if (y_vel < 0) {
+        left_motor_duty = REVERSE_GAIN*(y_vel) - (x_vel);
+        right_motor_duty = REVERSE_GAIN*(y_vel) + (x_vel);
+    } else {
+        left_motor_duty = LINEAR_GAIN*(y_vel) + (x_vel);
+        right_motor_duty = LINEAR_GAIN*(y_vel) - (x_vel);
+    }
     
-    left_motor_duty = LINEAR_GAIN*(y_vel-101) + ANGULAR_GAIN*(x_vel-101);
-    right_motor_duty = LINEAR_GAIN*(y_vel-101) - ANGULAR_GAIN*(x_vel-101);
 
     // VERSION TWO: Approximate deadzone using non-linear gain. (WORKING)
 

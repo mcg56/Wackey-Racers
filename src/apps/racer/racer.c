@@ -18,6 +18,9 @@
 #include "racer_adc.h"
 #include "ledtape.h"
 #include "ledbuffer.h"
+#include "mcu_sleep.h"
+#include "pio.h"
+#include "irq.h"
 
 /******************************************************************************
 * GLOBAL VARIABLES
@@ -69,17 +72,19 @@ int main (void)
 
 
     // ---------------------Setting up sleep----------------------------
+    
     const mcu_sleep_wakeup_cfg_t sleep_wake_cfg = {  
-        .pio = SLEEP_BUT_PIO,
+        .pio = SLEEP_BUTTON_PIO,
         .active_high = false
     };
+    
     if(!mcu_sleep_wakeup_set(&sleep_wake_cfg)) panic (LED_ERROR_PIO, INITIALISATION_ERROR);
     
 
     const mcu_sleep_cfg_t sleep_cfg = {  
         .mode = MCU_SLEEP_MODE_SLEEP //MCU_SLEEP_MODE_WAIT
     };
-
+    
 
 
 
@@ -93,6 +98,7 @@ int main (void)
     pacer_init (PACER_RATE); 
     int32_t ticks = 0;
     int count_led = 0;
+    bool blue = false;
 
     while (1) {
 
@@ -129,6 +135,23 @@ int main (void)
 
 
 
+        if (count_led++ == 4)
+        {
+            ledbuffer_clear(leds);
+            if (blue)
+            {
+                for (int led_num = 0; led_num < 12; led_num++) {
+                    ledbuffer_set(leds, 0, 0, 255, 0);
+                }
+            }
+            else
+            {
+                ledbuffer_clear(leds);
+            }
+        }
+
+
+
 
 
 
@@ -147,7 +170,17 @@ int main (void)
         {
             radio_transmit();
             set_motor_vel (101, 101);
-            delay_ms(5000); 
+
+            int flash_times = 0;
+            while(flash_times < 5)
+                {
+                    empty_strip();
+                    delay_ms(500);
+                    red_strip();
+                    delay_ms(500);
+                    flash_times++;
+                }
+            //delay_ms(5000); 
             
         } else {
             if (ticks > 5) 
@@ -156,6 +189,33 @@ int main (void)
                 radio_recieve();
             }
             
+        }
+
+
+        // Poll sleep button and if pressed then sleep...
+        if (!pio_input_get (SLEEP_BUTTON_PIO)) //sleep button pressed
+        {
+            // Do stuff to show we recieved the button press
+            red_strip();
+            pio_output_set (LED_STATUS_PIO, 0);
+            pio_output_set (LED_ERROR_PIO, 0);
+
+            delay_ms(1000);
+
+            // Try enable the interrupt
+            pio_irq_clear(SLEEP_BUTTON_PIO);
+            pio_irq_enable(SLEEP_BUTTON_PIO);
+            irq_enable(PIO_ID(SLEEP_BUTTON_PIO));
+
+            pio_config_set (MOTOR_ENABLE_PIO, PIO_OUTPUT_LOW);
+
+            //Sleep mcu
+            mcu_sleep(&sleep_cfg);
+
+            pio_config_set (MOTOR_ENABLE_PIO, PIO_OUTPUT_HIGH);
+
+            //Flash LED to show we wokeup
+            flash_led(LED_STATUS_PIO, 5);
         }
 	}
 }

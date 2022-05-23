@@ -12,7 +12,7 @@
 * CONSTANTS
 ******************************************************************************/
 #define LOW_BAT_LED_RATE  2 //Hz
-#define NUM_LEDS 28 // Number of LEDs in tape
+#define NUM_LEDS 24 // Number of LEDs in tape
 
 /******************************************************************************
 * PUBLIC FUNCTION DEFINITIONS
@@ -22,5 +22,6 @@ void flash_led(int led_pio, int num_flash);
 void green_strip(void);
 void red_strip(void);
 void blue_strip(void);
+void empty_strip(void);
 
 #endif //RACER_PIO_H
