@@ -82,7 +82,7 @@ int main (void)
     
 
     const mcu_sleep_cfg_t sleep_cfg = {  
-        .mode = MCU_SLEEP_MODE_SLEEP //MCU_SLEEP_MODE_WAIT
+        .mode = MCU_SLEEP_MODE_BACKUP //MCU_SLEEP_MODE_WAIT
     };
     
 
@@ -99,6 +99,8 @@ int main (void)
     int32_t ticks = 0;
     int count_led = 0;
     bool blue = false;
+    int x_val;
+    int y_val;
 
     while (1) {
 
@@ -112,7 +114,7 @@ int main (void)
         // Radio debug
         //printf("%d\n", nrf24_cfg.channel);
 
-
+        /*
         if (count_led++ == NUM_LEDS)
         {
             // wait for a revolution
@@ -134,7 +136,6 @@ int main (void)
         ledbuffer_advance (leds, 1);
 
 
-
         if (count_led++ == 4)
         {
             ledbuffer_clear(leds);
@@ -149,6 +150,7 @@ int main (void)
                 ledbuffer_clear(leds);
             }
         }
+        */
 
         pio_output_toggle (LED_STATUS_PIO);
         read_adc(adc, adc_data, sizeof(adc_data));
@@ -156,9 +158,12 @@ int main (void)
         if (low_bat_flag)
         { 
             pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_HIGH);
+            empty_strip();
+            pio_config_set(MOTOR_ENABLE_PIO, PIO_OUTPUT_LOW);
         } else 
         {
             pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+            pio_config_set(MOTOR_ENABLE_PIO, PIO_OUTPUT_HIGH);
         }
         
         if (!pio_input_get (BUMPER_SWITCH_PIO)) 
@@ -179,12 +184,20 @@ int main (void)
             delay_ms(1000); 
             
         } else {
-            if (ticks > 5) 
-            {
-                ticks = 0;   
-                radio_recieve();
-            }
-            
+            radio_recieve(&x_val, &y_val);
+        }
+
+
+        if (x_val > 20) {
+            ledbuffer_set(leds, 5, 200, 50, 0);
+            ledbuffer_set(leds, 6, 200, 50, 0);
+            ledbuffer_set(leds, 17, 200, 50, 0);
+            ledbuffer_set(leds, 18, 200, 50, 0);
+        } else if (x_val < -20) {
+            ledbuffer_set(leds, 0, 200, 50, 0);
+            ledbuffer_set(leds, 11, 200, 50, 0);
+            ledbuffer_set(leds, 12, 200, 50, 0);
+            ledbuffer_set(leds, 23, 200, 50, 0);
         }
 
 
@@ -204,11 +217,12 @@ int main (void)
             irq_enable(PIO_ID(SLEEP_BUTTON_PIO));
 
             pio_config_set (MOTOR_ENABLE_PIO, PIO_OUTPUT_LOW);
+            empty_strip();
 
             //Sleep mcu
+            mcu_select_slowclock();
             mcu_sleep(&sleep_cfg);
 
-            pio_config_set (MOTOR_ENABLE_PIO, PIO_OUTPUT_HIGH);
 
             //Flash LED to show we wokeup
             flash_led(LED_STATUS_PIO, 5);

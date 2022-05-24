@@ -26,7 +26,7 @@
 int determine_radio_channel(void);
 nrf24_t *initialise_radio(void);
 void radio_transmit (void);
-void radio_recieve (void);
+void radio_recieve (int* x_val, int* y_val);
 
 nrf24_cfg_t nrf24_cfg;
 
