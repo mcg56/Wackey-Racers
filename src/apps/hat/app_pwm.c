@@ -28,6 +28,15 @@ static const pwm_cfg_t pwm1_cfg =
     .polarity = PWM_POLARITY_HIGH,
     .stop_state = PIO_OUTPUT_LOW
 };
+static const pwm_cfg_t pwm2_cfg =
+{
+    .pio = SERVO_PWM_PIO,
+    .period = PWM_PERIOD_DIVISOR (SERVO_PWM_FREQ_HZ),
+    .duty = PWM_DUTY_DIVISOR (SERVO_PWM_FREQ_HZ, SERVO_PWM_DUTY),
+    .align = PWM_ALIGN_LEFT,
+    .polarity = PWM_POLARITY_HIGH,
+    .stop_state = PIO_OUTPUT_LOW
+};
 
 
 pwm_t init_pwm (void)
@@ -43,6 +52,19 @@ pwm_t init_pwm (void)
     //pwm_channels_start (pwm_channel_mask (pwm1));
 
     return pwm1;
+}
+pwm_t init_pwm2 (void)
+{
+    pwm_t pwm2;
+
+    pwm2 = pwm_init (&pwm2_cfg);
+    if (! pwm2)
+        panic (LED_ERROR_PIO, 1);
+
+    
+    //pwm_channels_start (pwm_channel_mask (pwm1));
+
+    return pwm2;
 }
 
 void play_card (pwm_t pwm1)
@@ -170,4 +192,25 @@ void play_anthem(pwm_t pwm1)
 
         }
     }
+}
+
+void spin_flags(pwm_t pwm2)
+{
+    //pwm_frequency_set (pwm2, 50e3);
+    //pwm_duty_set (pwm2, 50);
+    int i = 0;
+    pwm_channels_start (pwm_channel_mask (pwm2));
+    while(i < 1)
+    {
+        i++;
+        pwm_duty_ppt_set (pwm2, 100);
+        delay_ms (1000);
+        pwm_duty_ppt_set (pwm2, 50);
+        delay_ms (1000);
+    }
+    
+
+    
+    pwm_channels_stop(pwm_channel_mask (pwm2));
+
 }

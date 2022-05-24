@@ -63,6 +63,7 @@ int main (void)
     uint16_t adc_data[NUM_ADC_CHANNELS]; // For storing adc data
     bool use_joy = false;
     pwm_t pwm1;
+    pwm_t pwm2;
     int linear;
     int angular;
     int16_t x;       //Controll (imu or joy) raw data x
@@ -82,6 +83,7 @@ int main (void)
     initialise_adc();
     nrf = initialise_radio();
     pwm1 = init_pwm();
+    pwm2 = init_pwm2();
     ledbuffer_t* leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
     //---------------------Read configuration inputs---------------------
     
@@ -206,6 +208,7 @@ int main (void)
             pio_output_toggle (LED_STATUS_PIO);
 
             play_card(pwm1);
+            spin_flags(pwm2);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
@@ -231,6 +234,7 @@ int main (void)
         {
             // Do stuff to show we recieved the button press
             empty_strip();
+            
             //delay_ms(500); // debounce button, not needed if playing sound       
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
