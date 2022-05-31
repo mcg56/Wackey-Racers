@@ -99,7 +99,7 @@ int main (void)
     int32_t ticks = 0;
     int count_led = 0;
     bool blue = false;
-    int8_t turn_direction;
+    int8_t turn_direction = 0;
 
     while (1) {
 
@@ -187,20 +187,40 @@ int main (void)
             turn_direction = radio_recieve();
         }
 
-        green_strip();
-        // if (turn_direction == TURN_LEFT) {
-        //     ledbuffer_set(leds, 5, 200, 50, 0);
-        //     ledbuffer_set(leds, 6, 200, 50, 0);
-        //     ledbuffer_set(leds, 17, 200, 50, 0);
-        //     ledbuffer_set(leds, 18, 200, 50, 0);
-        // } else if (turn_direction == TURN_RIGHT) {
-        //     ledbuffer_set(leds, 0, 200, 50, 0);
-        //     ledbuffer_set(leds, 11, 200, 50, 0);
-        //     ledbuffer_set(leds, 12, 200, 50, 0);
-        //     ledbuffer_set(leds, 23, 200, 50, 0);
-        // } else {
-        //     green_strip();
-        // }
+        //empty_strip();
+
+        //green_strip();
+        if (ticks % 10 == 0) {
+            blue = !blue;
+        }
+
+        if (turn_direction == TURN_LEFT) {
+            if (blue) {
+                indicate_left();
+            } else {
+                empty_strip();
+            }
+        } else if (turn_direction == TURN_RIGHT) {
+            if (blue) {
+                indicate_right();
+            } else {
+                empty_strip();
+            }
+        } else if (turn_direction == FWD) {
+            if (blue) {
+                indicate_fwd();
+            } else {
+                empty_strip();
+            }
+        } else if (turn_direction == REV) {
+            if (blue) {
+                red_strip();
+            } else {
+                empty_strip();
+            }
+        } else {
+            green_strip();
+        }
 
 
         // Poll sleep button and if pressed then sleep...

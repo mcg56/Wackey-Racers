@@ -14,6 +14,7 @@
 #include "nrf24.h"
 #include "spi.h"
 #include "radio.h"
+#include "motors.h"
 
 
 
@@ -135,7 +136,7 @@ int8_t radio_recieve (void)
         rx_buffer[rx_bytes] = 0;           
         //printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
         set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
-        if ((int)rx_buffer[2] != 0)
+        if ((int)rx_buffer[2] == 1)
         {
             pio_output_high (DARSTEDLY_OUTPUT_1_PIO);
         } else
@@ -146,11 +147,16 @@ int8_t radio_recieve (void)
 
     ret_value = FWD;
 
-    if ((int)rx_buffer[0] < -20) {
-        ret_value = TURN_LEFT;
-    } else if ( (int)rx_buffer[0] > 20) {
+    if ((int)rx_buffer[0] < 80) {
         ret_value = TURN_RIGHT;
+    } else if ( (int)rx_buffer[0] > 120) {
+        ret_value = TURN_LEFT;
+    } else if ( (int)rx_buffer[1] > 120) {
+        ret_value = REV;
+    } else if ( (int)rx_buffer[0] < 80) {
+        ret_value = FWD;
+    } else {
+        ret_value = 0;
     }
-
     return ret_value;
 }
