@@ -200,13 +200,13 @@ void spin_flags(pwm_t pwm2)
     //pwm_duty_set (pwm2, 50);
     int i = 0;
     pwm_channels_start (pwm_channel_mask (pwm2));
-    while(i < 1)
+    while(i < 2)
     {
         i++;
         pwm_duty_ppt_set (pwm2, 100);
-        delay_ms (1000);
+        delay_ms (750);
         pwm_duty_ppt_set (pwm2, 50);
-        delay_ms (1000);
+        delay_ms (750);
     }
     
 

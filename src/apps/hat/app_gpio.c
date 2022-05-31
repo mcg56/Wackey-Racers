@@ -67,6 +67,7 @@ void pio_configuration(void)
     pio_config_set (CH3_SEL, PIO_PULLUP);
     pio_config_set (CH4_SEL, PIO_PULLUP);
     pio_config_set (GPIO_JUMPER, PIO_PULLUP);
+    pio_config_set (BUTTON, PIO_PULLUP);
     /* Configure sleep button as input with pullup.  */
     pio_config_set (SLEEP_BUT_PIO, PIO_PULLUP);
     //pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_LOW_LEVEL);
@@ -84,7 +85,7 @@ void pio_sleep_mode(void)
     pio_config_set (CH3_SEL, PIO_OUTPUT_LOW);
     pio_config_set (CH4_SEL, PIO_OUTPUT_LOW);
     pio_config_set (GPIO_JUMPER, PIO_OUTPUT_LOW);
-    pio_config_set (BUTTON, PIO_OUTPUT_HIGH)
+    
 
     //radio
     pio_config_set(RADIO_CS_PIO, PIO_OUTPUT_LOW);

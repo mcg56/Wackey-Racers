@@ -109,7 +109,6 @@ int main (void)
 
     //Flash LED to show everything initialised
     flash_led(LED_STATUS_PIO, 2);
-
     pacer_init (PACER_RATE); 
     uint8_t count = 0;
     while (1)
@@ -123,7 +122,7 @@ int main (void)
         radio_ticks++;
         led_ticks++;
         buzzer_ticks++;
-        
+
         if (led_ticks >= PACER_RATE*1) // 1s on 1s off
         {
             pio_output_toggle(LED_STATUS_PIO);
@@ -183,17 +182,18 @@ int main (void)
             y = accel[1];
         }
 
+
         //printf("ximu = %d, yimu = %d, xjoy = %d, yjoy = %d\n", accel[0], accel[1], adc_data[1], adc_data[2]);
         //printf ("Bat = %d, x = %d, y = %d\n", adc_data[0], adc_data[1], adc_data[2]);
 
         //Convert IMU or joystick reading to scale 1-201 for x and y
         task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
 
-        if (pio_input_get(BUTTON))
+        if (!pio_input_get(BUTTON))
         {
             button_press = 1;
         }
-
+        //("%d\n", button_press);
         sound_off_ticks = SOUND_OFF_MAX - linear*SOUND_OFF_MAX/LINEAR_TRANFER_MAX + 1;
         if (playing)
         {
@@ -218,7 +218,7 @@ int main (void)
         // Convert int values into bytes and place into tx_buffer
         tx_buffer[0] = angular & 0xFF; 
         tx_buffer[1] = linear & 0xFF;
-        if (button_press = 1)
+        if (button_press == 1)
         {
             tx_buffer[2] = 1 & 0xFF;
             button_press = 0;
