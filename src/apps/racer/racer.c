@@ -99,8 +99,7 @@ int main (void)
     int32_t ticks = 0;
     int count_led = 0;
     bool blue = false;
-    int x_val;
-    int y_val;
+    int8_t turn_direction;
 
     while (1) {
 
@@ -182,50 +181,55 @@ int main (void)
                 }
             set_motor_vel (101, 1);
             delay_ms(1000); 
+            set_motor_vel (101, 101);
             
         } else {
-            radio_recieve(&x_val, &y_val);
+            turn_direction = radio_recieve();
         }
 
-
-        if (x_val > 20) {
-            ledbuffer_set(leds, 5, 200, 50, 0);
-            ledbuffer_set(leds, 6, 200, 50, 0);
-            ledbuffer_set(leds, 17, 200, 50, 0);
-            ledbuffer_set(leds, 18, 200, 50, 0);
-        } else if (x_val < -20) {
-            ledbuffer_set(leds, 0, 200, 50, 0);
-            ledbuffer_set(leds, 11, 200, 50, 0);
-            ledbuffer_set(leds, 12, 200, 50, 0);
-            ledbuffer_set(leds, 23, 200, 50, 0);
-        }
+        green_strip();
+        // if (turn_direction == TURN_LEFT) {
+        //     ledbuffer_set(leds, 5, 200, 50, 0);
+        //     ledbuffer_set(leds, 6, 200, 50, 0);
+        //     ledbuffer_set(leds, 17, 200, 50, 0);
+        //     ledbuffer_set(leds, 18, 200, 50, 0);
+        // } else if (turn_direction == TURN_RIGHT) {
+        //     ledbuffer_set(leds, 0, 200, 50, 0);
+        //     ledbuffer_set(leds, 11, 200, 50, 0);
+        //     ledbuffer_set(leds, 12, 200, 50, 0);
+        //     ledbuffer_set(leds, 23, 200, 50, 0);
+        // } else {
+        //     green_strip();
+        // }
 
 
         // Poll sleep button and if pressed then sleep...
-        if (!pio_input_get (SLEEP_BUTTON_PIO)) //sleep button pressed
-        {
-            // Do stuff to show we recieved the button press
-            red_strip();
-            pio_output_set (LED_STATUS_PIO, 0);
-            pio_output_set (LED_ERROR_PIO, 0);
+        // if (!pio_input_get (SLEEP_BUTTON_PIO) && (ticks >= 100)) //sleep button pressed
+        // {
+        //     // Do stuff to show we recieved the button press
+        //     red_strip();
+        //     pio_output_set (LED_STATUS_PIO, 0);
+        //     pio_output_set (LED_ERROR_PIO, 0);
 
-            delay_ms(1000);
+        //     delay_ms(1000);
 
-            // Try enable the interrupt
-            pio_irq_clear(SLEEP_BUTTON_PIO);
-            pio_irq_enable(SLEEP_BUTTON_PIO);
-            irq_enable(PIO_ID(SLEEP_BUTTON_PIO));
+        //     // Try enable the interrupt
+        //     pio_irq_clear(SLEEP_BUTTON_PIO);
+        //     pio_irq_enable(SLEEP_BUTTON_PIO);
+        //     irq_enable(PIO_ID(SLEEP_BUTTON_PIO));
 
-            pio_config_set (MOTOR_ENABLE_PIO, PIO_OUTPUT_LOW);
-            empty_strip();
+        //     pio_sleep_mode();   
+        //     empty_strip();
 
-            //Sleep mcu
-            mcu_select_slowclock();
-            mcu_sleep(&sleep_cfg);
+        //     //Sleep mcu
+        //     mcu_select_slowclock();
+        //     mcu_sleep(&sleep_cfg);
 
 
-            //Flash LED to show we wokeup
-            flash_led(LED_STATUS_PIO, 5);
-        }
+        //     //Flash LED to show we wokeup
+        //     flash_led(LED_STATUS_PIO, 5);
+        //     pio_config_set(SLEEP_BUTTON_PIO, PIO_OUTPUT_HIGH);
+        //     ticks = 0;
+        // }
 	}
 }

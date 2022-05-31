@@ -124,9 +124,10 @@ void radio_transmit (void)
     }
 }
 
-void radio_recieve (int* x_val, int* y_val)
+int8_t radio_recieve (void)
 {
     uint8_t rx_bytes;
+    int8_t ret_value;
     char rx_buffer[RADIO_RX_PAYLOAD_SIZE + 1]; // +1 for null terminator
     rx_bytes = nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE); // Maybe buffer needs to be 3 long same as tx...
     if (rx_bytes != 0)
@@ -134,8 +135,22 @@ void radio_recieve (int* x_val, int* y_val)
         rx_buffer[rx_bytes] = 0;           
         //printf("%d %d %d\n", rx_buffer[0], rx_buffer[1], rx_buffer[2]);
         set_motor_vel ((int)rx_buffer[0], (int)rx_buffer[1]);
+        if ((int)rx_buffer[2] != 0)
+        {
+            pio_output_high (DARSTEDLY_OUTPUT_1_PIO);
+        } else
+        {
+            pio_output_low (DARSTEDLY_OUTPUT_1_PIO);
+        }
     }
 
-    *x_val = (int)rx_buffer[0];
-    *y_val = (int)rx_buffer[1];
+    ret_value = FWD;
+
+    if ((int)rx_buffer[0] < -20) {
+        ret_value = TURN_LEFT;
+    } else if ( (int)rx_buffer[0] > 20) {
+        ret_value = TURN_RIGHT;
+    }
+
+    return ret_value;
 }

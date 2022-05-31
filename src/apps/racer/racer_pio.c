@@ -36,6 +36,7 @@ void init_pio(void)
 {
     pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (DARSTEDLY_OUTPUT_1_PIO, PIO_OUTPUT_LOW);
     pio_config_set (RADIO_CH1_SEL_PIO, PIO_PULLUP);
     pio_config_set (RADIO_CH2_SEL_PIO, PIO_PULLUP);
     pio_config_set (RADIO_CH3_SEL_PIO, PIO_PULLUP);
@@ -49,6 +50,28 @@ void init_pio(void)
     //pio_irq_config_set (SLEEP_BUT_PIO, PIO_IRQ_LOW_LEVEL);
     irq_config(PIO_ID(SLEEP_BUTTON_PIO), 1, wake_isr);
 
+}
+
+void pio_sleep_mode(void)
+{
+    pio_config_set (LED_ERROR_PIO, PIO_INPUT);
+    pio_config_set (LED_STATUS_PIO, PIO_INPUT);
+    pio_config_set (MOTOR_ENABLE_PIO, PIO_INPUT);
+    pio_config_set (RADIO_CH4_SEL_PIO, PIO_INPUT);
+    pio_config_set (RADIO_CH4_SEL_PIO, PIO_INPUT);
+    pio_config_set (RADIO_CH4_SEL_PIO, PIO_INPUT);
+    pio_config_set (RADIO_CH4_SEL_PIO, PIO_INPUT);
+    pio_config_set (RADIO_CH4_SEL_PIO, PIO_INPUT);
+
+
+    //radio
+    pio_config_set(RADIO_CS_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(RADIO_CE_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(RADIO_IRQ_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(RADIO_CE_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(PA12_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(PA13_PIO, PIO_OUTPUT_LOW);
+    pio_config_set(PA14_PIO, PIO_OUTPUT_LOW);
 }
 
 void flash_led(int led_pio, int num_flash)
