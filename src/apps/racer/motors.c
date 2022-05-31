@@ -172,12 +172,12 @@ void set_motor_vel (int16_t x_vel, int16_t y_vel) {
     if ((x_vel < 50) || (x_vel > -50)) {
         x_vel = x_vel*ANGULAR_GAIN;
     }
-    if (y_vel < 0) {
-        left_motor_duty = REVERSE_GAIN*(y_vel) - (x_vel);
-        right_motor_duty = REVERSE_GAIN*(y_vel) + (x_vel);
+    if (y_vel > 0) {
+        left_motor_duty = REVERSE_GAIN*(y_vel) + (x_vel);
+        right_motor_duty = REVERSE_GAIN*(y_vel) - (x_vel);
     } else {
-        left_motor_duty = LINEAR_GAIN*(y_vel) + (x_vel);
-        right_motor_duty = LINEAR_GAIN*(y_vel) - (x_vel);
+        left_motor_duty = LINEAR_GAIN*(y_vel) - (x_vel);
+        right_motor_duty = LINEAR_GAIN*(y_vel) + (x_vel);
     }
     
 

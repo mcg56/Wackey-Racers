@@ -20,8 +20,8 @@
 * CONSTANTS
 ******************************************************************************/
 #define TRUE_CENTRE         600
-#define IMU_ADC_LIN_MAX         (6500 + TRUE_CENTRE)
-#define IMU_ADC_LIN_MIN         (-7500 + TRUE_CENTRE)
+#define IMU_ADC_LIN_MAX         (7500 + TRUE_CENTRE) //Forward
+#define IMU_ADC_LIN_MIN         (-6500 + TRUE_CENTRE) //reverse
 
 #define IMU_ADC_ANG_MAX         (15000 + TRUE_CENTRE)
 #define IMU_ADC_ANG_MIN         (-15000 + TRUE_CENTRE)
