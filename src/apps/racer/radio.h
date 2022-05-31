@@ -23,10 +23,10 @@
 #define RADIO_RX_PAYLOAD_SIZE   3
 #define RADIO_CHANNEL_DEFAULT   0
 
-#define FWD 0
-#define REV 1
-#define TURN_LEFT 2
-#define TURN_RIGHT 3
+#define FWD 1
+#define REV 2
+#define TURN_LEFT 3
+#define TURN_RIGHT 4
 
 int determine_radio_channel(void);
 nrf24_t *initialise_radio(void);

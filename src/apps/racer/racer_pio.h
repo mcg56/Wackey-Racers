@@ -23,5 +23,8 @@ void green_strip(void);
 void red_strip(void);
 void blue_strip(void);
 void empty_strip(void);
+void indicate_left(void);
+void indicate_right(void);
+void indicate_fwd(void);
 
 #endif //RACER_PIO_H

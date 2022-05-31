@@ -150,3 +150,80 @@ void empty_strip(void)
     ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
     }
 }
+
+void indicate_left(void)
+{
+    {
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+    uint8_t indices[8] = {4, 5, 6, 7, 16, 17, 18, 19};
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = 0;
+        leds[i * 3 + 1] = 0;
+        leds[i * 3 + 2] = 0;
+    }
+
+    for (i = 0; i < 8; i++)
+    {
+        leds[indices[i]*3] = 108;
+        leds[indices[i]*3+1] = 255;
+        leds[indices[i]*3+2] = 0;
+    }
+
+    ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+    }
+}
+
+void indicate_right(void)
+{
+    {
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+    uint8_t indices[8] = {0, 1, 10, 11, 12, 13, 22, 23};
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = 0;
+        leds[i * 3 + 1] = 0;
+        leds[i * 3 + 2] = 0;
+    }
+
+    for (i = 0; i < 8; i++)
+    {
+        leds[indices[i]*3] = 108;
+        leds[indices[i]*3+1] = 255;
+        leds[indices[i]*3+2] = 0;
+    }
+
+    ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+    }
+}
+
+void indicate_fwd(void)
+{
+    {
+    uint8_t leds[NUM_LEDS * 3];
+    int i;
+
+    for (i = 0; i < NUM_LEDS; i++)
+    {
+        // Set full green  GRB order
+        leds[i * 3] = 0;
+        leds[i * 3 + 1] = 0;
+        leds[i * 3 + 2] = 0;
+    }
+
+    for (i = 12; i < 23; i++)
+    {
+        leds[i*3] = 255;
+        leds[i*3+1] = 0;
+        leds[i*3+2] = 0;
+    }
+
+    ledtape_write (LEDTAPE_PIO, leds, NUM_LEDS * 3);
+    }
+}
