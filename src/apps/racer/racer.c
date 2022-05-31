@@ -171,7 +171,7 @@ int main (void)
             set_motor_vel (101, 101);
 
             int flash_times = 0;
-            while(flash_times < 5)
+            while(flash_times < 9)
                 {
                     empty_strip();
                     delay_ms(500);
