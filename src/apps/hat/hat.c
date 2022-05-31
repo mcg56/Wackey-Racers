@@ -45,7 +45,7 @@
 * CONSTANTS
 ******************************************************************************/
 #define PACER_RATE 50 //Hz
-
+#define SOUND_OFF_MAX   25
 
 /******************************************************************************
 * Globals
@@ -63,6 +63,7 @@ int main (void)
     uint16_t adc_data[NUM_ADC_CHANNELS]; // For storing adc data
     bool use_joy = false;
     pwm_t pwm1;
+    pwm_t pwm2;
     int linear;
     int angular;
     int16_t x;       //Controll (imu or joy) raw data x
@@ -71,6 +72,11 @@ int main (void)
     int led_ticks = 0;
     bool blue = true;
     int count_led = 0;
+    int sound_off_ticks = SOUND_OFF_MAX;
+    int sound_on_ticks = 2;
+    int buzzer_ticks = 0;
+    bool playing = 1;
+
     
     
     //---------------------Peripheral setup---------------------
@@ -82,6 +88,7 @@ int main (void)
     initialise_adc();
     nrf = initialise_radio();
     pwm1 = init_pwm();
+    pwm2 = init_pwm2();
     ledbuffer_t* leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
     //---------------------Read configuration inputs---------------------
     
@@ -114,10 +121,12 @@ int main (void)
         pacer_wait ();
         radio_ticks++;
         led_ticks++;
+        buzzer_ticks++;
         
-        if (led_ticks >= PACER_RATE*20)
+        if (led_ticks >= PACER_RATE*1) // 1s on 1s off
         {
             pio_output_toggle(LED_STATUS_PIO);
+            led_ticks = 0;
         }
         //LED tape task
         if (low_bat_flag)
@@ -179,8 +188,26 @@ int main (void)
         //Convert IMU or joystick reading to scale 1-201 for x and y
         task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
 
-        //pwm_frequency_set (pwm1, 392 + 10*linear);
-        //pwm_channels_start (pwm_channel_mask (pwm1));
+        sound_off_ticks = SOUND_OFF_MAX - linear*SOUND_OFF_MAX/LINEAR_TRANFER_MAX + 1;
+        if (playing)
+        {
+            if (buzzer_ticks >= sound_on_ticks)
+            {
+                pwm_channels_stop(pwm_channel_mask(pwm1));
+                playing = 0;
+                buzzer_ticks = 0;
+            }
+        } else
+        {
+            if (buzzer_ticks >= sound_off_ticks)
+            {
+                pwm_frequency_set (pwm1, 392 + linear);        
+                pwm_channels_start (pwm_channel_mask (pwm1));
+                playing = 1;
+                buzzer_ticks = 0;
+            }
+        }
+
 
         // Convert int values into bytes and place into tx_buffer
         tx_buffer[0] = angular & 0xFF; 
@@ -206,6 +233,7 @@ int main (void)
             pio_output_toggle (LED_STATUS_PIO);
 
             play_card(pwm1);
+            spin_flags(pwm2);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
             nrf24_read (nrf, rx_buffer, RADIO_RX_PAYLOAD_SIZE);
@@ -231,6 +259,7 @@ int main (void)
         {
             // Do stuff to show we recieved the button press
             empty_strip();
+            
             //delay_ms(500); // debounce button, not needed if playing sound       
             play_shutdown(pwm1);
             pio_output_set (LED_STATUS_PIO, 0);
