@@ -57,6 +57,7 @@
 #define GPIO_JUMPER             PA30_PIO
 #define FSYNC                   PA31_PIO
 #define JOYSTICK_BUTTON         PA21_PIO
+#define BUTTON                  PA28_PIO
 
 
 /* Button  */

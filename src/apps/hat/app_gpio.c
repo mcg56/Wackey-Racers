@@ -84,6 +84,7 @@ void pio_sleep_mode(void)
     pio_config_set (CH3_SEL, PIO_OUTPUT_LOW);
     pio_config_set (CH4_SEL, PIO_OUTPUT_LOW);
     pio_config_set (GPIO_JUMPER, PIO_OUTPUT_LOW);
+    pio_config_set (BUTTON, PIO_OUTPUT_HIGH)
 
     //radio
     pio_config_set(RADIO_CS_PIO, PIO_OUTPUT_LOW);
