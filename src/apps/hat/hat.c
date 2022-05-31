@@ -76,6 +76,7 @@ int main (void)
     int sound_on_ticks = 2;
     int buzzer_ticks = 0;
     bool playing = 1;
+    bool button_press = 0;
 
     
     
@@ -188,6 +189,11 @@ int main (void)
         //Convert IMU or joystick reading to scale 1-201 for x and y
         task_convert_imu_or_joy(&x, &y, &linear,&angular, use_joy);
 
+        if (pio_input_get(BUTTON))
+        {
+            button_press = 1;
+        }
+
         sound_off_ticks = SOUND_OFF_MAX - linear*SOUND_OFF_MAX/LINEAR_TRANFER_MAX + 1;
         if (playing)
         {
@@ -208,11 +214,18 @@ int main (void)
             }
         }
 
-
+        
         // Convert int values into bytes and place into tx_buffer
         tx_buffer[0] = angular & 0xFF; 
         tx_buffer[1] = linear & 0xFF;
-        tx_buffer[2] = 69 & 0xFF;
+        if (button_press = 1)
+        {
+            tx_buffer[2] = 1 & 0xFF;
+            button_press = 0;
+        } else
+        {
+            tx_buffer[2] = 0 & 0xFF;
+        }
         //printf("angular %i linear %i 69 %i\n", tx_buffer[0], tx_buffer[1], tx_buffer[2]);
         if (! nrf24_write (nrf, tx_buffer, RADIO_TX_PAYLOAD_SIZE)) 
         {
@@ -254,6 +267,11 @@ int main (void)
             }
         } else pio_output_set (LED_ERROR_PIO, 0);
         
+        
+       
+
+
+
         // Poll sleep button and if pressed then sleep...
         if (!pio_input_get (SLEEP_BUT_PIO)) //sleep button pressed
         {
@@ -262,6 +280,7 @@ int main (void)
             
             //delay_ms(500); // debounce button, not needed if playing sound       
             play_shutdown(pwm1);
+            spin_flags(pwm2);
             pio_output_set (LED_STATUS_PIO, 0);
             pio_output_set (LED_ERROR_PIO, 0);
 
